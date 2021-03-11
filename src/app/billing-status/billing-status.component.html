@@ -1,0 +1,170 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle">Billing Status  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" (click)="ResetFrom()" data-toggle="modal" data-target="#myModal">Add Billing Status</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th></th>
+          <th>Sr No</th>
+          <th>Billing Status</th>
+		  <th>Details/Comments</th>         
+       
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of billingstatusdata ; let i=index">
+	  
+	  <td><a  (click)="EditBillingstatusData(Data.BillingStatusDesc,Data.BillingStatusId,Data.Comments )"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a  (click)="DeleteBillingstatusData(Data.BillingStatusDesc,Data.BillingStatusId,Data.Comments )"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.BillingStatusDesc}}</td>
+		<td>{{Data.Comments}}</td>
+      
+    <!-- <td (click)="EditBillingstatusData(Data.BillingStatusDesc,Data.BillingStatusId,Data.Comments )"><span>  <button class="btn btn-primary Addcitybtton "  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp;Edit</button></span></td> -->
+        
+       <!-- <td (click)="DeleteBillingstatusData(Data.BillingStatusDesc,Data.BillingStatusId)"> <span> <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+      </tr>
+    
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	   <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Billing Status</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+        <div class="modal-body">    
+    
+  <form [formGroup]="billingstatusForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+      <label>Billing Status&nbsp;<sup style="color:red">*</sup></label>
+       <input  formControlName="BillingStatusDesc" [ngClass]="{ 'is-invalid': submitted && f.BillingStatusDesc.errors }" placeholder="Enter Billing Status" class="form-control"  />   
+	   <div *ngIf="submitted && f.BillingStatusDesc.errors" class="invalid-feedback" >
+            <div *ngIf="f.BillingStatusDesc.errors.required">Billing Status is Required</div>
+        </div>
+      </div> 
+	  <div class="form-group">
+     <label>Details/Comments</label>
+		 <textarea formControlName="Comments" placeholder="Enter Details/Comments" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Comments.errors }" ></textarea>	
+	<div *ngIf="submitted && f.Comments.errors" class="invalid-feedback" >
+            <div *ngIf="f.Comments.errors.required">Details/Comments is Required</div>
+        </div>	 
+		
+      </div> 
+      <div class="form-group btn-submit">
+          <button [disabled]="loading" class="btn btn-primary">Submit </button>
+			<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group  form-text">Added Successfully</div> -->
+  </form >    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+        </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Billing Status</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+         <div class="modal-body">    
+    
+  <form [formGroup]="billingstatusForm">
+      <div class="form-group">
+      <label>Billing Status&nbsp;<sup style="color:red">*</sup></label>
+       <input  formControlName="BillingStatusDesc" [ngClass]="{ 'is-invalid': submitted && f.BillingStatusDesc.errors }" placeholder="Enter Billing Status" class="form-control"  />   
+	   <div *ngIf="submitted && f.BillingStatusDesc.errors" class="invalid-feedback" >
+            <div *ngIf="f.BillingStatusDesc.errors.required">Billing Status is Required</div>
+        </div>
+      </div> 
+	  <div class="form-group">
+     <label>Details/Comments</label>
+		 <textarea formControlName="Comments" placeholder="Enter Details/Comments" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Comments.errors }" ></textarea>	
+	<div *ngIf="submitted && f.Comments.errors" class="invalid-feedback" >
+            <div *ngIf="f.Comments.errors.required">Details/Comments is Required</div>
+        </div>	 
+		
+      </div> 
+      <div class="form-group btn-submit">
+          <button (click)="AddUpdateDeleteBillingstatus()" class="btn btn-primary">Update</button>      
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group  form-text">Updated Successfully</div> -->
+  </form>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+        </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete  Billing Status?</div>    
+        </div>
+        <div class="modal-footer">
+         <button type="button" (click)="AddUpdateDeleteBillingstatus()" class="btn btn-default" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+  </div>

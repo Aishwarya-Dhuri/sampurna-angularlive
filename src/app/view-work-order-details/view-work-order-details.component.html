@@ -1,0 +1,762 @@
+<div class="container">
+    <div class="CitymainDiv">
+      <div class="col-md-12"> 
+       <h2 align="center" class="labelclass col-md-12 labelstyle">Waste Material Type (Work Order Items)</h2>
+	   
+		 <div class=" col-md-12 row button-margin">
+		   <div class="col-md-4 ">  
+	   <label class="wono"><a class="nav-link login-custom btntext" routerLink="/ViewWorkOrder"><i class="fas fa-angle-double-left">&nbsp;Back</i>&nbsp;&nbsp;Work Order No: {{WorkOrderCode}}</a></label>
+	   </div>
+	 
+	  <div class="col-md-2">
+		<button (click)="exportAsXLSX()"  class="btn btn-primary Addcitybtton ">Export To Excel </button>
+     </div>
+	  <div class="col-md-3">
+		<button (click)="print()" class="btn btn-primary Addcitybtton  print-margin">Print </button>
+     </div>
+	 
+	 
+	 <div class="col-md-3">
+	 <div class="float-right">
+      <button class="btn btn-primary Addcitybtton"  (click)="ResetFrom()"  data-toggle="modal" data-target="#myModal" >Add Waste Material Type</button>
+      </div>
+      </div>
+	  </div>	
+	  
+	  <div id="print-section">
+       <div class="table-responsive">
+     
+       <table class="table table-borderless table-hover tableborder align-middle citytable">
+        <thead class="headerbackground text-white">
+        <tr>
+		<th class="doNotPrint"></th>
+            <th>Sr No</th>
+            <th>Work order ID</th>
+            <th>State</th>
+            <th>City</th>
+            <th>Suburb</th>
+          <th>Waste Material Type</th> 
+          <!--   <th>Waste Material Type</th> -->
+            <th>Collection Target Unit</th>
+            <th>Expiry Date</th>
+      <!-- <th>Quantity (Material Unit)</th> -->
+            <th>EPR Support Rate (Rs/Kg)</th>
+            <th>GST Rate </th>
+            <th>On Actual or Freight </th>
+            <th>Freight Support Rate (Rs/Kg)</th>
+            <th>Completion Timeline (In Days)</th>
+            <th>Comments</th>
+            <th>Total billing value</th> 
+            <th>Target completion rate %</th>
+            <th>Achieved Volume in %</th>
+            <th>Billing %</th>
+            <th>Billed Value</th>
+        </tr>
+        </thead>
+        <tbody>       
+       <tr *ngFor="let Data of WOItemsdata ; let i=index">	
+		<td class="doNotPrint"><label  (click)="EditWorkorderItemData(Data.WorkOrderId,Data.StateId,Data.CityId,Data.SuburbID,Data.MaterialUnitId,Data.WasteMaterialId,Data.ExpiryDate,Data.FreightRate,Data.FreightAmount,Data.Quantity,Data.Rate,Data.GSTRate,Data.TotalValue,Data.Timeline,Data.Comments,Data.WorkOrderItemId,Data.OnActualorFreight,Data.WorkOrderItemCode,Data.ReportingFrequency,Data.Billingcycle,Data.MileStone,Data.GSTAmount,Data.AgreementStatusId,Data.OrderPlacementDate)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+		
+	<label  (click)="DeleteWorkorderItemData(Data.WorkOrderId,Data.StateId,Data.CityId,Data.SuburbID,Data.MaterialUnitId,Data.WasteMaterialId,Data.ExpiryDate,Data.FreightRate,Data.FreightAmount,Data.Quantity,Data.Rate,Data.GSTRate,Data.TotalValue,Data.Timeline,Data.Comments,Data.WorkOrderItemId,Data.WorkOrderItemCode,Data.ReportingFrequency,Data.Billingcycle,Data.MileStone,Data.GSTAmount,Data.AgreementStatusId,Data.OrderPlacementDate)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label>
+		</td>
+	   
+	   
+      <td>{{i+1}}</td>
+      <td>{{Data.WorkOrderItemCode}}</td> 
+      <td>{{Data.State}}</td> 
+      <td>{{Data.City}}</td> 
+      <td>{{Data.Suburb}}</td> 
+		  <td>{{Data.WasteMaterialName}}</td> 
+      <!-- <td>{{Data.WasteMaterialTypeName}}</td>  -->
+      <td>{{Data.MaterialUnitName}}</td> 
+      <td>{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</td> 
+      <td>{{Data.Rate}}</td> 
+      <td>{{Data.GSTRate}}</td> 
+      <td>{{Data.OnActualorFreight}}</td> 
+	    <td>{{Data.FreightRate}}</td> 
+      <td>{{Data.Timeline}}</td> 
+      <td>{{Data.Comments}}</td> 
+      <td>{{Data.BillingValue}}</td>
+      <td>{{Data.ArchivePercent}}%</td>
+      <td>{{Data.ArchivePercent}}%</td>
+
+      <td>  {{Data.BillingPerc}}%</td>
+      <td>{{Data.BilledAmount}}</td>
+
+        </tr>
+      </tbody>
+       </table>
+       
+    </div>
+       </div>
+    </div>
+    </div>
+    
+
+
+    <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4>Add Waste Material Type</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+            <div class="modal-body">    
+       
+   <form [formGroup]="WorkorderItemForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+      
+          <div class="col-md-12 row">             
+      
+            <div class="col-md-12">
+              <p>Work Order No: {{WorkOrderCode}}</p>
+          
+            </div>
+
+
+		    <div class="col-md-6 form-group">
+       <label>Select State&nbsp;<sup style="color:red">*</sup></label>
+        <select class="form-control form-group"  formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingState($event.target.value)"
+        (change)="GenerateState($event.target.value)">
+               <option [selected]=true [disabled]="true" value="0">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+			   <div *ngIf="submitted && f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+          
+          <div class="col-md-6  form-group">
+          <label  >Select City</label>
+			  <select class="form-control" (change)="getAgFromsuburboncityId($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }" (change)="Generatecity($event.target.value)">
+                <option [selected]="true" [disabled]="true" value="0">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			   
+			   <div *ngIf=" f.CityId.errors" class="invalid-feedback" >
+        <div *ngIf="f.CityId.errors.required">City is Required</div> 
+        </div> 
+			   
+          </div>
+		  
+		  <div class="col-md-6  form-group">
+          <label >Select Suburb&nbsp;<sup style="color:red"></sup></label>
+               <select class="form-control" formControlName="SuburbID" [ngClass]="{ 'is-invalid': submitted && f.SuburbID.errors }" >
+                <option [selected]=true [disabled]="true" value="0">Select Suburb</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}" >{{Data.SuburbName}} </option>
+               </select>
+
+		<div *ngIf=" f.SuburbID.errors" class="invalid-feedback" > 
+        <div *ngIf="f.SuburbID.errors.required">Suburb is Required</div> 
+        </div> 			   
+          </div>
+		  
+		  
+          <div class="col-md-6 form-group">
+          <label  >Waste Material Type&nbsp;<sup style="color:red">*</sup></label>
+             <select class="form-control" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialId.errors }" (change)="GenerateWOItemCode($event.target.value)" >
+                <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+                <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+               </select> 
+			   
+			    <div *ngIf=" f.WasteMaterialId.errors" class="invalid-feedback" >
+        <div *ngIf="f.WasteMaterialId.errors.required">Waste Material Type is Required</div> 
+        </div> 
+          </div>
+		  
+		<div class="col-md-6  form-group">
+      <label>Work Order Item Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="WorkOrderItemCode"   class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WorkOrderItemCode.errors }"  readonly /> 
+		  <div *ngIf="submitted && f.WorkOrderItemCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.WorkOrderItemCode.errors.required">Work Order Code is Required</div>
+        </div>
+        </div>
+      
+
+        <div class="col-md-6  form-group">	
+            <label>Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+            <select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" >
+                        <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                        <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+                       </select> 
+                 
+                 <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+                    <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+                </div>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label>Order Placement Date&nbsp;<sup style="color:red">*</sup></label>
+                <input formControlName="OrderPlacementDate"  placeholder="Order Placement Date" type="date" class="form-control " [ngClass]="{ 'is-invalid': submitted && f.OrderPlacementDate.errors }" />
+            <div *ngIf="submitted && f.OrderPlacementDate.errors" class="invalid-feedback" >
+                  <div *ngIf="f.OrderPlacementDate.errors.required"> Order Placement Date is Required</div>
+              </div>
+            </div>
+
+
+
+        <div class="col-md-6 form-group"> 
+          <label class="modelGST">Select Automail Frequency&nbsp;<sup style="color:red">*</sup></label> 
+           <ng-multiselect-dropdown
+         [placeholder]="'Select Automail Frequency'"
+         
+    [data]="dropdownList"
+   formControlName="ReportingFrequency"
+    [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+    (onSelectAll)="onSelectAll($event)">
+  </ng-multiselect-dropdown>
+      
+      <div *ngIf="submitted && f.ReportingFrequency.errors" class="custom-invalid-feedback " >
+  <div *ngIf="!IsValidRF" class="custom-Invalid-feedback" >
+      Automail Frequencyy is Required
+          </div>
+          </div>
+         </div> 
+
+        <div class="col-md-6 form-group">
+          <label class="modelBilling"> Billing Cycle(Days)<sup style="color:red">*</sup></label>
+             <input type="number" formControlName="Billingcycle" class="form-control" placeholder="Enter Billing Cycle" [ngClass]="{ 'is-invalid': submitted && f.Billingcycle.errors }"/>
+          <div *ngIf=" f.Billingcycle.errors" class="invalid-feedback" >
+               <div *ngIf="f.Billingcycle.errors.required">Billing Cycle is Required</div>
+           </div>
+         </div> 
+         <!-- <div class="col-md-6" *ngIf="enableInput"> -->
+
+         <div class="col-md-6" *ngIf="MilestoneSelected" style="display: none;" >
+          <label  >25%,50%,75%,100%&nbsp;</label>
+             <select class="form-control " formControlName="MileStone" >
+                <option [selected]=true [disabled]="true">Select MileStone</option>
+                <option  value="25" >25% </option>
+                <option  value="50" >50% </option>
+                <option  value="75" >75% </option>
+                <option  value="100" >100% </option>
+               </select> 
+			   
+			   
+          </div>
+
+
+	     <div class="col-md-6 form-group">
+          <label>Collection Target Quantity&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="Quantity" placeholder="Enter Collection Target Quantity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Quantity.errors }" (change)="FinalCalculation()" />
+			  
+			   <div *ngIf=" f.Quantity.errors" class="invalid-feedback" >
+        <div *ngIf="f.Quantity.errors.required">Collection Target Quantity is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6 form-group">
+          <label >Collection Target Unit&nbsp;<sup style="color:red">*</sup></label>
+            <select class="form-control" formControlName="MaterialUnitId" [ngClass]="{ 'is-invalid': submitted && f.MaterialUnitId.errors }" >
+                <option [selected]=true [disabled]="true">Select Collection Target Unit</option>
+                <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+               </select> 
+			   <div *ngIf=" f.MaterialUnitId.errors" class="invalid-feedback" >
+        <div *ngIf="f.MaterialUnitId.errors.required">Collection Target Unit is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6 form-group">
+           <label >EPR Support Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="Rate" placeholder="Enter EPR Support Rate" class="form-control" (change)="FinalCalculation()" [ngClass]="{ 'is-invalid': submitted && f.Rate.errors }" />
+			  <div *ngIf=" f.Rate.errors" class="invalid-feedback" >
+        <div *ngIf="f.Rate.errors.required">EPR Support Rate is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6  form-group">
+			<label>GST Rate(%)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="GSTRate" placeholder="Enter GST Rate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTRate.errors }"/>
+			  
+			 
+			  
+			   <div *ngIf=" f.GSTRate.errors" class="invalid-feedback" >
+				<div *ngIf="f.GSTRate.errors.required">GST Rate is Required</div> 
+				</div> 
+          </div>	 
+		  
+		  
+     		
+		 <div class="col-md-12">  
+              
+           <label class="form-select" >Additional Transport Support<sup style="color:red">*</sup> </label>		
+<div class="row">
+<div class="col-md-4">
+            <label class="form-check-label radioclass form-select">			
+			<input type="radio" class="form-check-input" id="radio1" value="OnActual"  formControlName="OnActualorFreight" (change)="frieghtShow()" />On Actual &nbsp;&nbsp;&nbsp;&nbsp;			
+			 </label>
+			 </div>
+			<div class="col-md-4">
+			 <label class="form-check-label radioclass form-select">
+			<input type="radio" class="form-check-input" id="radio2" value="Included" formControlName="OnActualorFreight" (change)="frieghtShow()" />Included in EPR Support Rate &nbsp;&nbsp;&nbsp;&nbsp;
+			 </label>
+			 </div>
+			<div class="col-md-4">
+			 <label class="form-check-label radioclass form-select">
+			<input type="radio" class="form-check-input" id="radio3" value="Freight" formControlName="OnActualorFreight" (change)="frieghtShow()" />Freight (Rs/Kg) &nbsp;&nbsp;&nbsp;&nbsp;
+			 </label>
+			 </div>
+			 </div>
+         <div *ngIf="submitted && f.OnActualorFreight.errors">
+		<p class="para-color">Please select Additional Transport Support</p>
+		</div>
+	
+          
+      
+       
+        </div>
+             	  <!-- Start Quantity*rate+freight amount=Total Value -->
+		  <div class="col-md-12 row"  >
+          </div>
+		  
+		    <!-- End Quantity*rate+frieghtamt=Total Value -->
+			 
+			    <!-- Start Freight rate*100=Freight Amt -->
+		  <div class="col-md-12 row" *ngIf="Isshow">
+		  <div class="col-md-6  form-group">
+          <label>Freight Support Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="FreightRate" [ngClass]="{ 'is-invalid': submitted && f.FreightRate.errors }" (change)="FinalCalculation()"  placeholder="Enter Freight Support Rate (Rs/Kg)" class="form-control"  />	
+
+				<div *ngIf=" f.FreightRate.errors" class="invalid-feedback" >
+        <div *ngIf="f.FreightRate.errors.required">Freight Support Rate is Required</div> 
+        </div> 
+          </div> 
+		  
+		 
+		 <div class="col-md-6 result  form-group ">
+           <label class=" txtform" >Freight Amount (inclusive GST in Rs)</label>
+		   <input formControlName="FreightAmount" class="form-control txtform" readonly />			   
+          </div>
+
+
+          <div class="col-md-6  form-group">
+            <label >GST amount for frieght&nbsp;<sup style="color:red">*</sup></label>
+                    <input type="number" formControlName="GSTAmount" placeholder="Enter GST Rate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTAmount.errors }"/>
+              
+               <div *ngIf=" f.GSTAmount.errors" class="invalid-feedback" >
+              <div *ngIf="f.GSTAmount.errors.required">GST amount is Required</div> 
+              </div> 
+                </div>
+
+
+          </div>
+		  <!-- End Freight rate*100=Freight Amt -->
+		  
+      
+      <div class="space10"></div>
+      <div class="space10"></div>
+	 <div class="col-md-6  form-group result">
+           <label >Total Support Amount (Inclusive GST in Rs)</label>
+		   <input formControlName="TotalValue" class="form-control " readonly />
+			   
+          </div>
+		  
+		  
+		 <!-- End calculation  -->
+		 
+		 <div class="col-md-6 form-group">
+            <label >Comments</label>
+              <textarea formControlName="Comments" placeholder="Comment" class="form-control " ></textarea>
+			  
+			   
+          </div>
+		 
+		 
+		  <!-- Start Date=Expiry Date - Timeline(In Days) -->
+		 
+		 <div class="col-md-6 form-group">
+       <label class="modelGST ">Expiry Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="date" (change)="Timeline()" formControlName="ExpiryDate" value="{{myDate}}" class="form-control " [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }" >
+		<div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+        <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div> 
+        </div> 
+		<div *ngIf="dateerror.isError" class="custom-Invalid-feedback">
+		   {{ dateerror.errorMessage }}
+		</div>
+      </div>
+          
+          
+ 
+            <div class="col-md-6 form-group">
+            <label  >Completion Timeline (In Days)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="text" formControlName="Timeline" (input)="expiryDate()" value="{{diffDays}}"  class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Timeline.errors }"   /> 
+				
+		<div *ngIf=" f.Timeline.errors" class="invalid-feedback" > 
+        <div *ngIf="f.Timeline.errors.required">Completion Timeline (In Days) is Required</div> 
+      </div> 
+          </div>
+		  
+		  <!-- End Date=Expiry Date - Timeline(In Days) -->
+          
+            
+          </div> 
+          <div class="form-group   btn-submit">
+              <button class="btn btn-primary " >Submit</button>  
+				<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+          </div>
+		  <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>   
+            </div>	
+			</form>
+          </div>
+		      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+
+    <!--Add button viewwork orderr-->
+
+    <!--Edit ViewWork Order Details myModaledit-->
+   <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+      
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4>Edit Work Order Items</h4>  
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+              </div>
+            <div class="modal-body">    
+        
+   <form [formGroup]="WorkorderItemForm">
+              <div class="form-group">
+    
+          <div class="col-md-12 row">
+              
+            <div class="col-md-12">
+              <p>Work Order No: {{WorkOrderCode}}</p>
+          
+            </div>
+
+		    <div class="col-md-6">
+       <label>Select State&nbsp;<sup style="color:red">*</sup></label>
+        <select class="form-control form-group"  formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingStateWOForm($event.target.value)" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+			   <div *ngIf="submitted && f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+          
+          <div class="col-md-6">
+          <label  >Select City&nbsp;</label>
+			  <select class="form-control form-group" (change)="getAgFromsuburboncityId($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+                <option [selected]=true [disabled]="true" value="0">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			   
+			   <div *ngIf=" f.CityId.errors" class="invalid-feedback" >
+        <div *ngIf="f.CityId.errors.required">City is Required</div> 
+        </div> 
+			   
+          </div>
+		  
+		 <div class="col-md-6">
+          <label>Select Suburb&nbsp;<sup style="color:red"></sup></label>
+               <select class="form-control form-group" formControlName="SuburbID" [ngClass]="{ 'is-invalid': submitted && f.SuburbID.errors }" >
+                <option [selected]=true [disabled]="true">Select Suburb</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}" >{{Data.SuburbName}} </option>
+               </select>
+
+		<div *ngIf=" f.SuburbID.errors" class="invalid-feedback" > 
+        <div *ngIf="f.SuburbID.errors.required">Suburb is Required</div> 
+        </div> 			   
+          </div>
+		  
+		  
+         <div class="col-md-6">
+          <label>Waste Material Type&nbsp;<sup style="color:red">*</sup></label>
+             <select class="form-control form-group" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialId.errors }" >
+                <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+                <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+               </select> 
+			   
+			    <div *ngIf=" f.WasteMaterialId.errors" class="invalid-feedback" >
+        <div *ngIf="f.WasteMaterialId.errors.required">Waste Material Type is Required</div> 
+        </div> 
+          </div>
+
+		 <div class="col-md-6  form-group">
+      <label >Work Order Item Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="WorkOrderItemCode"  class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WorkOrderItemCode.errors }"  readonly /> 
+		  <div *ngIf="submitted && f.WorkOrderItemCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.WorkOrderItemCode.errors.required">Work Order Code is Required</div>
+        </div>
+        </div>
+      
+
+        <div class="col-md-6 form-group">	
+            <label>Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+            <select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" >
+                        <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                        <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+                       </select> 
+                 
+                 <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+                    <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 form-group">
+                <label>Order Placement Date&nbsp;<sup style="color:red">*</sup></label>
+                <input formControlName="OrderPlacementDate"  placeholder="Order Placement Date" type="date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.OrderPlacementDate.errors }" />
+            <div *ngIf="submitted && f.OrderPlacementDate.errors" class="invalid-feedback" >
+                  <div *ngIf="f.OrderPlacementDate.errors.required"> Order Placement Date is Required</div>
+              </div>
+            </div>
+
+        <div class="col-md-6 form-group"> 
+          <label> Select Automail Frequency&nbsp;<sup style="color:red">*</sup></label> 
+           <ng-multiselect-dropdown
+         [placeholder]="'Select Automail Frequency'"
+    [data]="dropdownList"
+   formControlName="ReportingFrequency"
+    [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+    (onSelectAll)="onSelectAll($event)">
+  </ng-multiselect-dropdown>
+      
+      <div *ngIf="submitted && f.ReportingFrequency.errors" class="custom-invalid-feedback " >
+  <div *ngIf="!IsValidRF" class="custom-Invalid-feedback" >
+      Automail Frequency is Required
+          </div>
+          </div>
+         </div> 
+
+        <div class="col-md-6  form-group">
+         
+
+          <label> Billing Cycle(Days)<sup style="color:red">*</sup></label>
+             <input type="number" formControlName="Billingcycle" class="form-control" placeholder="Enter Billing Cycle" [ngClass]="{ 'is-invalid': submitted && f.Billingcycle.errors }"/>
+          <div *ngIf=" f.Billingcycle.errors" class="invalid-feedback" >
+               <div *ngIf="f.Billingcycle.errors.required">Billing Cycle is Required</div>
+           </div>
+         </div> 
+
+
+         <div class="col-md-6  form-group" *ngIf="MilestoneSelected" style="display: none;">
+          
+
+          <label>25%,50%,75%,100%&nbsp;</label>
+             <select class="form-control" formControlName="MileStone" >
+                <option [selected]=true [disabled]="true">Select MileStone</option>
+                <option  value="25" >25% </option>
+                <option  value="50" >50% </option>
+                <option  value="75" >75% </option>
+                <option  value="100" >100% </option>
+               </select> 
+			   
+			   
+          </div>
+
+
+		   <div class="col-md-6  form-group">
+      
+          <label>Collection Target Quantity&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="Quantity" placeholder="Enter Collection Target Quantity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Quantity.errors }" (change)="FinalCalculation()"  />
+			  
+			   <div *ngIf=" f.Quantity.errors" class="invalid-feedback" >
+        <div *ngIf="f.Quantity.errors.required">Collection Target Quantity is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6  form-group">
+          <label>Collection Target Unit&nbsp;<sup style="color:red">*</sup></label>
+            <select class="form-control" formControlName="MaterialUnitId" [ngClass]="{ 'is-invalid': submitted && f.MaterialUnitId.errors }" >
+                <option [selected]=true [disabled]="true">Select Collection Target Unit</option>
+                <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+               </select> 
+			   <div *ngIf=" f.MaterialUnitId.errors" class="invalid-feedback" >
+        <div *ngIf="f.MaterialUnitId.errors.required">Collection Target Unit is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6  form-group">
+           <label >EPR Support Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="Rate" placeholder="Enter EPR Support Rate" class="form-control form-group" (change)="FinalCalculation()" [ngClass]="{ 'is-invalid': submitted && f.Rate.errors }" />
+			  <div *ngIf=" f.Rate.errors" class="invalid-feedback" >
+        <div *ngIf="f.Rate.errors.required">EPR Support Rate is Required</div> 
+        </div> 
+          </div>
+		  
+		  
+		   <div class="col-md-6">
+			<label>GST Rate(%)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="GSTRate" placeholder="Enter GST Rate" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.GSTRate.errors }"/>
+			  
+			   <div *ngIf=" f.GSTRate.errors" class="invalid-feedback" >
+				<div *ngIf="f.GSTRate.errors.required">GST Rate is Required</div> 
+				</div> 
+          </div>
+     		
+		  <div class="col-md-12">  
+              
+           <label class="form-select" style="margin-left: 10px;">Additional Transport Support<sup style="color:red">*</sup></label>		
+<div class="row">
+<div class="col-md-4">
+            <label class="form-check-label radioclass form-select">			
+			<input type="radio" class="form-check-input" id="radio1" value="OnActual" checked="true" formControlName="OnActualorFreight" (change)="frieghtShow()" />On Actual &nbsp;&nbsp;&nbsp;&nbsp;			
+			 </label>
+			 </div>
+			<div class="col-md-4">
+			 <label class="form-check-label radioclass form-select">
+			<input type="radio" class="form-check-input" id="radio2" value="Included" formControlName="OnActualorFreight" (change)="frieghtShow()" />Included in EPR Support Rate &nbsp;&nbsp;&nbsp;&nbsp;
+			 </label>
+			 </div>
+			<div class="col-md-4">
+			 <label class="form-check-label radioclass form-select">
+			<input type="radio" class="form-check-input" id="radio3" value="Freight" formControlName="OnActualorFreight" (change)="frieghtShow()"  />Freight (Rs/Kg) &nbsp;&nbsp;&nbsp;&nbsp;
+			 </label>
+			 </div>
+			 </div>
+         <div *ngIf="submitted && f.OnActualorFreight.errors">
+		<p class="para-color">Please select Additional Transport Support</p>
+		</div>
+        </div>
+             	  <!-- Start Quantity*rate+freight amount=Total Value -->
+		  
+		  
+		    <!-- End Quantity*rate+frieghtamt=Total Value -->
+			 
+			    <!-- Start Freight rate*100=Freight Amt -->
+		  <div class="col-md-12 row" *ngIf="Isshow">
+		  <div class="col-md-6  form-group">
+          <label >Freight Support Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="number" formControlName="FreightRate" [ngClass]="{ 'is-invalid': submitted && f.FreightRate.errors }" (change)="FinalCalculation()"  placeholder="Enter Support Rate" class="form-control" />	
+				 <div *ngIf=" f.FreightRate.errors" class="invalid-feedback" >
+        <div *ngIf="f.FreightRate.errors.required">Freight Support Rate is Required</div> 
+        </div> 
+          </div>
+		  
+		 
+		  
+		 <div class="col-md-6  form-group">
+           <label>Freight Amount (inclusive GST in Rs)</label>
+		   <input formControlName="FreightAmount" class="form-control  txtform" readonly /> 		   
+          </div>
+		  
+          <div class="col-md-6  form-group">
+            <label class="form-group" >GST amount for frieght&nbsp;<sup style="color:red">*</sup></label>
+                    <input type="number" formControlName="GSTAmount" placeholder="Enter GST Rate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTAmount.errors }"/>
+              
+               <div *ngIf=" f.GSTAmount.errors" class="invalid-feedback" >
+              <div *ngIf="f.GSTAmount.errors.required">GST Rate is Required</div> 
+              </div> 
+                </div>
+          </div>
+		  <!-- End Freight rate*100=Freight Amt -->
+     
+    
+
+         
+	 <div class="col-md-6 form-group">
+      <div class="space10"></div>
+      <div class="space10"></div>
+      <label>Total Support Amount (Inclusive GST in Rs)</label>
+		   <input formControlName="TotalValue" class="form-control" readonly />
+  </div>
+		  
+		  
+		 <!-- End calculation  -->
+		 
+		 <div class="col-md-6  form-group">
+        <div class="space10"></div>
+        <div class="space10"></div>
+            <label>Comments</label>
+              <textarea formControlName="Comments" placeholder="Comment" class="form-control" ></textarea>
+          </div>
+		 
+		 <!-- Start Date=Expiry Date - Timeline(In Days) -->
+		 
+		 <div class="col-md-6 form-group">
+       <label>Expiry Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="date" value={{DispalayDate}} (change)="Timeline()" formControlName="ExpiryDate" value="{{myDate}}" class="form-control "  [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+		<div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+        <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div> 
+        </div> 
+		<div *ngIf="dateerror.isError" class="custom-Invalid-feedback">
+		   {{ dateerror.errorMessage }}
+		</div>
+      </div>
+          
+          
+ 
+            <div class="col-md-6 form-group">
+            <label>Completion Timeline (In Days)&nbsp;<sup style="color:red">*</sup></label>
+              <input type="text" formControlName="Timeline"  (input)="expiryDate()" value="{{diffDays}}"    class="form-control "  [ngClass]="{ 'is-invalid': submitted && f.Timeline.errors }" /> 
+				
+				 <div *ngIf=" f.Timeline.errors" class="invalid-feedback" > -->
+              <div *ngIf="f.Timeline.errors.required">Completion Timeline (In Days) is Required</div> 
+          </div> 
+          </div>
+		  
+		  <!-- End Date=Expiry Date - Timeline(In Days) -->
+          
+            
+          </div> 
+          <div class="form-group   btn-submit">
+              <button class="btn btn-primary " (click)="UpdateDeleteWorkorderItem()">Update</button>  
+				<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+          </div>
+		  <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div>   
+            </div>	
+			</form>
+          </div>
+		      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+
+    <!--Edit ViewWork order details-->
+
+
+      <!--Delete Work order Items-->
+
+      <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog">    
+             <div class="modal-content">
+                <div class="modal-header" >
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>       
+                </div>
+              <div class="modal-body">    
+         <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Work Order item?</div>    
+              </div>
+              <div class="modal-footer">
+     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="DeleteWorkorderItem()">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <!--Delete Work order Items-->
+
+    </div>
+
+    <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">    
+         <div class="modal-content">
+            <div class="modal-header" >
+              <button type="button" class="close" data-dismiss="modal">&times;</button>       
+            </div>
+          <div class="modal-body">    
+     <div class="alert alert-success"> {{AlertMessage}}</div>
+          
+          </div>
+          <div class="modal-footer">
+           <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+          </div>
+        </div>
+      </div>
+    </div>

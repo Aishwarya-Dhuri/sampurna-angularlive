@@ -1,0 +1,187 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Waste Materials  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" (click)="ResetFrom()"  data-toggle="modal" data-target="#myModal">Add Waste Material</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th></th>
+          <th>Sr No</th>
+          <th>Waste Material Code</th>
+          <th>Waste Material Name</th>
+          <!-- <th>Waste Material Description</th> -->
+       
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of wastematerialdata ; let i=index">
+	  
+	  <td><a  (click)="EditwastematerialData(Data.WasteMatCode,Data.WasteMatName,Data.WasteMatId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a  (click)="DeletewastematerialData(Data.WasteMatCode,Data.WasteMatName,Data.WasteMatId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.WasteMatCode}}</td>
+        <td>{{Data.WasteMatName}}</td>
+        <!-- <td>{{Data.WasteMatDescription}}</td> -->
+      
+     <!-- <td (click)="EditwastematerialData(Data.WasteMatCode,Data.WasteMatName,Data.WasteMatDescription,Data.WasteMatId)"><span>  <button class="btn btn-primary Addcitybtton "  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp;Edit</button></span></td> -->
+        
+       <!-- <td (click)="DeletewastematerialData(Data.WasteMatCode,Data.WasteMatName,Data.WasteMatDescription,Data.WasteMatId)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+      </tr>
+   
+    
+   
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	  <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Waste Material</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+        <div class="modal-body">  		
+    
+  <form [formGroup]="wastematerialForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label class="form-group" >Waste Material Code&nbsp;<sup style="color:red">*</sup></label>
+            <input  formControlName="WasteMatCode"   placeholder="Enter Material Code" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && f.WasteMatCode.errors }"/> 
+			<div *ngIf="submitted && f.WasteMatCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMatCode.errors.required">Waste Material Code is Required</div>
+        </div>
+			
+        
+        <label class="form-group">Waste Material Name&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="WasteMatName"  placeholder="Enter Material Name" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && f.WasteMatName.errors }" /> 
+			<div *ngIf="submitted && f.WasteMatName.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMatName.errors.required">Waste Material Name is Required</div>
+        </div>
+		
+		
+      
+        </div> 
+      <div class="form-group btn-submit">
+          <button [disabled]="loading" class="btn btn-primary" >Submit</button>  
+			<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group form-text ">Added Successfully</div> -->
+  </form>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  
+        </div>
+      </div>
+        </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Waste Material</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+         <div class="modal-body">    
+   
+  <form [formGroup]="wastematerialForm">
+   <div class="form-group">
+      <label class="form-group" >Waste Material Code&nbsp;<sup style="color:red">*</sup></label>
+            <input  formControlName="WasteMatCode"   placeholder="Enter Material Code" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && f.WasteMatCode.errors }"/> 
+			<div *ngIf="submitted && f.WasteMatCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMatCode.errors.required">Waste Material Code is Required</div>
+        </div>
+			
+        
+        <label class="form-group">Waste Material Name&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="WasteMatName"  placeholder="Enter Material Name" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && f.WasteMatName.errors }" /> 
+			<div *ngIf="submitted && f.WasteMatName.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMatName.errors.required">Waste Material Name is Required</div>
+        </div>
+		
+		
+        
+        <!-- <label class="form-group" >Material Description :</label> -->
+            <!-- <textarea placeholder="Enter Material Description" class="form-control form-group" formControlName="WasteMatDescription" [ngClass]="{ 'is-invalid': submitted && f.WasteMatDescription.errors }"></textarea> -->
+			<!-- <div *ngIf="submitted && f.WasteMatDescription.errors" class="invalid-feedback" > -->
+            <!-- <div *ngIf="f.WasteMatDescription.errors.required">Material Description is required</div> -->
+        <!-- </div> -->
+    
+        </div> 
+      <div class="form-group btn-submit">
+          <button class="btn btn-primary" (click)="AddUpdateDeletewastematerial()">Update</button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+  </form>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  
+        </div>
+      </div>
+        </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Waste Material?</div>    
+        </div>
+        <div class="modal-footer">
+         <button (click)="AddUpdateDeletewastematerial()" type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+  </div>

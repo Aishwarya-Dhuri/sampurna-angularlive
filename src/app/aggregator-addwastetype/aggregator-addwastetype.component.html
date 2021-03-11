@@ -1,0 +1,719 @@
+
+<div class="container">
+    <div class="CitymainDiv">
+        <div class="col-md-12"> 
+            <h2 align="center" class="labelclass col-md-12 labelstyle">Aggregator's Collection Center & Waste Type</h2>
+              <div class=" col-md-12 row button-margin">
+                  <div class="col-md-6">  
+                <label class="wono"><a class="nav-link login-custom btntext" routerLink="/AggregatorEnrolment">
+                <i class="fas fa-angle-double-left">&nbsp;Back</i>&nbsp;&nbsp;Aggregator Name: {{AGName}}</a></label>
+                </div>
+                
+              <div class="col-md-6">
+              <div class="float-right">
+                <button class="btn btn-primary Addcitybtton "  data-toggle="modal" data-target="#addtypeweste" (click)="ResetFrom()">View/Add Collection Center & Waste Type </button>
+                </div>
+                </div>
+              </div>
+
+
+
+              <div id="print-section">
+                  <div class="table-responsive">
+                      <table class="table table-borderless table-hover tableborder align-middle citytable"> 
+                          <thead class="headerbackground text-white"> 
+                        <tr> 
+                        <th></th>
+                             <th>Sr No</th> 
+                             <th>Waste Material Type</th> 
+                         <th>Handling Capacity of Selected Material</th> 
+                         <th>Waste Material Unit</th> 
+                         <th>Contact Details</th> 
+                         <th>Phone</th> 
+                         <th>Email ID</th>
+                          <!-- <th>State</th> -->
+                          <th> City</th> 
+                          <th> Suburb</th> 
+                        <!-- <th>Waste type</th> -->
+                         <th class="padding-left-right-150">Processing Type</th> 
+                           <th>Current Recycling Rates (Rs/kg)</th> 
+                           
+                          
+                          
+                           </tr>
+                          </thead> 
+                         <tbody> 
+                            <tr *ngFor="let Data of AGWasteTypesdata ; let i=index">
+                          
+                          <td><label  (click)="EditAGWasteTypeData(Data.WasteMaterialId,Data.HandlingCapacity,Data.HandlingCapacityMatUnitID,Data.PrimaryCntName,Data.PrimaryCntTelNo,Data.PrimaryCntEmail,Data.OperatingCities,Data.OperatingSuburbs,Data.ProcessingTypeId,Data.CurrentRecylRates,Data.AGWasteTypeId,Data.StateId,Data.AGWCode,Data.Address)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledittypeofweste" class="btn-color">Edit</span> </label>
+                          
+                          <label  (click)="DeleteAGWasteTypeData(Data.WasteMaterialId,Data.HandlingCapacity,Data.HandlingCapacityMatUnitID,Data.PrimaryCntName,Data.PrimaryCntTelNo,Data.PrimaryCntEmail,Data.OperatingCities,Data.OperatingSuburbs,Data.ProcessingTypeId,Data.CurrentRecylRates,Data.AGWasteTypeId,Data.StateId,Data.AGWCode,Data.Address)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldeletetetypeofweste" class="btn-color">Delete</span> </label>
+                          </td>
+                          
+                            <td>{{i+1}}</td> 
+                           <td>{{Data.WasteMaterialName}}</td> 
+                            <td>{{Data.HandlingCapacity}}</td> 
+                          <td>{{Data.HandlingCapacityMatUnitName}}</td>  
+                         <td>{{Data.PrimaryCntName}}</td> <td>{{Data.PrimaryCntTelNo}}</td>  
+                         <td>{{Data.PrimaryCntEmail}}</td> 
+                         <!-- <td>{{  Data.StateName}}</td> -->
+                            <td>{{Data.OperatingCitiesDesc}}</td> 
+                             <td>{{Data.OperatingSuburbsDesc}}</td>
+                            <!-- <td>waste type</td> -->
+                             <td>{{Data.ProcessingTypeName}}</td> 
+                             <td>{{Data.CurrentRecylRates}}</td> 
+                            
+                        
+                          
+                           </tr>
+                         
+                        
+                          
+                         </tbody>
+                          </table> 
+                  </div>
+              </div>
+
+        </div>
+
+
+
+
+      </div>
+<!-- <!--Add Type of waste Aggregator--> 
+
+<div id="addtypeweste" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog modal-lg">     
+      <div class="modal-content"> 
+         <div class="modal-header" > 
+            <h4>Add Collection Center & Waste Type</h4> 
+
+           <button type="button" class="close" data-dismiss="modal">&times;</button>        
+   </div> 
+     <div class="modal-body">     
+	<form [formGroup]="AgWastetypeForm"  (ngSubmit)="onSubmitAgWatetype()">
+    <div class="form-group"> 
+	 <div class=" col-md-12 row"> 
+  <div class="col-md-12">
+      <label class="modelManufacturename namefloat">Aggregator Name :&nbsp;&nbsp;{{AGName}}</label> 
+    </div> 
+    <div class=" col-md-6"> 
+      <label class="modelAggregatorDetails">Waste Material Type &nbsp;<sup style="color:red">*</sup></label>  
+       <select class="form-control form-group" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }" (change)="GenerateWasteMaterialCode($event.target.value)">
+               <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+               <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}} </option>
+             </select>
+         
+          <div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+               <div *ngIf="g.WasteMaterialId.errors.required">Waste Material Type is Required</div>
+           </div>
+      </div> 
+
+            <div class="col-md-6">
+              <label class="modelAggregatorCode lbl-margin">Waste type Code&nbsp;</label>
+                 <input type="text" formControlName="AGWCode" class="form-control form-group" placeholder="Enter Aggregator Waste type Code" [ngClass]="{ 'is-invalid': submitted && g.AGWCode.errors }" [disabled]="true" readonly />
+             
+               <div *ngIf="submitted && g.AGWCode.errors" class="invalid-feedback" >
+                     <div *ngIf="g.AGWCode.errors.required"> waste type  Code is Required</div>
+                 </div>
+             </div>
+
+       
+		 <div class=" col-md-6"> 
+		 <label class="modelAggregatorDetails">Handling Capacity of Selected Material&nbsp;<sup style="color:red">*</sup></label> 
+  <input type="number" formControlName="HandlingCapacity" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }"/> 
+		 <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacity.errors.required">Handling Capacity of Selected Material is Required</div>
+        </div>
+		 </div> 
+		 
+	<div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Waste Material Unit&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="HandlingCapacityMatUnitID" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacityMatUnitID.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material Unit</option>
+            <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}">{{Data.MaterialUnit}} </option>
+          </select>
+		  
+		  <div *ngIf="submitted && g.HandlingCapacityMatUnitID.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacityMatUnitID.errors.required"> Waste Material Unit is Required</div>
+        </div>
+   </div> 
+   
+  
+ 
+  <div class="col-md-12">
+   <label class="modelAggregatorDetails"><b>Contact Details:</b></label> 
+  </div>
+   <div class="col-md-6">
+   <label class="modelAggregatorDetails">Name&nbsp;<sup style="color:red">*</sup></label> 
+   <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntName.errors }" /> 
+	<div *ngIf="submitted && g.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="g.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		</div>
+		 <div class="col-md-6"> 
+  <label class="modelAggregatorDetails">Phone&nbsp;<sup style="color:red">*</sup></label> 
+ <input type="number" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntTelNo.errors }"  pattern="[7-9]{1}[0-9]{9}" maxlength="10"/> 
+ 
+ <div *ngIf=" g.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="g.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Phone Number
+			</div>
+			<div *ngIf="g.PrimaryCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="g.PrimaryCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="g.PrimaryCntTelNo.errors.pattern"> 
+			Please enter valid phone number.
+			</div>	
+        </div>
+
+		</div>
+		
+		
+  <div class="col-md-6"> 
+  <label class="modelAggregatorDetails">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntEmail.errors }" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" required [email]="true" placeholder="Enter Email "/>
+			
+			<div *ngIf="g.PrimaryCntEmail.invalid && (g.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="g.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="g.PrimaryCntEmail.errors.email && !g.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback">
+			Please input valid email ID
+			</div>
+			</div>
+ </div> 
+ 
+ <div class="col-md-6">
+    <label class="modelAggregatorDetails">Address<sup style="color:red">*</sup></label>
+      <textarea  class="form-control form-group" placeholder="Enter Address" formControlName="Address" [ngClass]="{ 'is-invalid': submitted && g.Address.errors }"></textarea>
+   <div *ngIf=" g.Address.errors" class="invalid-feedback" >
+        <div *ngIf="g.Address.errors.required">Address is Required</div>
+    </div>
+  </div>
+
+   <div class="col-md-6">
+       <label class="lbl-margin">Select State<sup style="color:red">*</sup> :</label>
+         <select class="form-control form-group" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && g.StateId.errors }" (change)="GetStateMappingStateAgForm($event.target.value)">
+               <option [selected]=true value="0">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" g.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="g.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+   
+ <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Select City&nbsp;<sup style="color:red">*</sup></label> 
+<select class="form-control form-group" (change)="getAgFromsuburboncityId1($event.target.value)" formControlName="OperatingCities" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true value="0">Select City</option>
+                <option *ngFor="let Data of citydata; let i = index" value="{{Data.CityId}}"
+				>{{Data.CityName}} </option>
+               </select> 
+
+   </div> 
+
+  
+ 
+   <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Select Suburb</label> 
+ <select class="form-control form-group" formControlName="OperatingSuburbs" [ngClass]="{ 'is-invalid': submitted && g.OperatingSuburbs.errors }" >
+               <option [selected]=true value="0">Select Suburb</option>
+                <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select> 
+  </div> 
+  
+  
+  <div class="col-md-6">
+   <label class="modelAggregatorDetails">Processing Type&nbsp;<sup style="color:red">*</sup></label> 
+<!--<select class="form-control form-group" formControlName="ProcessingTypeId" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }" >
+                <option [selected]=true [disabled]="true">Select Processing Type</option>
+                <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}" >{{Data.ProcessingType}} </option>
+ </select> -->
+ 
+  <ng-multiselect-dropdown
+		   [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings"
+  
+>
+</ng-multiselect-dropdown>
+			   
+			    <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+            Processing Type is Required
+        </div>
+        </div>
+           
+        </div>
+ 
+   
+   
+   
+ 
+  <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Current Recycling Rates (Rs/kg)&nbsp;</label> 
+   <input type="currentrecyclingrates" formControlName="CurrentRecylRates" class="form-control form-group" placeholder="Enter Current Recycling Rates(Rs./Kg)" [ngClass]="{ 'is-invalid': submitted && g.CurrentRecylRates.errors }"/> 
+   <div *ngIf="submitted && g.CurrentRecylRates.errors" class="invalid-feedback" >
+            <div *ngIf="g.CurrentRecylRates.errors.required">Current Recycling Rate is Required</div>
+        </div>
+   </div> 
+  
+ 
+  
+     
+    </div>  
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="accordion" class="accordion">
+                <div class="card mb-0">
+                    <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                        <a class="card-title">
+                         <b>Document Upload</b>
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                        <form  [formGroup]="DocUploadForm"  novalidate>
+                            <div class="row">
+                                <div class="col-md-6">
+                          <br>
+                           <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                                <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+              <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+          </div>	
+                        </div>
+                        <div class="col-md-6">
+                           <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                         
+                             <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                               <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                               <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                             </select>
+                   
+                                <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+              <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+          </div>	
+                   
+                        </div>
+                                <div class="col-md-6">
+                                 <label class="form-group" >Comments</label>
+                                 <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+                         
+                                 </div>
+                                <div class="col-md-12">
+                                  
+                                   <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+          
+                                </div>
+                                
+                              </div>
+                         
+                          <div class="space10"></div>
+                          <div class="row">
+                              <div class="col-md-12">
+                                <div class="table-responsive">
+                                   <div class="space10"></div>
+                                  <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                    <thead class="headerbackground text-white">
+                                       <tr>
+                                           <th></th>
+                                           <th>Sr No.</th>
+                                           <th>Document Name</th>
+                                           <th>Document Type</th>
+                                           <th>Comments</th>
+                                         </tr>
+                                       
+                                    </thead>
+                                  <tbody>
+                                     <tr *ngFor="let Data of DocumentData ; let i=index">
+                                         <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                          <th>{{i + 1}}</th>								  
+                                          <th>{{Data.DocumentName}}</th>
+                                          <th>{{Data.DocumentTypeName}}</th>
+                                          <th>{{Data.DocumentDetails}}</th>
+                                     </tr>
+                                  </tbody>
+                                  </table>
+        
+                                </div>
+                              </div>
+                            </div>
+                            <div class="space10"></div>
+                          </form>
+                      </div>
+                </div>
+              </div>
+        </div>
+      </div>
+
+
+
+	 </div> 
+	
+    <div class="form-group btn-submit"> 
+         <button [disabled]="loading" class="btn btn-primary" >Submit</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		 
+     </div> 
+	 	<!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+   </form>
+       </div>
+       <div class="modal-footer"> 
+         <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button> 
+      </div> 
+     </div>
+   </div> 
+ </div> 
+<!-- <!--Add Type of waste --> 
+
+
+<!-- <!--Edit Type of waste Aggregator myModaledittypeofweste--> 
+<div id="myModaledittypeofweste" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog modal-lg">     
+      <div class="modal-content"> 
+         <div class="modal-header" > 
+            <h4>Edit  Collection Center & Waste Type</h4> 
+           <button type="button" class="close" data-dismiss="modal">&times;</button>        
+   </div> 
+     <div class="modal-body">     
+  
+	<form [formGroup]="AgWastetypeForm" novalidate>
+       <div class="form-group"> 
+	 <div class="row">  
+  <div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Waste Material Type&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }" >
+            <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+            <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}} </option>
+          </select>
+		  
+		   <div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialId.errors.required">Waste Material Type is Required</div>
+        </div>
+   </div> 
+   <div class="col-md-6">
+    <label class="modelAggregatorCode lbl-margin">Waste type Code&nbsp;</label>
+       <input type="text" formControlName="AGWCode" class="form-control form-group" placeholder="Enter Aggregator Waste type Code" [ngClass]="{ 'is-invalid': submitted && g.AGWCode.errors }" [disabled]="true" readonly />
+   
+     <div *ngIf="submitted && g.AGWCode.errors" class="invalid-feedback" >
+           <div *ngIf="g.AGWCode.errors.required"> waste type  Code is Required</div>
+       </div>
+   </div>
+		 <div class=" col-md-6"> 
+		 <label class="modelAggregatorDetails">Handling Capacity of Selected Material&nbsp;<sup style="color:red">*</sup></label> 
+  <input type="number" formControlName="HandlingCapacity" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }"/> 
+		 <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacity.errors.required">Handling Capacity of Selected Material is Required</div>
+        </div>
+		 </div> 
+		 
+	<div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Waste Material Unit&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="HandlingCapacityMatUnitID" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacityMatUnitID.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material Unit</option>
+            <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}">{{Data.MaterialUnit}} </option>
+          </select>
+		  
+		  <div *ngIf="submitted && g.HandlingCapacityMatUnitID.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacityMatUnitID.errors.required">Waste Material Unit is Required</div>
+        </div>
+   </div> 	
+		
+ <!--New Waste material form-->
+<!-- <div class="col-md-6">
+  <label class="modelAggregatorDetails lbl-margin">Waste Material Form&nbsp;<sup style="color:red">*</sup></label> 
+ <select class="form-control form-group" formControlName="" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialFormId.errors }">
+           <option [selected]=true [disabled]="true">Select Waste Material Form</option>
+           <option *ngFor="let Data of wastetypereqData" value="{{Data.WasteMaterialFormId}}">{{Data.WasteMaterialFormName}} </option>
+         </select>
+        
+   <div *ngIf="submitted && g.WasteMaterialFormId.errors" class="invalid-feedback" >
+           <div *ngIf="g.WasteMaterialFormId.errors.required">Waste material Form is Required</div>
+       </div>	  
+  </div> -->
+  <!--New Waste material form-->
+<div class="col-md-6"></div>
+  
+  </div>
+  <br>
+  <div class="row">
+	<div class="col-md-12">
+	 <div class="row">
+	<div class="col-md-12">
+	<label class="modelAggregatorDetails"><b>Contact Details:</b></label> 
+	</div>
+	</div>
+	 <div class="row">
+	<div class="row col-md-12">
+    <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Name&nbsp;<sup style="color:red">*</sup></label> 
+   <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntName.errors }" /> 
+	<div *ngIf="submitted && g.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="g.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		</div>
+		   <div class="col-md-6"> 
+  <label class="modelAggregatorDetails">Phone&nbsp;<sup style="color:red">*</sup></label> 
+ <input type="number" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntTelNo.errors }"  pattern="[0-9]{1}[0-9]{9}" /> 
+ <div *ngIf=" g.PrimaryCntTelNo.errors" class="custom-Invalid-feedback" >		
+            <div *ngIf="g.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Phone Number
+			</div>
+			<div *ngIf="g.PrimaryCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="g.PrimaryCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="g.PrimaryCntTelNo.errors?.pattern"> 
+			Please enter valid phone number.
+			</div>	
+        </div>
+		
+
+ </div>
+  <div class="col-md-6"> 
+    <label class="form-group">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntEmail.errors }" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" required [email]="true" placeholder="Enter Email "/>
+			
+			<div *ngIf="g.PrimaryCntEmail.invalid && (g.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="g.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="g.PrimaryCntEmail.errors.email && !g.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+</div>
+			
+<div class="col-md-6">
+    <label class="form-group">Address<sup style="color:red">*</sup></label>
+      <textarea  class="form-control form-group" placeholder="Enter Address" formControlName="Address" [ngClass]="{ 'is-invalid': submitted && g.Address.errors }"></textarea>
+   <div *ngIf="g.Address.errors" class="invalid-feedback" >
+        <div *ngIf="g.Address.errors.required">Address is Required</div>
+    </div>
+  </div>
+   
+   <div class="col-md-6">
+       <label class="lbl-margin">Select State<sup style="color:red">*</sup> :</label>
+         <select class="form-control form-group" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && g.StateId.errors }" (change)="GetStateMappingStateAgForm($event.target.value)">
+               <option [selected]=true value="">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" g.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="g.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+   
+  <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Select City&nbsp;<sup style="color:red">*</sup></label> 
+<select class="form-control form-group" (change)="getAgFromsuburboncityId1($event.target.value)" formControlName="OperatingCities" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true value="">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+
+   </div> 
+
+  
+   <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Select Suburb&nbsp;</label> 
+ <select class="form-control form-group" formControlName="OperatingSuburbs" [ngClass]="{ 'is-invalid': submitted && g.OperatingSuburbs.errors }" >
+               <option [selected]=true value="" >Select Suburb</option>
+                <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select> 
+  </div> 
+
+  
+  
+  
+  <div class="col-md-6">
+   <label class="modelAggregatorDetails">Processing Type&nbsp;<sup style="color:red">*</sup></label> 
+<!--<select class="form-control form-group" formControlName="ProcessingTypeId" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }" >
+                <option [selected]=true [disabled]="true">Select Processing Type</option>
+                <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}" >{{Data.ProcessingType}} </option>
+ </select>-->
+ <ng-multiselect-dropdown
+[placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings" 
+  >
+</ng-multiselect-dropdown> 
+			   
+			    <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+            Processing Type is Required
+        </div>
+        </div>
+   </div> 
+   
+   
+   
+  
+  <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Current Recycling Rates (Rs/kg)&nbsp;</label> 
+   <input type="currentrecyclingrates" formControlName="CurrentRecylRates" class="form-control form-group" placeholder="Enter Current Recycling Rates(Rs./Kg)" [ngClass]="{ 'is-invalid': submitted && g.CurrentRecylRates.errors }"/> 
+   <div *ngIf="submitted && g.CurrentRecylRates.errors" class="invalid-feedback" >
+            <div *ngIf="g.CurrentRecylRates.errors.required">Current Recycling Rate is Required</div>
+        </div>
+   </div> 
+  
+  
+  
+    
+    
+	 </div> 
+  </div>
+
+  <div class="row">
+      <div class="col-md-12">
+              <div id="accordion1" class="accordion">
+                  <div class="card mb-0">
+                      <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                          <a class="card-title">
+                           <b>Document Upload</b>
+                          </a>
+                      </div>
+                      <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                        <form  [formGroup]="DocUploadForm"  novalidate>
+      
+                          <div class="row">
+                            <div class="col-md-6">
+                              <br>
+                               <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                                    <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+                  <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+              </div>	
+                            </div>
+                            <div class="col-md-6">
+                               <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                             
+                                 <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                                   <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                                   <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                                 </select>
+                       
+                                    <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+                  <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+              </div>	
+                       
+                            </div>
+                            <div class="col-md-6">
+                             <label class="form-group" >Comments</label>
+                             <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+                     
+                             </div>
+                            <div class="col-md-12">
+                              
+                               <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+      
+                            </div>
+                            
+                          </div>
+                          <div class="space10"></div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Document Name</th>
+                                         <th>Document Type</th>
+                                         <th>Comments</th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                   <tr *ngFor="let Data of DocumentData ; let i=index">
+                                       <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                        <th>{{i + 1}}</th>								  
+                                        <th>{{Data.DocumentName}}</th>
+                                        <th>{{Data.DocumentTypeName}}</th>
+                                        <th>{{Data.DocumentDetails}}</th>
+                                   </tr>
+                                </tbody>
+                                </table>
+      
+                              </div>
+                            </div>
+                          </div>
+                         </form>
+                      </div>
+                      
+                      
+                  </div>
+              </div>
+          
+          </div>	
+        </div>
+
+
+
+
+</div>
+	
+	</div>
+	</div>
+    <div class="form-group btn-submit"> 
+         <button [disabled]="loading" class="btn btn-primary" (click)="AddUpdateDeleteAgWastetype()">Update</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		 
+     </div> 
+	 	<!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+   </form>
+       </div>
+       <div class="modal-footer"> 
+         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+      </div> 
+     </div>
+   </div> 
+ </div> 
+<!-- <!--Edit Type of waste Aggregator--> 
+
+<!-- start delete Modal Aggregate Typeofweste -->
+
+<div id="myModaldeletetetypeofweste" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog">    
+     <div class="modal-content"> 
+       <div class="modal-header" >
+        <button type="button" class="close" data-dismiss="modal">&times;</button>     
+       </div> 
+     <div class="modal-body">   
+<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Aggregator Type of Waste Details?</div> 
+     
+      </div>
+      <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteAgWastetype()">Yes</button> 
+      <button type="button" class="btn btn-default" data-dismiss="modal">No</button> 
+     </div> 
+    </div> 
+</div> 
+</div> 
+
+
+<!-- End delete Modal Aggregate Typeofweste -->
+
+
+<!--My Modal Alert-->
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-success"> {{AlertMessage}}</div>
+        
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-default"  data-dismiss="modal" data-toggle="modal" >ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--My Modal Alert-->
+</div>

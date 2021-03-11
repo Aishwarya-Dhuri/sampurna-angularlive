@@ -1,0 +1,1443 @@
+<div class="container">
+  <div class="ManfacturemainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Manufacturers/Brands </h2>
+     <div class=" col-md-12 row button-margin">
+	  <div class="col-md-6 row">
+     
+		<input type="text" placeholder="Search By City, State, Name, Aggrement Status ...." class="form-group form-control searchtextbox" name="" (input)="SearchMenufacturer($event.target.value)">
+     </div>
+	 
+	 <div class="col-md-2">
+		<button (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button">Export To Excel </button>
+    </div>
+	
+	 <div class="col-md-2">
+		<button (click)="print()" class="btn btn-primary Addcitybtton float-right print-button">Print </button>
+    </div>
+	
+ <div class="col-md-2">
+      <button class="btn btn-primary Addcitybtton btnmargin"  (click)="ResetFrom()"  data-toggle="modal" data-target="#myModal" >Add Manufacturer/Brand </button>
+	  </div>
+     
+      
+     
+	  </div>	
+	  <form [formGroup]="ManufactureSearchForm">
+	   <div class="row">
+	    
+	    <div class="col-md-3 form-group">
+	   <label class="">State</label>
+      <select class="form-control" (change)="FilterOnState($event.target.value)" (change)="GetStateMappingStateForm($event.target.value)"
+	  formControlName="FilterState">
+              <option [selected]=true  value="0">All State</option>
+			<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}" >{{Data.StateName}} </option>
+       </select> 
+      </div>
+	  
+	  <div class="col-md-3  form-group">    
+		   <label class="">City</label>          
+		<select formControlName="FilterCity" class="form-control" (change)="FilterOnCity($event.target.value)" >
+                <option [selected]=true value="0">All City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+        </select> 
+     </div>
+	 
+	
+	  
+	  <div class="col-md-3  form-group">
+		<label class="">Manufacturer/Brand Name</label>
+		<select class="form-control" (change)="FilterOnName($event.target.value)" formControlName="FilterName">
+			<option [selected]=true  value="">All Manufacturer </option>
+			<option *ngFor="let Data of MGNameList" value="{{Data.Name}}" >{{Data.Name}} </option>
+        </select>
+      </div>
+	    
+	  <div class="col-md-3  form-group">
+	 <label class="">Select Agreement Status</label>
+		<select class="form-control" (change)="FilterOnAGStatus($event.target.value)" formControlName="AgStatusNameId">
+                <option [selected]=true  value="0">All Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata1" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+         </select> 
+      </div>
+	  
+      </div>
+	  </form>
+	 <div id="print-section">
+     <div class="table-responsive">
+     <table  id="header-fixed" class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th class="doNotPrint"></th>
+          <th>Sr No</th>
+		    <th>Manufacturer/Brand Name</th>
+          <th>Manufacturer/Brand Code</th>                
+          <th class="padding-left-right-150">Billing Address</th>
+          <th>City</th>
+      <th>State</th>
+      <!-- <th>Billing Cycle</th>    -->
+      <th>GST No</th>
+      <th>Agreement Status</th>
+      <th>Expiry Date</th>
+      <th>Signed Date</th>
+	<th>Last Date</th>
+	    <!-- <th>Billing %</th> -->
+     
+	  	   <!-- <th class="doNotPrint"></th> -->
+      </tr>
+      </thead>
+      <tbody>
+     <tr *ngFor="let Data of manufacturerdata ; let i=index">
+	 
+	 <td class="doNotPrint" ><a (click)="EditManufactureData(Data.MFName,Data.MFCode,Data.MFAddress,Data.MFCityIds,Data.MFStateId,Data.ExpiryDate,Data.SignedDate,Data.MFGST,Data.AgreementStatusId,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.Manufacturerid,Data.CreationDate,Data.Details)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+		<a (click)="DeletetManufactureData(Data.MFName,Data.MFCode,Data.MFAddress,Data.MFCityIds,Data.MFStateId,Data.ExpiryDate,Data.SignedDate,Data.MFGST,Data.AgreementStatusId,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.Manufacturerid,Data.CreationDate,Data.Details)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		<label >
+      <span>  
+     <!-- <button class="btn btn-primary Addcitybtton "  data-toggle="modal" data-target="#myModalWesteTypeAdd">Add Waste Type </button> -->
+     <button class="btn btn-primary Addcitybtton "    
+     (click)="RedirectToMFWasteType(Data.Manufacturerid,Data.MFName)" routerLink="/Addmanufacturer-Wastetype"  >Add Material Type </button> 
+    </span>
+</label>
+		</td>
+	 
+        <td>{{i+1}}</td>   
+		<td>{{Data.MFName}}</td>		
+        <td>{{Data.MFCode}}</td>
+      <td  class="address10">{{Data.MFAddress}}</td>
+      <td>{{Data.MFCityNames}}</td>
+      <td>{{Data.MFStateName}}</td>
+  
+      <td>{{Data.MFGST}}</td>
+      <td>
+        <span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red">{{Data.AgreementStatusName}}</span>
+    <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">{{Data.AgreementStatusName}}</span>
+    <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.AgreementStatusName}}</span>
+
+    <!-- <span *ngIf="Data.DateDiff=='30'" style="color:Orange">(30 Days to Expire)</span> -->
+      </td>
+
+      <td>
+          <span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green"> {{Data.ExpiryDate| date:'dd/MM/yyyy'}} </span>
+          <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red"></span>
+          <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red"></span>
+        <!-- <span *ngIf="Data.DateDiff=='30'" style="color:Orange">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span> -->
+        <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red"></span>
+
+       </td>
+        <td>
+            <span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green">   {{Data.SignedDate| date:'dd/MM/yyyy'}} </span>
+            <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red"></span>
+            <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">  {{Data.SignedDate| date:'dd/MM/yyyy'}}</span>
+            <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.SignedDate| date:'dd/MM/yyyy'}}</span>
+
+            <!-- <span *ngIf="Data.DateDiff=='30'" style="color:Orange">  {{Data.SignedDate| date:'dd/MM/yyyy'}}</span> -->
+          
+        </td>
+		<td>        
+      <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span>
+      <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span>
+
+    </td>
+   
+     <!--  <td class="doNotPrint" (click)="GetManufacturereId(Data.Manufacturerid,Data.MFName)"> <span>  <button class="btn btn-primary Addcitybtton "  data-toggle="modal" data-target="#myModalWesteTypeAdd">Add Waste Type </button></span></td> -->   
+      </tr>    
+    </tbody>
+     </table>
+     </div>
+	 </div>
+
+<!-- <button (click)="print()">print</button> -->
+	<div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  </div>
+
+  <!--Add manufacturer Button-->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add New Manufacturer/Brand </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   
+	  <form [formGroup]="ManufactureForm" (ngSubmit)="onSubmit()" novalidate class="needs-validation">
+      <div class="form-group">   
+      <div class=" col-md-12 row">	 
+      
+	  
+      <div class="col-md-6 form-group">
+	    <label class="modelManufactureAddress">Manufacturer/Brand Name<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="MFName" class="form-control" placeholder="Enter Manufacturer/Brand Name" [ngClass]="{ 'is-invalid': submitted && f.MFName.errors }" (change)="GenerateMFCode($event.target.value)"/>
+   <div *ngIf=" f.MFName.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFName.errors.required">Manufacturer/Brand  Name is Required</div>
+        </div>
+      </div>
+	  
+	  <div class="col-md-6 form-group">
+	    <label class="modelManufactureAddress">Manufacturer/Brand Code <sup style="color:red">*</sup></label>
+          <input type="text" formControlName="MFCode" class="form-control" placeholder="Enter Manufacturer/Brand Code" [ngClass]="{ 'is-invalid': submitted && f.MFCode.errors }" [disabled]="true"/>
+   <div *ngIf=" f.MFCode.errors" class="invalid-feedback">
+            <div *ngIf="f.MFCode.errors.required">Manufacturer/Brand Code is Required</div>
+        </div>
+      </div>
+      
+      
+       <div class="col-md-6 form-group">
+        <label class="modelManufactureAddress">Billing Address<sup style="color:red">*</sup></label>
+          <textarea  class="form-control" placeholder="Enter Billing Address" formControlName="MFAddress" [ngClass]="{ 'is-invalid': submitted && f.MFAddress.errors }"></textarea>
+		   <div *ngIf=" f.MFAddress.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFAddress.errors.required">Billing Address is Required</div>
+        </div>
+      </div>
+    
+      <div class="col-md-6 form-group">
+          <label class="modelManufactureAddress ">Details&nbsp;</label>
+         <textarea  formControlName="Details" class="form-control" placeholder="Enter Manufacturer Details" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }">
+     </textarea>
+     <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+                 <div *ngIf="f.Details.errors.required">Details  is Required</div>
+             </div>
+         </div>
+
+	   <div class="col-md-6 form-group">
+       <label class=""> Select State<sup style="color:red">*</sup></label>
+        <select class="form-control" formControlName="MFStateId" [ngClass]="{ 'is-invalid': submitted && f.MFStateId.errors }"  (change)="GetStateMappingStateForm($event.target.value)">
+               <option [selected]=true value="0">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" f.MFStateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFStateId.errors.required">State is Required</div>
+        </div>
+      </div>
+	  
+      
+      <div class="col-md-6 form-group">
+       <label class="">Select City<sup style="color:red">*</sup></label>
+         <select class="form-control" formControlName="MFCityIds" [ngClass]="{ 'is-invalid': submitted && f.MFCityIds.errors }">
+               <option [selected]=true value="">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+			   
+			    <div *ngIf=" f.MFCityIds.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFCityIds.errors.required">City is Required</div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 form-group">
+        <label class="modelGST"> GST No.<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="MFGST" class="form-control" placeholder="Enter GST No"  pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" [ngClass]="{ 'is-invalid': submitted && f.MFGST.errors }" />
+           <!-- <div *ngIf="f.MFGST.invalid && (f.MFGST.dirty || submitted)" class="invalid-feedback ">
+            <div *ngIf="f.MFGST.errors.pattern" class="custom-Invalid-feedback feedback-pos">
+              Enter valid GST Number
+
+            </div>
+            </div> -->
+            <div  class="invalid-feedback" >
+              Enter Valid GST Number...
+            </div>
+       </div>
+
+       <div class="col-md-6 form-group"> 
+          <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+           <input type="Date" formControlName="CreationDate" value="{{TodayDateC}}" class="form-control" placeholder="Select Creation Date" readonly /> 
+         
+        </div> 
+    <!-- <div class="col-md-6">
+       <label class="modelBilling"> Billing Cycle(Days)<sup style="color:red">*</sup></label>
+          <input type="number" formControlName="Billingcycle" class="form-control" placeholder="Enter Billing Cycle" [ngClass]="{ 'is-invalid': submitted && f.Billingcycle.errors }"/>
+		   <div *ngIf=" f.Billingcycle.errors" class="invalid-feedback" >
+            <div *ngIf="f.Billingcycle.errors.required">Billing Cycle is Required</div>
+        </div>
+      </div> -->
+      
+		 <div class="col-md-6 form-group">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" (change)="GetAgreementValue($event.target.value)">
+                <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+		</div>
+		<div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block"></div>
+
+    <div class="col-md-6 form-group" *ngIf="SignedSelected" >
+      <label class="modelGST">Expiry Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+    <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+           <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+       </div>
+     </div>
+    <div class="col-md-6 form-group" *ngIf="TerminatedSelected">
+        <label class="modelGST">Last Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" max="{{TodayDateC}}" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+        <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.ExpiryDate.errors.required">Last Date is Required</div>
+      </div>
+    </div>
+	
+
+    
+      <div class="col-md-6 form-group" *ngIf="ShowBlock" >
+        <label class="modelGST">Signed Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="SignedDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.SignedDate.errors }">
+        <div *ngIf=" f.SignedDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.SignedDate.errors.required">Signed Date is Required</div>
+      </div>
+    </div>
+
+		
+    <div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block"></div>
+    <div class="col-md-6" ></div>
+
+  <div class="space10"></div>
+      <div class="col-md-6">
+        
+  <div class="space10"></div>
+       <label class="modelDetails"><b>Primary Contact Details :</b></label>
+       <br>
+       <label class="modelManufactureAddress">Name<sup style="color:red">*</sup> </label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf=" f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+        <div class="space10"></div>
+      <label class="modelManufactureAddress">Designation<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+		<div *ngIf=" f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+        <div class="space10"></div>
+		
+      <label class="modelManufactureAddress">Mobile<sup style="color:red">*</sup></label>
+        <input type="number" formControlName="PrimaryCntTelNo" class="form-control" placeholder="Enter Mobile Number " [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }" pattern="[7-9]{1}[0-9]{9}" maxlength="10" />
+		<div *ngIf=" f.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="f.PrimaryCntTelNo.errors.required">
+              Mobile Number is Required
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+        Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+        Mobile Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.PrimaryCntTelNo.errors.pattern"> 
+				Please enter valid Mobile number
+			</div>	
+        </div>
+		
+        <div class="space10"></div>
+		
+		   <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="PrimaryCntLandlineNo" class="form-control" placeholder="Enter Landline Number" pattern="^\d{3}-\d{3}-\d{4}$"   [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntLandlineNo.errors }"/>
+		 <div *ngIf="f.PrimaryCntLandlineNo.errors" class="invalid-feedback" >	
+		 <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+			Please enter valid Landline number.
+			</div>	
+			</div>	
+			
+			<div class="space10"></div>
+			
+
+        <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" placeholder="Enter Email"  pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" required [email]="true"/>
+			
+			<div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please enter valid email ID
+			</div>
+			</div> 
+			
+		
+      </div>
+      
+      <div class="col-md-6">
+	 
+          <div class="space10"></div>
+     <label class="modelDetails"><b>Secondary Contact Details :</b>&nbsp;<br><input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+       Same as above
+    </label>
+	
+       <label class="modelManufactureAddress">Name</label>
+        <input type="text" formControlName="SecCntName" class="form-control" placeholder="Enter Name" />
+        <div class="space10"></div>
+		
+      <label class="modelManufactureAddress">Designation</label>
+        <input type="text" formControlName="SecCntDesignation"   class="form-control" placeholder="Enter Designation" />
+		
+		
+        <div class="space10"></div>
+		
+      <label class="modelManufactureAddress">Mobile</label>
+        <input type="number"  formControlName="SecCntTelNo"   class="form-control" placeholder="Enter Mobile Number" pattern="[7-9]{1}[0-9]{9}" />
+		<div *ngIf=" f.SecCntTelNo.errors" class=" custom-Invalid-feedback" >	
+			<div *ngIf="f.SecCntTelNo.errors.minlength">
+        Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+        Mobile Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.SecCntTelNo.errors.pattern"> 
+        Please enter valid Mobile number.
+			</div>	
+			</div>	
+      <div class="space10"></div>
+		 <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="SecCntLandlineNo"   class="form-control" placeholder="Enter Landline Number"  pattern="^\d{3}-\d{3}-\d{4}$" [ngClass]="{ 'is-invalid': submitted && f.SecCntLandlineNo.errors }"/>
+		 <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >	
+		 <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+			Please enter valid Landline number
+			</div>
+			</div>
+		  
+      <div class="space10"></div>
+		
+		<label class="modelManufactureAddress">Email</label>
+        <input type="text" formControlName="SecCntEmail" class="form-control" placeholder="Enter Email" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$"  [email]="true" /> 
+		<div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+			<div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+      <div class="space10"></div>
+      <div class="space10"></div>
+          </div>
+		  
+	
+      <div class="col-md-6">
+ 
+    </div>
+
+      
+      </div> 
+	  
+	  
+	  
+	<div class="row">
+      <div class="col-md-12">
+          <div id="accordion" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                      <a class="card-title">
+                       <b>Document Upload</b>
+                      </a>
+                  </div>
+                  <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                      <form  [formGroup]="DocUploadForm"  novalidate>
+                          <div class="row">
+                              <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                              <div class="col-md-6 form-group">
+                               <label>Comments</label>
+                               <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+                       
+                               </div>
+                              <div class="col-md-12">
+                                <br>
+                                 <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+        
+                              </div>
+                              
+                            </div>
+                      
+                        <div class="space10"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Document Name</th>
+                                         <th>Document Type</th>
+                                         <th>Comments</th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                   <tr *ngFor="let Data of DocumentData ; let i=index">
+                                       <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                        <th>{{i + 1}}</th>								  
+                                        <th>{{Data.DocumentName}}</th>
+                                        <th>{{Data.DocumentTypeName}}</th>
+                                        <th>{{Data.DocumentDetails}}</th>
+                                   </tr>
+                                </tbody>
+                                </table>
+      
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                          <div class="space10"></div>
+
+                    </div>
+              </div>
+            </div>
+      </div>
+    </div>
+	  
+	  <br>
+      <div class="form-group btn-submit">
+          <button class="btn btn-primary" >Submit</button>     
+      </div>
+	  	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif"> 
+	 <!-- <div *ngIf="successmsg" class="form-group update-msg">Added Successfully</div>  -->
+  </div> 
+</form>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="ResetFrom()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Manufacturer Button -->
+
+<!--Confirmation Mdal-->
+ <div id="myModalconfirmation" class="modal fade " role="dialog"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body height-120">    
+ <div class="alert alert-success"> Manufacturer added Successfully.<br>Do you want to add waste type?</div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"  (click)="RedirectToSubForm()" >Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="/ManufacturerEnrolment">No</button>      </div>
+    </div>
+  </div>
+</div> 
+
+<!--Confirmation Modal ends-->
+
+
+  <!--My Modal Alert-->
+  <div id="myModalalert" class="modal fade" role="dialog"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-success"> {{AlertMessage}}</div>
+        
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-default"  data-dismiss="modal"  >ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--My Modal Alert-->
+
+   <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4 class="text-center">Edit  Manufacturer/Brand </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+     
+	  <form [formGroup]="ManufactureForm" novalidate>
+      <div class="form-group">
+   
+      <div class=" col-md-12 row">
+	  
+	  <div class="col-md-6 form-group">
+	    <label class="modelManufactureAddress">Manufacturer/Brand Name<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="MFName" class="form-control" placeholder="Enter Manufacturer/Brand Name" [ngClass]="{ 'is-invalid': submitted && f.MFName.errors }" />
+   <div *ngIf=" f.MFName.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFName.errors.required">Manufacturer/Brand Name is Required</div>
+        </div>
+      </div>
+	 
+      <div class="col-md-6 form-group">
+	    <label class="modelManufactureAddress">Manufacturer/Brand Code <sup style="color:red">*</sup> :</label>
+          <input type="text" formControlName="MFCode" class="form-control" placeholder="Enter Manufacturer/Brand Code" [ngClass]="{ 'is-invalid': submitted && f.MFCode.errors }" />
+   <div *ngIf=" f.MFCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFCode.errors.required">Manufacturer/Brand Codee is Required</div>
+        </div>
+      </div>
+	  
+      
+      
+      
+       <div class="col-md-6 form-group">
+        <label class="modelManufactureAddress">Billing Address<sup style="color:red">*</sup></label>
+          <textarea  class="form-control" placeholder="Enter Billing Address" formControlName="MFAddress" [ngClass]="{ 'is-invalid': submitted && f.MFAddress.errors }"></textarea>
+		   <div *ngIf=" f.MFAddress.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFAddress.errors.required">Billing Address is Required</div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 form-group">
+          <label class="modelManufactureAddress ">Details&nbsp;</label>
+         <textarea  formControlName="Details" class="form-control" placeholder="Enter Manufacturer Details" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }">
+     </textarea>
+     <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+                 <div *ngIf="f.Details.errors.required">Details  is Required</div>
+             </div>
+         </div>
+
+
+      <div class="col-md-6 form-group">
+       <label class=""> Select State<sup style="color:red">*</sup></label>
+        <select class="form-control" formControlName="MFStateId" [ngClass]="{ 'is-invalid': submitted && f.MFStateId.errors }"  (change)="GetStateMappingStateForm($event.target.value)" >
+               <option [selected]=true value="" >Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" f.MFStateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFStateId.errors.required">State is Required</div>
+        </div>
+      </div>
+	  
+      
+      <div class="col-md-6 form-group">
+       <label class="">Select City<sup style="color:red">*</sup></label>
+         <select class="form-control" formControlName="MFCityIds" [ngClass]="{ 'is-invalid': submitted && f.MFCityIds.errors }">
+               <option [selected]=true value="">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+			   
+			    <div *ngIf=" f.MFCityIds.errors" class="invalid-feedback" >
+            <div *ngIf="f.MFCityIds.errors.required">City is Required</div>
+        </div>
+      </div>
+
+      <div class="col-md-6 form-group">
+        <label class="modelManufactureAddress"> GST No.<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="MFGST" class="form-control" placeholder="Enter GST No"   pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" [ngClass]="{ 'is-invalid': submitted && f.MFGST.errors }"/>
+           <div  class="invalid-feedback" >
+            Enter Valid GST Number
+         </div> 
+             <!-- <div *ngIf="f.MFGST.invalid && (f.MFGST.dirty || submitted)" class="invalid-feedback ">
+              <div *ngIf="f.MFGST.errors.required"> GST Number is Required </div>
+              <div *ngIf="f.MFGST.errors.pattern" class="custom-Invalid-feedback feedback-pos">
+              Please input valid GST Number
+              </div>
+              </div> -->
+            
+       
+       </div>
+       <div class="col-md-6 form-group"> 
+          <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+           <input type="Date" formControlName="CreationDate" value="{{DispalayCreationDate}}" class="form-control" placeholder="Select Creation Date"  readonly />  
+         
+        </div> 
+
+    <!-- <div class="col-md-6">
+       <label class="modelBilling"> Billing Cycle(Days)<sup style="color:red">*</sup></label>
+          <input type="number" formControlName="Billingcycle" class="form-control" placeholder="Enter Billing Cycle" [ngClass]="{ 'is-invalid': submitted && f.Billingcycle.errors }"/>
+		   <div *ngIf=" f.Billingcycle.errors" class="invalid-feedback" >
+            <div *ngIf="f.Billingcycle.errors.required">Billing Cycle is Required</div>
+        </div>
+      </div> -->
+      
+		 <div class="col-md-6 form-group">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" (change)="GetAgreementValue($event.target.value)">
+                <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block"></div>
+
+    <div class="col-md-6 form-group" *ngIf="SignedSelected" >
+      <label class="modelGST">Expiry Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+    <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+           <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+       </div>
+     </div>
+    <div class="col-md-6 form-group" *ngIf="TerminatedSelected">
+        <label class="modelGST">Last Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" max="{{TodayDateC}}" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+        <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+               <div *ngIf="f.ExpiryDate.errors.required">Last Date is Required</div>
+    </div>
+    </div>
+	
+      <div class="col-md-6 form-group" *ngIf="ShowBlock" >
+        <label class="modelGST">Signed Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="SignedDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.SignedDate.errors }">
+        <div *ngIf=" f.SignedDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.SignedDate.errors.required">Signed Date is Required</div>
+      </div>
+    </div>
+   
+       <div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block" > </div>
+		
+       <div class="col-md-6" > </div>
+
+      <div class="space10"></div>
+     
+      <div class="col-md-6">
+          <div class="space10"></div>
+          <div class="space10"></div>
+
+       <label class="modelDetails"><b>Primary Contact Details :</b></label>
+       <br>
+       <label class="modelManufactureAddress">Name<sup style="color:red">*</sup> </label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf=" f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+        <div class="space10"></div>
+      <label class="modelManufactureAddress">Designation<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+		<div *ngIf=" f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+		
+        <div class="space10"></div>
+     <label class="modelManufactureAddress">Mobile<sup style="color:red">*</sup></label>
+        <input type="number" formControlName="PrimaryCntTelNo" class="form-control" placeholder="Enter Mobile Number" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }" pattern="[7-9]{1}[0-9]{9}" maxlength="10"/>
+		<div *ngIf=" f.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="f.PrimaryCntTelNo.errors.required">
+              Mobile Number is required
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+        Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+        Mobile Number can be max 10 digit long
+      </div>	
+      <div *ngIf="f.PrimaryCntTelNo.errors?.pattern"> 
+        Please enter valid Mobile number.
+        </div>	
+        </div>
+        <div class="space10"></div>
+		
+		   <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="PrimaryCntLandlineNo" class="form-control" placeholder="Enter Landline Number " pattern="^\d{3}-\d{3}-\d{4}$" maxlength="10"/>
+		  <div *ngIf=" f.PrimaryCntLandlineNo.errors" class="invalid-feedback" >	
+		 <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+      Please enter valid Landline number
+    </div>
+			</div>
+      <div class="space10"></div>
+      <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" placeholder="Enter Email" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" required [email]="true"/>
+			
+			<div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 	
+		
+      </div>
+      
+      <div class="col-md-6">
+          <div class="space10"></div>
+          <div class="space10"></div>
+     <label class="modelDetails"><b>Secondary Contact Details :</b>&nbsp;<br><input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+       Same as above
+    </label>
+	 
+	 
+	
+	
+       <label class="modelManufactureAddress">Name</label>
+        <input type="text" formControlName="SecCntName" class="form-control" placeholder="Enter Name" />
+		
+        <div class="space10"></div>
+      <label class="modelManufactureAddress">Designation</label>
+        <input type="text" formControlName="SecCntDesignation"   class="form-control" placeholder="Enter Designation" />
+		
+		
+        <div class="space10"></div>
+		
+      <label class="modelManufactureAddress">Mobile</label>
+        <input type="number"  formControlName="SecCntTelNo" class="form-control" placeholder="Enter Mobile Number" maxlength="10"/>
+		  <div *ngIf=" f.SecCntTelNo.errors" class="custom-Invalid-feedback" >
+		<div *ngIf="f.SecCntTelNo.errors.minlength">
+			Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+        Mobile Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.SecCntTelNo.errors.pattern"> 
+          Please enter Valid Mobile Number
+			</div>	
+			</div>	
+      <div class="space10"></div>
+		
+		 <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="SecCntLandlineNo"   class="form-control" placeholder="Enter Landline Number"   pattern="^\d{3}-\d{3}-\d{4}$"/>
+		  <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >
+		 <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+        Please enter Valid Landline Number
+			</div>
+			</div>
+		  
+      <div class="space10"></div>
+				<label class="modelManufactureAddress">Email</label>
+        <input type="text" formControlName="SecCntEmail" class="form-control" placeholder="Enter Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"  [email]="true" /> 
+		<div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+			<div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 			
+      <div class="space10"></div>
+      <div class="space10"></div>
+          </div>
+      
+      <div class="col-md-6">
+    <!-- <label class="uplodfile"> Select Manufacturer Document:</label> -->
+        <!-- <input type="file" accept="image/*" class=" form-group"/> -->
+    </div>
+
+      
+      </div> 
+	  
+	  <div class="row">
+         <div class="col-md-12">
+        <div id="accordion1" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                  <form  [formGroup]="DocUploadForm"  novalidate>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                      <div class="col-md-6 form-group">
+                       <label >Comments</label>
+                       <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+               
+                       </div>
+                      <div class="col-md-12">
+                        <br>
+                         <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                      </div>
+                      
+                    </div>
+                    <div class="space10"></div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-responsive">
+                           <div class="space10"></div>
+                          <table class="table table-borderless table-hover tableborder align-middle citytable">
+                            <thead class="headerbackground text-white">
+                               <tr>
+                                   <th></th>
+                                   <th>Sr No.</th>
+                                   <th>Document Name</th>
+                                   <th>Document Type</th>
+                                   <th>Comments</th>
+                                 </tr>
+                               
+                            </thead>
+                          <tbody>
+                             <tr *ngFor="let Data of DocumentData ; let i=index">
+                                 <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                             </tr>
+                          </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+                   </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+    </div>
+	  <br>
+      <div class="form-group btn-submit">
+          <button class="btn btn-primary" (click)="EditManufacturer()">Update</button>     
+      </div>
+	  	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif"> 
+	 <!-- <div *ngIf="successmsg" class="form-group update-msg">Updated Successfully</div>  -->
+  </div> 
+</form>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal"  (click)="ResetFrom()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--Edit Manufacturer Buttton-->
+
+
+<!--Delete Manufacturer Button-->
+
+<div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Manufacturer details?</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" (click)="CheckValidationForDelete()" class="btn btn-default" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Delete Manufacturer Button-->
+
+
+<!--Modal Table add waste type-->
+
+<div id="myModalWesteTypeAdd" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg-screen">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button> 	
+        </div>
+      <div class="modal-body">    
+    <h4>Waste Type </h4>
+	<div class="float-right">
+    <button class="btn btn-primary Addcitybtton" data-dismiss="modal"  data-toggle="modal" data-target="#myModalAddwesteMaterialDetails" (click)="ResetFrom()" >Add Waste Type</button>
+    </div>
+     <div class="form-group">
+        <label class="modelManufacturename namefloat">Manufacturer Name :&nbsp;&nbsp;{{ManufacturerName}}</label> 
+     
+		
+		 <table class="table table-borderless table-hover tableborder align-middle citytable">
+    <thead class="headerbackground text-white">
+    <tr>
+		<th></th>
+        <th>Sr No</th>
+        <th>Waste Material</th> 
+        <th>Production Capacity</th>
+        <th>Preferred Recycling type </th>
+		<th>State</th>
+		<th>Cities</th>
+		 <th>EPR Target</th>
+   <th>Processing Type</th>  		 
+		<th>Annual Consumtion</th> 
+   <th>Currently engaged with any another PRO</th> 
+       
+		 
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let Data of mfwastetypedata ; let i=index">
+	
+	<td><label (click)="EditMfWasteTypeData(Data.WasteMaterialIds,Data.ProductionCapacity,Data.PreferredDispSystemId,Data.AnnualConsumption,Data.EPRTarget,Data.FocusStateIds,Data.FocusCityIds,Data.SuburbId,Data.ProcessingTypeId,Data.EngagedwithAnotherPRO,Data.MFWasteTypeId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaleditWestMaterial" class="btn-color">Edit</span> </label>
+		
+		<label (click)="DeleteMfWasteTypeData(Data.WasteMaterialIds,Data.ProductionCapacity,Data.PreferredDispSystemId,Data.AnnualConsumption,Data.EPRTarget,Data.FocusStateIds,Data.FocusCityIds,Data.SuburbId,Data.ProcessingTypeId,Data.EngagedwithAnotherPRO,Data.MFWasteTypeId)">  <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldeleteWesteMaterial" class="btn-color">Delete</span> </label>
+		</td>
+	
+      <td>{{i+1}}</td> 
+      <td>{{Data.WasteMaterials}}</td> 
+      <td>{{Data.ProductionCapacity}}</td> 
+      <td>{{Data.PreferredDispSystem}}</td> 
+	    <td>{{Data.FocusStates}}</td> 
+	    <td>{{Data.FocusCities}}</td> 
+		 <td>{{Data.EPRTarget}}</td> 
+		  <td>{{Data.ProcessingType}}</td> 
+	   <td>{{Data.AnnualConsumption}}</td> 
+	   <td>{{Data.EngagedwithAnotherPRO}}</td> 
+     <!-- <td>{{Data.EngagedwithAnotherPRO}}</td>   -->
+     
+    
+	  <!-- <td><span *ngIf="Data.EngagedwithAnotherPRO; else elseBlock">Yes</span><span><ng-template #elseBlock>No</ng-template></span></td> -->
+	  <!-- <td><span *ngIf="Data.FairMarketComplianceReq; else elseBlock">Yes</span><span><ng-template #elseBlock>No</ng-template></span></td> -->
+	  
+	 
+    </tr>
+
+  
+  </tbody>
+   </table>
+		 
+		
+    </div> 
+   
+   
+      </div>
+	  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal table add waste type-->
+
+
+<!--Modal add waste type-->
+<div id="myModalAddwesteMaterialDetails" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content ">
+        <div class="modal-header" >
+            <h4>Add Waste Type </h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+	<form [formGroup]="AddMFwastetypeForm"  (ngSubmit)="onSubmitmfwastetype()" novalidate>
+    <div class="col-md-12 row">
+      <div class="col-md-12">
+          <label class="modelManufacturename namefloat">Manufacturer Name :  &nbsp;&nbsp;{{ManufacturerName}}</label> 
+          <br>
+        
+      </div>
+ <div class="col-md-6">
+    <div class="form-group">
+        <label class="modelManufacturename">Waste Material Name<sup style="color:red">*</sup></label>
+      <select name="Weste_Material_Name" class="form-control" formControlName="WasteMaterialIds" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialIds.errors }">
+	   <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}}</option>
+  </select>
+   <div *ngIf=" g.WasteMaterialIds.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialIds.errors.required">Waste Material Name is Required</div>
+        </div>
+  </div>
+  </div>
+		 <div class="col-md-6">
+		 <label class="modelManufactureAddress">Production Capacity<sup style="color:red">*</sup></label>
+		
+        <textarea formControlName="ProductionCapacity" class="form-control" placeholder="Enter Production Capacity" [ngClass]="{ 'is-invalid': submitted && g.ProductionCapacity.errors }"></textarea>
+		
+		<div *ngIf=" g.ProductionCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.ProductionCapacity.errors.required">Production Capacity is required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		<label class="modelManufactureAddress">Preferred Recycling type<sup style="color:red">*</sup></label>
+		
+		 <select formControlName="PreferredDispSystem" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PreferredDispSystem.errors }">
+	   <option *ngFor="let Data of recyclingtypedata" value="{{Data.RecyclingTypeId}}">{{Data.RecyclingType}}</option>
+    
+  </select>
+		 
+		 <div *ngIf=" g.PreferredDispSystem.errors" class="invalid-feedback" >
+            <div *ngIf="g.PreferredDispSystem.errors.required">Preferred Recycling type is Required</div>
+        </div>
+		 </div>
+		
+		  <!--Start State-citysuburb mapping-->
+  
+  <div class="col-md-6 form-group">
+       <label class=""> State<sup style="color:red">*</sup></label>
+        <select class="form-control" formControlName="FocusStateIds" [ngClass]="{ 'is-invalid': submitted && g.FocusStateIds.errors }" (change)="GetStateMappingState1($event.target.value)" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" g.FocusStateIds.errors" class="invalid-feedback" >
+            <div *ngIf="g.FocusStateIds.errors.required">State is Required</div>
+        </div>
+      </div>
+	  
+	  
+	   <div class="col-md-6 form-group">
+		  <label class="modelManufactureAddress">City<sup style="color:red">*</sup></label>
+		 <select class="form-control" (change)="getAgFromsuburboncityId1($event.target.value)"  formControlName="FocusCityIds" [ngClass]="{ 'is-invalid': submitted && g.FocusCityIds.errors }" >
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+<div *ngIf="!IsValidCT" class="custom-Invalid-feedback" >
+           City is Required
+        </div>
+ 
+		 </div>
+		 
+		 
+		 
+		  <div class="col-md-6 form-group">
+		  <label class="modelManufactureAddress">Suburb<sup style="color:red">*</sup></label>
+		 <select class="form-control"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && g.SuburbId.errors }" >
+               <option [selected]=true [disabled]="true">Select Suburb</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select>
+
+
+				<div *ngIf=" g.SuburbId.errors" class="invalid-feedback" >
+            <div *ngIf="g.SuburbId.errors.required">Suburb is Required</div>
+        </div>
+		 </div>
+		 
+		 <!--End State-citysuburb mapping-->
+		 
+		 <div class="col-md-6 form-group">
+		 <label class="modelManufactureAddress">EPR Target<sup style="color:red">*</sup></label>
+		<input type="number" class="form-control" formControlName="EPRTarget"  placeholder="Enter EPR Target" [ngClass]="{ 'is-invalid': submitted && g.EPRTarget.errors }">
+		
+		  <div *ngIf=" g.EPRTarget.errors" class="invalid-feedback" >
+            <div *ngIf="g.EPRTarget.errors.required">EPR Target is Required</div>
+        </div>
+		 </div>
+		 
+		
+		 
+		 
+		  <div class="col-md-6">
+		 <label class="modelManufactureAddress">Processing Type</label>
+		<!--<select formControlName="ProcessingTypeId" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }">
+	   <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}">{{Data.ProcessingType}}</option>
+    
+  </select>-->
+  
+  
+   <ng-multiselect-dropdown
+		   [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedropdownSettings"
+ (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+>
+</ng-multiselect-dropdown>
+ <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+            Processing Type is Required
+        </div>
+        </div>
+		 </div>
+		 
+		  <div class="col-md-6">
+       <label class="modelManufactureAddress">Annual Consumption<sup style="color:red">*</sup></label>
+          <input type="number" formControlName="AnnualConsumption" class="form-control" placeholder="Enter Annual Consumption" [ngClass]="{ 'is-invalid': submitted && g.AnnualConsumption.errors }" />
+		  <div *ngIf=" g.AnnualConsumption.errors" class="invalid-feedback" >
+            <div *ngIf="g.AnnualConsumption.errors.required">Annual Consumption is Required</div>
+        </div>
+      </div>
+		 
+		
+  
+   <div class="col-md-6">
+		 <div class="form-group">
+          <label class="form-group" >Currently engaged with any another Pro(y/n)</label>
+         <div class="form-check">
+      <label class="form-check-label" for="radio1">
+	  
+        <input type="radio" [value]="true" formControlName="EngagedwithAnother" class="form-check-input" id="radio" name="EngagedwithAnother" [checked]="enableInput" (change)="onClick()"/>Yes
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="text" *ngIf="enableInput" class="form-control" formControlName="EngagedwithAnotherPRO" [ngClass]="{ 'is-invalid': submitted && g.EngagedwithAnotherPRO.errors }" />
+			 <div *ngIf="g.EngagedwithAnotherPRO.errors" class="invalid-feedback" >
+            <div *ngIf="g.EngagedwithAnotherPRO.errors.required">	This field should not be empty</div>
+        </div>
+			
+		 <input type="radio" formControlName="EngagedwithAnother" [value]="false" class="form-check-input" id="radio1" name="EngagedwithAnother" (change)="onClick1()" >No
+      </label>
+    </div> 
+
+  <div *ngIf="submitted && g.EngagedwithAnother.errors">
+	<p class="para-color">Please select either value</p>
+</div>	
+  </div>
+  
+  </div>
+  
+
+  
+  
+  
+  
+  
+		
+    </div> 
+	<br>
+	
+     <div class="form-group btn-submit">
+        <button class="btn btn-primary">Submit</button>     
+    </div>
+	 <!-- <div *ngIf="successmsg" class="form-group update-msg">Added Successfully</div> -->
+	</form>
+	</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+      </div>   
+      </div>
+
+    </div>
+  </div>
+<!--Modal add waste type-->
+
+
+<!--Model edit waste type myModaleditWestMaterial-->
+
+<div id="myModaleditWestMaterial" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content ">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+    <h4>Edit Waste Type </h4>
+	<form [formGroup]="AddMFwastetypeForm">
+<div class="col-md-12 row">
+ <div class="col-md-6">
+    <div class="form-group">
+        <label class="modelManufacturename">Waste Material Name<sup style="color:red">*</sup></label>
+      <select name="Weste_Material_Name" class="form-control" formControlName="WasteMaterialIds" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialIds.errors }">
+	   <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}}</option>
+  </select>
+   <div *ngIf=" g.WasteMaterialIds.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialIds.errors.required">Waste Material Name is Required</div>
+        </div>
+  </div>
+  </div>
+		 <div class="col-md-6">
+		 <label class="modelManufactureAddress">Production Capacity<sup style="color:red">*</sup></label>
+		
+        <textarea formControlName="ProductionCapacity" class="form-control" placeholder="Enter Production Capacity" [ngClass]="{ 'is-invalid': submitted && g.ProductionCapacity.errors }"></textarea>
+		
+		<div *ngIf=" g.ProductionCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.ProductionCapacity.errors.required">Production Capacity is required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		<label class="modelManufactureAddress">Preferred Recycling type<sup style="color:red">*</sup></label>
+		
+		 <select formControlName="PreferredDispSystem" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PreferredDispSystem.errors }">
+		 <option [selected]=true [disabled]="true">Select Preferred Recycling type</option>
+	   <option *ngFor="let Data of recyclingtypedata" value="{{Data.RecyclingTypeId}}">{{Data.RecyclingType}}</option>
+    
+  </select>
+		 
+		 <div *ngIf=" g.PreferredDispSystem.errors" class="invalid-feedback" >
+            <div *ngIf="g.PreferredDispSystem.errors.required">Preferred Recycling type is Required</div>
+        </div>
+		 </div>
+		
+		    
+		  <!--Start State-citysuburb mapping-->
+  
+  <div class="col-md-6 form-group">
+       <label class=""> State<sup style="color:red">*</sup></label>
+        <select class="form-control" formControlName="FocusStateIds" [ngClass]="{ 'is-invalid': submitted && g.FocusStateIds.errors }" (change)="GetStateMappingState1($event.target.value)" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" g.FocusStateIds.errors" class="invalid-feedback" >
+            <div *ngIf="g.FocusStateIds.errors.required">State is Required</div>
+        </div>
+      </div>
+	  
+	  
+	   <div class="col-md-6 form-group">
+		  <label class="modelManufactureAddress">City<sup style="color:red">*</sup></label>
+		 <select class="form-control" (change)="getAgFromsuburboncityId1($event.target.value)"  formControlName="FocusCityIds" [ngClass]="{ 'is-invalid': submitted && g.FocusCityIds.errors }" >
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+<div *ngIf="!IsValidCT" class="custom-Invalid-feedback" >
+           City is Required
+        </div>
+ 
+		 </div>
+		 
+		 
+		 
+		  <div class="col-md-6 form-group">
+		  <label class="modelManufactureAddress">Suburb<sup style="color:red">*</sup></label>
+		 <select class="form-control"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && g.SuburbId.errors }" >
+               <option [selected]=true [disabled]="true">Select Suburb</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select>
+
+
+				<div *ngIf=" g.SuburbId.errors" class="invalid-feedback" >
+            <div *ngIf="g.SuburbId.errors.required">Suburb is Required</div>
+        </div>
+		 </div>
+		 
+		 <!--End State-citysuburb mapping-->
+		 
+		 <div class="col-md-6 form-group">
+		 <label class="modelManufactureAddress">EPR Target<sup style="color:red">*</sup></label>
+		<input type="number" class="form-control" formControlName="EPRTarget"  placeholder="Enter EPR Target" [ngClass]="{ 'is-invalid': submitted && g.EPRTarget.errors }">
+		
+		  <div *ngIf=" g.EPRTarget.errors" class="invalid-feedback" >
+            <div *ngIf="g.EPRTarget.errors.required">EPR Target is Required</div>
+        </div>
+		 </div>
+		 
+		
+		 
+		 
+		  <div class="col-md-6">
+		 <label class="modelManufactureAddress">Processing Type</label>
+		<!--<select formControlName="ProcessingTypeId" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }">
+	   <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}">{{Data.ProcessingType}}</option>
+    
+  </select>-->
+  
+  
+   
+   <ng-multiselect-dropdown
+		   [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedropdownSettings"
+ (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+>
+</ng-multiselect-dropdown>
+
+
+  <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+            Processing Type is Required
+        </div>
+        </div>
+		 </div>
+		 
+		  <div class="col-md-6">
+       <label class="modelManufactureAddress">Annual Consumption<sup style="color:red">*</sup></label>
+          <input type="number" formControlName="AnnualConsumption" class="form-control" placeholder="Enter Annual Consumption" [ngClass]="{ 'is-invalid': submitted && g.AnnualConsumption.errors }" />
+		  <div *ngIf=" g.AnnualConsumption.errors" class="invalid-feedback" >
+            <div *ngIf="g.AnnualConsumption.errors.required">Annual Consumption is Required</div>
+        </div>
+      </div>
+		 
+		
+		 
+		 
+	 <div class="col-md-6">
+		 <div class="form-group">
+          <label class="form-group" >Currently engaged with any another Pro(y/n)</label>
+         <div class="form-check">
+      <label class="form-check-label" for="radio1">
+	  
+        <input type="radio" [value]="true" formControlName="EngagedwithAnother" class="form-check-input" id="radio" name="EngagedwithAnother" [checked]="enableInput" (change)="onClick()"/>Yes
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="text" *ngIf="enableInput" class="form-control" formControlName="EngagedwithAnotherPRO" [ngClass]="{ 'is-invalid': submitted && g.EngagedwithAnotherPRO.errors }" />
+			 <div *ngIf="g.EngagedwithAnotherPRO.errors" class="invalid-feedback" >
+            <div *ngIf="g.EngagedwithAnotherPRO.errors.required">	This field should not be empty</div>
+        </div>
+			
+		 <input type="radio" formControlName="EngagedwithAnother" [value]="false" class="form-check-input" id="radio1" name="EngagedwithAnother" (change)="onClick1()">No
+      </label>
+    </div> 
+
+  <div *ngIf="submitted && g.EngagedwithAnother.errors">
+	<p class="para-color">Please select either value</p>
+</div>	
+  </div>
+  
+  </div>
+  
+  
+  
+  
+		
+    </div> 
+	
+	
+     <div class="form-group btn-submit">
+        <button class="btn btn-primary" (click)="AddUpdateDeleteAddMFwastetype()">Update</button>     
+    </div>
+	 <!-- <div *ngIf="successmsg" class="form-group update-msg">Updated Successfully</div> -->
+	</form>
+	</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>   
+      </div>
+
+    </div>
+  </div>
+<!--Modal edit waste type-->
+
+
+
+<!--Delete waste type-->
+<div id="myModaldeleteWesteMaterial" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Manufacturer Waste Type Details?</div>
+      
+      </div>
+      <div class="modal-footer">
+     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteAddMFwastetype()">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete waste type-->
+
+
+
+  </div>

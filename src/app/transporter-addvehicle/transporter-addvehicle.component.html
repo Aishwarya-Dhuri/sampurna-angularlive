@@ -1,0 +1,272 @@
+<div class="container">
+    <div class="CitymainDiv">
+      <div class="col-md-12"> 
+       <h2 align="center" class="labelclass col-md-12 labelstyle">Transporter's Vehicles</h2>
+		 <div class=" col-md-12 row button-margin">
+		   <div class="col-md-6">  
+     <label class="wono"><a class="nav-link login-custom btntext" routerLink="/TransporterEnrolment">
+      <i class="fas fa-angle-double-left">&nbsp;Back</i>&nbsp;&nbsp;Transpoter Name :&nbsp;&nbsp;{{TRName}}</a></label>
+	   </div>
+	   
+	 <div class="col-md-6">
+	 <div class="float-right">
+      <button class="btn btn-primary Addcitybtton"  data-toggle="modal" data-dismiss="modal" data-target="#AddVehicales" (click)="ResetFrom()">Add Vehicle Type</button> 
+      </div>
+      </div>
+	  </div>	
+	  
+	  <div id="print-section">
+       <div class="table-responsive">
+       
+          <table class="table table-borderless table-hover tableborder align-middle citytable"> 
+              <thead class="headerbackground text-white"> 
+            <tr> 
+          <th></th>
+                 <th>Sr No</th> 
+                 <th>Vehicle Type</th> 
+                <th>Vehicle Route</th> 
+                <th>Maximum Capacity of Vehicle (Ton)</th>
+                <th>Lead  Time(Days)</th> 
+            </tr> 
+              </thead> 
+           <tbody>
+               <tr *ngFor="let Data of TransportRoutesVehicleData ; let i=index">
+             <td><label  (click)="EditTransportVehicleData(Data.TRVehicleTypeId,Data.TransportRoutes,Data.MaxCapacityForTransport,Data.LeadTime,Data.TRVehicleId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModalEditVehicles" class="btn-color">Edit</span> </label>
+            
+            <label  (click)="DeleteTransportVehicleData(Data.TRVehicleTypeId,Data.TransportRoutes,Data.MaxCapacityForTransport,Data.LeadTime,Data.TRVehicleId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModalDeleteVehicles" class="btn-color">Delete</span> </label>
+            </td>
+              <td>{{i+1}}</td>
+              <td>{{Data.VehicleType}}</td> 
+              <!-- <td>{{Data.TransportRoutesdesc}}</td>  -->
+              <td>{{Data.TransporterCode}}</td>
+              <td>{{Data.MaxCapacityForTransport}}</td> 
+              <td>{{Data.LeadTime}}</td> 
+             </tr> 
+           </tbody> 
+          </table>
+    </div>
+  </div>
+    </div>
+    </div>
+ 
+      <!-- Add vehicles button--> 
+
+  <div id="AddVehicales" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+      <div class="modal-dialog modal-lg">    
+         <div class="modal-content"> 
+            <div class="modal-header" > 
+               <h4>Add Vehicle Type </h4> 
+ 
+            <button type="button" class="close" data-dismiss="modal">&times;</button>        
+            </div> 
+         <div class="modal-body">  
+ <form [formGroup]="TransportVehicleForm" (ngSubmit)="onSubmitTransportVehicle()"> 	
+     
+        <div class="form-group"> 
+           
+        <div class="col-md-12 row"> 
+          
+          <div class="col-md-12">
+              <label class="modelManufacturename namefloat">Transporter Name : {{TRName}}</label> 
+            <br>
+          </div>
+          <div class="space10"></div>
+    <div class="col-md-6 form-group"> 
+        <div class="space10"></div>
+
+        <label class="lbl-margin" >Vehicle Type&nbsp;<sup style="color:red">*</sup></label> 
+    <select class="form-control" formControlName="TRVehicleTypeId" [ngClass]="{ 'is-invalid': submitted && g.TRVehicleTypeId.errors }">
+                <option [selected]=true [disabled]="true">Select Vehicle Type</option>
+                <option *ngFor="let Data of vehicletypedata" value="{{Data.VehicleTypeId}}" >{{Data.VehicleType}}&nbsp;&nbsp;({{Data.BodyType}})</option>
+                </select> 
+          
+     <div *ngIf="submitted && g.TRVehicleTypeId.errors" class="invalid-feedback" >
+             <div *ngIf="g.TRVehicleTypeId.errors.required">Vehicle Type is Required</div>
+         </div>
+          
+      </div> 
+    
+     
+      <div class="col-md-6 form-group"> 
+          <div class="space10"></div>
+
+        <label class="lbl-margin" >Vehicle Route&nbsp;<sup style="color:red">*</sup></label> 
+    <select class="form-control" formControlName="TransportRoutes" [ngClass]="{ 'is-invalid': submitted && g.TransportRoutes.errors }">
+                 <option>Select Vehicle Route</option>
+                 <option *ngFor="let Data of transportVehicledata" value="{{Data.TransportRouteId}}" >{{Data.TransporterCode}} </option>
+                </select> 
+          
+     <div *ngIf="submitted && g.TransportRoutes.errors" class="invalid-feedback" >
+             <div *ngIf="g.TransportRoutes.errors.required">Vehicle Route is Required</div>
+         </div>
+          
+      </div> 
+     
+        
+        <div class="col-md-6  form-group">
+          <label class="lbl-margin" >Maximum Capacity of Vehicle (Ton)&nbsp;<sup style="color:red">*</sup></label> 
+            <input type="text" formControlName="MaxCapacityForTransport" class="form-control" placeholder="Enter Max. Capacity for transport" [ngClass]="{ 'is-invalid': submitted && g.MaxCapacityForTransport.errors }"/> 
+        
+         <div *ngIf="submitted && g.MaxCapacityForTransport.errors" class="invalid-feedback" >
+             <div *ngIf="g.MaxCapacityForTransport.errors.required">Maximum Capacity of Vehicle is Required</div>
+         </div>
+         </div> 
+        
+        <div class="col-md-6  form-group">
+          <label class="lbl-margin" >Lead Time(Days)&nbsp;<sup style="color:red">*</sup></label> 
+        <input type="text" formControlName="LeadTime" class="form-control" placeholder="Enter Lead Time" [ngClass]="{ 'is-invalid': submitted && g.LeadTime.errors }"/> 
+      
+      <div *ngIf="submitted && g.LeadTime.errors" class="invalid-feedback" >
+             <div *ngIf="g.LeadTime.errors.required">Lead Time is Required</div>
+         </div>
+       </div> 
+       
+      </div>  
+       <div class="form-group   btn-submit">
+           <button class="btn btn-primary">Submit</button>  
+       <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+        </div> 
+      <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+     
+    </div>  
+    </form>
+         </div> 
+         <div class="modal-footer"> 
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+         </div> 
+      </div> 
+     </div> 
+    </div> 
+
+<!--Add Vehicle Ends-->
+
+<!-- Edit Vehicles --> 
+
+<div id="myModalEditVehicles" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+    <div class="modal-dialog modal-lg">    
+       <div class="modal-content"> 
+          <div class="modal-header" > 
+              <h4>Edit Vehicle Type </h4> 
+          <button type="button" class="close" data-dismiss="modal">&times;</button>        
+          </div> 
+       <div class="modal-body">  
+<form [formGroup]="TransportVehicleForm"> 	
+     
+   
+      <div class="form-group"> 
+          <div class="col-md-12">
+              <label class="modelManufacturename namefloat">Transporter Name: {{TRName}}</label> 
+
+          </div>
+      <div class="col-md-12 row"> 	 
+  <div class="col-md-6  form-group"> 
+      <label class="lbl-margin" >Vehicle Type&nbsp;<sup style="color:red">*</sup></label> 
+  <select class="form-control" formControlName="TRVehicleTypeId" [ngClass]="{ 'is-invalid': submitted && g.TRVehicleTypeId.errors }">
+              <option [selected]=true [disabled]="true">Select Vehicle Type</option>
+              <option *ngFor="let Data of vehicletypedata" value="{{Data.VehicleTypeId}}" >{{Data.VehicleType}} &nbsp;&nbsp;({{Data.BodyType}}) </option>
+              </select> 
+        
+   <div *ngIf="submitted && g.TRVehicleTypeId.errors" class="invalid-feedback" >
+           <div *ngIf="g.TRVehicleTypeId.errors.required">Vehicle Type is Required</div>
+       </div>
+        
+    </div> 
+  
+   
+    <div class="col-md-6  form-group"> 
+      <label class="lbl-margin" >Vehicle Route&nbsp;<sup style="color:red">*</sup></label> 
+  <select class="form-control" formControlName="TransportRoutes" [ngClass]="{ 'is-invalid': submitted && g.TransportRoutes.errors }">
+               <option>Select Vehicle Route</option>
+               <option *ngFor="let Data of transportVehicledata" value="{{Data.TransportRouteId}}" >{{Data.TransporterCode}} </option>
+              </select> 
+        
+   <div *ngIf="submitted && g.TransportRoutes.errors" class="invalid-feedback" >
+           <div *ngIf="g.TransportRoutes.errors.required">Vehicle Route is Required</div>
+       </div>
+        
+    </div> 
+   
+      
+      <div class="col-md-6  form-group">
+        <label class="lbl-margin" >Maximum Capacity of Vehicle (Ton)&nbsp;<sup style="color:red">*</sup></label> 
+          <input type="text" formControlName="MaxCapacityForTransport" class="form-control" placeholder="Enter Max. Capacity for transport" [ngClass]="{ 'is-invalid': submitted && g.MaxCapacityForTransport.errors }"/> 
+      
+       <div *ngIf="submitted && g.MaxCapacityForTransport.errors" class="invalid-feedback" >
+           <div *ngIf="g.MaxCapacityForTransport.errors.required">Maximum Capacity of Vehicle is Required</div>
+       </div>
+       </div> 
+      
+      <div class="col-md-6  form-group">
+        <label class="lbl-margin" >Lead Time(Days)&nbsp;<sup style="color:red">*</sup></label> 
+      <input type="text" formControlName="LeadTime" class="form-control" placeholder="Enter Lead Time" [ngClass]="{ 'is-invalid': submitted && g.LeadTime.errors }"/> 
+    
+    <div *ngIf="submitted && g.LeadTime.errors" class="invalid-feedback" >
+           <div *ngIf="g.LeadTime.errors.required">Lead Time is Required</div>
+       </div>
+     </div> 
+     
+    </div>  
+     <div class="form-group   btn-submit">
+         <button class="btn btn-primary" (click)="AddUpdateDeleteTransportVehicle()">Update</button>  
+     <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+      </div> 
+    <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+   
+  </div>  
+  </form>
+       </div> 
+       <div class="modal-footer"> 
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+       </div> 
+    </div> 
+   </div> 
+  </div> 
+
+<!-- Edit Vehicles --> 
+
+
+<!-- Delete Vehicle Modal--> 
+  
+<div id="myModalDeleteVehicles" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Transporters Vehicle Details?</div>
+        
+        </div>
+        <div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteTransportVehicle()">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+ <!--My Modal Alert-->
+ <div id="myModalalert" class="modal fade" role="dialog"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" (click)="ResetFrom()" data-dismiss="modal"  >ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--My Modal Alert-->
+
+
+
+
+    </div>

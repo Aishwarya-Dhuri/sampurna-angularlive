@@ -1,0 +1,768 @@
+<div class="container">
+    <div class="CitymainDiv">
+      <div class="col-md-12"> 
+       <h2 align="center" class="labelclass col-md-12 labelstyle">Transportation Details </h2>
+	 
+    <div class="row">
+	<div class="col-md-12">
+	 <form [formGroup]="WOTSearch"> 
+	 <div class="row col-md-12">
+       <div class="col-md-6">
+	    <label class="todate form-group">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+         <input type="" placeholder="Search Transportation . . . ." class="form-group form-control searchtextbox" name="" (input)="SearchTransportation($event.target.value)">
+       </div>
+	   <div class="col-md-6">
+      <div style="float:right">
+        <div style="display:flex;margin-top: 35px;width: 100%;">
+         <button  (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button ">Export To Excel </button>
+           <button (click)="print()" class="btn btn-primary Addcitybtton  print-button" style="margin-left:7px;">Print </button>
+           &nbsp;&nbsp;
+           <button class="btn btn-primary Addcitybtton"  data-toggle="modal" data-target="#myModal" (click)="ResetFrom()" >Add  Transportation Details</button>
+         </div>
+         </div>
+		</div>			
+	   </div>
+     <div class="row col-md-12">
+      <div class="col-md-4  form-group">
+    <label class="todate">From Date</label>
+   <input type="date"  max="{{FromDateValidation}}" class="form-control" 	formControlName="FromDate" (change)="DateValidationToDate()"/> 
+   </div>  
+   
+   <div class="col-md-4  form-group">
+    <label class="todate">To Date</label>
+   <input type="date"  min="{{ToDateValidation}}"  class="form-control" formControlName="ToDate" (change)="SearchOnDate()"/> 
+   </div>	
+     </div>
+	   </form>
+    </div>
+       <!-- <div class="col-md-3">
+          <div>
+		 <label class="todate form-group">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                      </label>
+     
+        </div>
+       </div> -->
+	   
+      </div>
+      <div id="print-section">
+
+       <div class="table-responsive">
+
+       <table class="table table-borderless table-hover tableborder align-middle citytable">
+        <thead class="headerbackground text-white">
+        <tr>
+		<th class="doNotPrint"></th>
+            <th>Sr No</th>
+			      <th>Collection/ Purchase</th>
+            <th>Transporter Name </th>
+            <th>Recycler</th>
+            <th>LR No</th>
+			      <th>Transporter Details</th>
+            <th>Vehicle No</th>
+            <th>Transportation Date</th>
+			      <th>Expected Date of Delivery</th>
+            <th>Quantity(MT)</th>
+            <th>Freight Amount</th>
+            <th>Estimated Days Required for Delivery</th>
+         <th>Transporation Status</th> 
+		 <!-- <th> View Sales Details </th> -->
+     <!--<td>Delivery Date</td>
+            <td>Unloading Date</td>-->
+        <!-- <th>Cost/ Kg<th> -->
+            <!-- <th></th> -->
+           
+           
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let Data of wotransportationdata ; let i=index">
+		
+		
+			<td class="doNotPrint">
+			
+			<label  (click)="EditwotransportationData(Data.CollectionPurchaseId,Data.TransporterId,Data.RecyclerId,Data.LRNo,Data.TransporterDetails,Data.VehicleNo,Data.TransportDate,Data.TobeDelivered,Data.Quantity,Data.FreightCost,Data.DaysReqForDelivery,Data.TransportationStatus,Data.WOTransporterId,Data.ManifestCopyDocument,Data.LRCopyDocument,Data.TrasporterCode,Data.IncludedInCP,Data.GSTAmount)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+		
+	<label  (click)="DeletewotransportationData(Data.CollectionPurchaseId,Data.TransporterId,Data.RecyclerId,Data.LRNo,Data.TransporterDetails,Data.VehicleNo,Data.TransportDate,Data.TobeDelivered,Data.Quantity,Data.FreightCost,Data.DaysReqForDelivery,Data.TransportationStatus,Data.WOTransporterId,Data.ManifestCopyDocument,Data.LRCopyDocument,Data.IncludedInCP,Data.GSTAmount)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label>
+	
+	<label (click)="GetWOSalesDetails(Data.WOTransporterId)"><span>  <button class="btn btn-primary Addcitybtton"  data-toggle="modal" data-target="#myModalWOSalesDetails">View Sales Details </button></span></label>
+		</td>
+		
+		
+		
+           <td>{{i+1}}</td>
+            <td>{{Data.CollectionPurchaseCode}} </td>
+            <td>{{Data.TRName}} </td>
+            <td>{{Data.RecyclerName}} </td>       
+            <td>{{Data.LRNo}} </td>
+            <td>{{Data.TransporterDetails}} </td>
+            <td>{{Data.VehicleNo}} </td>
+            <td>{{Data.TransportDate| date:'dd/MM/yyyy'}} </td>
+            <td>{{Data.TobeDelivered| date:'dd/MM/yyyy'}} </td>
+            <td>{{Data.Quantity}} </td>
+            <td>{{Data.FreightCost}} </td>
+            <td>{{Data.DaysReqForDelivery}} </td>
+            <td>{{Data.TransportationStatusName}} </td>
+            <!--  <td (click)="GetWOSalesDetails(Data.WOTransporterId)"> <span>  <button class="btn btn-primary Addcitybtton"  data-toggle="modal" data-target="#myModalWOSalesDetails">View </button></span></td> 
+              -->
+           
+        </tr>
+ </tbody>
+       </table>
+       
+    
+       </div>
+      </div>
+	    <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+    </div>
+    </div>
+
+    <!--Add transportation Modal-->
+
+    <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+               
+                  <h4 class="text-center">Add Transportation Details</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+               
+            
+              </div>
+            <div class="modal-body">    
+			<form [formGroup]="WOTransporationForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+          
+          <div class="col-md-12 row">
+        
+          
+       
+          <div class="col-md-6 form-group">
+          <label>Select Trasporter Name&nbsp;<sup style="color:red">*</sup></label>
+			   <select class="form-control" formControlName="TransporterId" [ngClass]="{ 'is-invalid': submitted && f.TransporterId.errors }"(change)="GenerateTrnspoterCode($event.target.value)"   >
+              <option [selected]=true [disabled]="true">Select Trasporter Name</option>
+                <option *ngFor="let Data of Transportdata" value="{{Data.TransporterId}}" >{{Data.TRName}} </option>
+               </select> 
+			   
+			    <div *ngIf="submitted && f.TransporterId.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransporterId.errors.required">Trasporter Name is Required</div>
+        </div>
+          </div>
+		  
+		  
+		   <div class="col-md-6 form-group">
+      <label>Trasportation Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="TrasporterCode"   class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TrasporterCode.errors }"  readonly /> 
+		  <div *ngIf="submitted && f.TrasporterCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.TrasporterCode.errors.required">Trasportation Code is Required</div>
+        </div>
+        </div>
+		  
+        <div class="col-md-6 form-group">
+          <label>Select Collection & Purchase Code&nbsp;<sup style="color:red">*</sup></label>
+               <select class="form-control" formControlName="CollectionPurchaseId" [ngClass]="{ 'is-invalid': submitted && f.CollectionPurchaseId.errors }" (change)="GetRE($event.target.value)" >
+              <option [selected]=true [disabled]="true">Select Collection/Purchase</option>
+                <option *ngFor="let Data of wotransportationCPdata" value="{{Data.CollectionPurchaseId}}" >{{Data.CollectionPurchaseCode}} </option>
+               </select>
+			   
+			   
+			  <div *ngIf="submitted && f.CollectionPurchaseId.errors" class="invalid-feedback" >
+            <div *ngIf="f.CollectionPurchaseId.errors.required">Select Collection/Purchase </div>
+			
+        </div>
+		
+          </div>
+          
+		    <div class="col-md-6 form-group">
+      <label>Select Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control" formControlName="RecyclerId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerId.errors }" >
+              <option [selected]=true value="0">Select Recycler Name</option>
+          <option *ngFor="let Data of wotransportationREdata" value="{{Data.recylerid}}" >{{Data.RecyclerName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.RecyclerId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerId.errors.required">Recycler Name is Required</div>
+        </div>
+      </div>
+          
+          <div class="col-md-6 form-group">
+          <label>LR (Lorry Receipt) No.&nbsp;<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="LRNo" placeholder="Enter LR.No" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LRNo.errors }" /> 
+		   <div *ngIf="submitted && f.LRNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.LRNo.errors.required">LR No is Required</div>
+        </div>
+           </div>
+		   
+           <div class="col-md-6 form-group">
+           <label>Vehicle No&nbsp;<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="VehicleNo"   placeholder="Enter Vehicle No" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VehicleNo.errors }" /> 
+		   
+		    <div *ngIf="submitted && f.VehicleNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.VehicleNo.errors.required">Vehicle No is Required</div>
+        </div>
+           </div>
+           
+           <div class="col-md-6 form-group">
+          <label>Transportation Date&nbsp;<sup style="color:red">*</sup></label>	
+           <input type="date" formControlName="TransportDate"  placeholder="Enter Transportation Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TransportDate.errors }" max="{{TodayDate}}" /> 
+		   
+		   <div *ngIf="submitted && f.TransportDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransportDate.errors.required"> Transportation Date is Required</div>
+        </div>
+          </div>
+		  
+		   <div class="col-md-6 form-group">
+          <label>Estimated Days Required for Delivery&nbsp;<sup style="color:red">*</sup></label>
+               <input type="text" formControlName="DaysReqForDelivery"  placeholder="Enter Estimated Days Required for Delivery" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.DaysReqForDelivery.errors }" (change)="SetToBeDelivey($event.target.value)" />
+			   
+			   <div *ngIf="submitted && f.DaysReqForDelivery.errors" class="invalid-feedback" >
+            <div *ngIf="f.DaysReqForDelivery.errors.required">Estimated Days Required for Delivery is Required</div>
+        </div>
+           </div>
+		  
+            
+            <div class="col-md-6 form-group">
+            <label>Freight Amount (inclusive GST in Rs)&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="FreightCost"   placeholder="Enter Frieght Amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.FreightCost.errors }" /> 
+			<div *ngIf="submitted && f.FreightCost.errors" class="invalid-feedback" >
+            <div *ngIf="f.FreightCost.errors.required">Freight Amount is Required</div>
+        </div>			
+          </div>
+              
+
+          <div class="col-md-6 form-group">
+            <label>GST Amount&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="GSTAmount"   placeholder="Enter GST Amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTAmount.errors }" /> 
+			<div *ngIf="submitted && f.GSTAmount.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTAmount.errors.required">Freight Amount is Required</div>
+        </div>			
+          </div>
+
+
+
+          <div class="col-md-6 form-group">
+          <label>Expected Date of Delivery&nbsp;<sup style="color:red">*</sup></label>	
+           <input type="date" formControlName="TobeDelivered"  placeholder="Enter To be Delivery(coprocessor)" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TobeDelivered.errors }" readonly/> 
+		   
+		   <div *ngIf="submitted && f.TobeDelivered.errors" class="invalid-feedback" >
+            <div *ngIf="f.TobeDelivered.errors.required"> Expected Date of Delivery is Required</div>
+        </div>
+          </div>
+		   
+		   
+		    <div class="col-md-6 form-group">
+      <label>Select Transporation Status&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control" formControlName="TransportationStatus" [ngClass]="{ 'is-invalid': submitted && f.TransportationStatus.errors }" >
+              <option [selected]=true [disabled]="true">Select Transporation Status</option>
+                <option *ngFor="let Data of TransportationStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.TransportationStatus.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransportationStatus.errors.required">Transporation Status is Required</div>
+        </div>
+      </div>
+      <div class="col-md-6 form-group">
+        <div class="form-group">
+             <label>Collection & Purchase inclusive of Freight Cost</label>
+            <div class="form-check">
+         <label class="form-check-label" for="radio1">
+       
+           <input type="radio" [value]="true" formControlName="IncludedInCP" class="form-check-input" id="radio" name="IncludedInCP"  />Yes
+           &nbsp;&nbsp;&nbsp;&nbsp;
+     
+       
+         
+        <input type="radio" formControlName="IncludedInCP" [value]="false" class="form-check-input" id="radio1" name="IncludedInCP" >No
+    
+         </label>
+       </div> 
+   
+  
+     </div>
+     
+     </div>
+	  
+		
+    <div class="col-md-12">
+        <div id="accordion" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                  <form  [formGroup]="DocUploadForm"  novalidate>
+
+                    <div class="row">
+                    <div class="col-md-6 form-group">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6 form-group">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                      <div class="col-md-6 form-group">
+                       <label>Comments</label>
+                       <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+               
+                       </div>
+                      <div class="col-md-12">
+                        <br>
+                         <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                      </div>
+                      
+                    </div>
+                    <div class="space10"></div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-responsive">
+                           <div class="space10"></div>
+                          <table class="table table-borderless table-hover tableborder align-middle citytable">
+                            <thead class="headerbackground text-white">
+                               <tr>
+                                   <th></th>
+                                   <th>Sr No.</th>
+                                   <th>Document Name</th>
+                                   <th>Document Type</th>
+                                   <th>Comments</th>
+                                 </tr>
+                               
+                            </thead>
+                          <tbody>
+                             <tr *ngFor="let Data of DocumentData ; let i=index">
+                                 <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                 <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                             </tr>
+                          </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+                   </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+		
+		<!-- End Document Upload Code -->
+           
+          
+          </div> 
+          <div class="form-group   btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary">Submit</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>   
+		  <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+            </div>
+          </form>
+          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+      
+
+    <!--Add transportation Modal-->
+
+
+    <!--Edit Transporation Modal  myModaledit-->
+        <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4>Edit Transportation Details</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            
+              </div>
+            <div class="modal-body">    
+			<form [formGroup]="WOTransporationForm">
+              <div class="form-group">
+          
+          <div class="col-md-12 row">
+              <div class="col-md-6  form-group">
+                  <label>Select Trasporter Name&nbsp;<sup style="color:red">*</sup></label>
+                 <select class="form-control" formControlName="TransporterId" [ngClass]="{ 'is-invalid': submitted && f.TransporterId.errors }" >
+                      <option [selected]=true [disabled]="true">Select Trasporter Name</option>
+                        <option *ngFor="let Data of Transportdata" value="{{Data.TransporterId}}" >{{Data.TRName}} </option>
+                       </select> 
+                 
+                  <div *ngIf="submitted && f.TransporterId.errors" class="invalid-feedback" >
+                    <div *ngIf="f.TransporterId.errors.required">Trasporter Name is Required</div>
+                </div>
+                  </div>
+
+                  <div class="col-md-6  form-group">
+                      <label>Trasportation Code&nbsp;<sup style="color:red">*</sup></label>
+                          <input type="text" formControlName="TrasporterCode"   class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TrasporterCode.errors }"  readonly /> 
+                      <div *ngIf="submitted && f.TrasporterCode.errors" class="invalid-feedback" >
+                            <div *ngIf="f.TrasporterCode.errors.required">Trasportation Code is Required</div>
+                        </div>
+                  </div>
+
+
+          <div class="col-md-6 form-group">
+          <label>Select Collection & Purchase Code&nbsp;<sup style="color:red">*</sup></label>
+               <select class="form-control" formControlName="CollectionPurchaseId" [ngClass]="{ 'is-invalid': submitted && f.CollectionPurchaseId.errors }" >
+              <option [selected]=true [disabled]="true">Select Collection/Purchase</option>
+                <option *ngFor="let Data of CPNamesdata" value="{{Data.CollectionPurchaseId}}" >{{Data.CollectionPurchaseName}} </option>
+               </select>
+			   
+			   
+			  <div *ngIf="submitted && f.CollectionPurchaseId.errors" class="invalid-feedback" >
+            <div *ngIf="f.CollectionPurchaseId.errors.required"> Select Collection & Purchase Code </div>
+			
+        </div>
+		
+          </div>
+          
+      
+		  
+		 
+		  
+		    <div class="col-md-6  form-group">
+      <label>Select Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control" formControlName="RecyclerId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerId.errors }" >
+              <option [selected]=true [disabled]="true">Select Recycler Name</option>
+                <option *ngFor="let Data of Recyclerdata" value="{{Data.RecylerId}}" >{{Data.RecyclerName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.RecyclerId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerId.errors.required">Recycler Name is Required</div>
+        </div>
+      </div>
+          
+          <div class="col-md-6  form-group">
+          <label>LR (Lorry Receipt) No.&nbsp;<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="LRNo" placeholder="Enter LR.No" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LRNo.errors }" /> 
+		   <div *ngIf="submitted && f.LRNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.LRNo.errors.required">LR No is Required</div>
+        </div>
+           </div>
+		  
+           <div class="col-md-6  form-group">
+           <label>Vehicle No&nbsp;<sup style="color:red">*</sup></label>
+           <input type="text" formControlName="VehicleNo"   placeholder="Enter Vehicle No" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VehicleNo.errors }" /> 
+		   
+		    <div *ngIf="submitted && f.VehicleNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.VehicleNo.errors.required">Vehicle No is Required</div>
+        </div>
+           </div>
+           
+           <div class="col-md-6  form-group">
+          <label>Transportation Date&nbsp;<sup style="color:red">*</sup></label>	
+           <input type="date" formControlName="TransportDate" value="{{DispalayDate}}"  placeholder="Enter Transportation Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TransportDate.errors }"  max="{{TodayDate}}" /> 
+		   
+		   <div *ngIf="submitted && f.TransportDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransportDate.errors.required"> Transportation Date is Required</div>
+        </div>
+          </div>		  
+		  
+		       
+          <div class="col-md-6  form-group">
+          <label>Estimated Days Required for Delivery&nbsp;<sup style="color:red">*</sup></label>
+               <input type="text" formControlName="DaysReqForDelivery"  placeholder="Enter Estimated Days Required for Delivery" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.DaysReqForDelivery.errors }" (change)="SetToBeDelivey($event.target.value)"/>
+			   
+			   <div *ngIf="submitted && f.DaysReqForDelivery.errors" class="invalid-feedback" >
+            <div *ngIf="f.DaysReqForDelivery.errors.required">Estimated Days Required for Delivery is Required</div>
+        </div>
+           </div>
+		 
+            
+            <div class="col-md-6  form-group">
+            <label>Freight Amount (inclusive GST in Rs)&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="FreightCost"   placeholder="Enter Frieght Amt" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.FreightCost.errors }" /> 
+			<div *ngIf="submitted && f.FreightCost.errors" class="invalid-feedback" >
+            <div *ngIf="f.FreightCost.errors.required">Freight Amount is Required</div>
+        </div>			
+          </div>
+      
+          
+          <div class="col-md-6  form-group">
+            <label>GST Amount&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="GSTAmount"   placeholder="Enter GST Amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTAmount.errors }" /> 
+			<div *ngIf="submitted && f.GSTAmount.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTAmount.errors.required">Freight Amount is Required</div>
+        </div>			
+          </div>
+
+
+		  <div class="col-md-6  form-group">
+          <label>Expected Date of Delivery&nbsp;<sup style="color:red">*</sup></label>	
+           <input type="date" formControlName="TobeDelivered" value="{{DispalayDate1}}"  placeholder="Enter Expected Date of Delivery" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TobeDelivered.errors }" readonly /> 
+		   
+		   <div *ngIf="submitted && f.TobeDelivered.errors" class="invalid-feedback" >
+            <div *ngIf="f.TobeDelivered.errors.required"> Expected Date of Delivery is Required</div>
+        </div>
+          </div>
+         
+		   
+		   
+		    <div class="col-md-6  form-group">
+      <label>Select Transporation Status&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control" formControlName="TransportationStatus" [ngClass]="{ 'is-invalid': submitted && f.TransportationStatus.errors }" >
+              <option [selected]=true [disabled]="true">Select Transporation Status</option>
+                <option *ngFor="let Data of TransportationStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.TransportationStatus.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransportationStatus.errors.required">Transporation Status is Required</div>
+        </div>
+      </div>
+
+      <div class="col-md-6  form-group">
+        <div class="form-group">
+             <label>Collection & Purchase inclusive of Freight Cost</label>
+            <div class="form-check">
+         <label class="form-check-label" for="radio1">
+       
+           <input type="radio" [value]="true" formControlName="IncludedInCP" class="form-check-input" id="radio" name="IncludedInCP"  />Yes
+           &nbsp;&nbsp;&nbsp;&nbsp;
+     
+       
+         
+        <input type="radio" formControlName="IncludedInCP" [value]="false" class="form-check-input" id="radio1" name="IncludedInCP" >No
+    
+         </label>
+       </div> 
+   
+  
+     </div>
+     
+     </div>
+	  
+		
+    <div class="col-md-12">
+        <div id="accordion1" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                  <form  [formGroup]="DocUploadForm"  novalidate>
+                    <div class="row">
+                     <div class="col-md-6 form-group">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6 form-group">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+                                <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+                            </div>	
+                 
+                      </div>
+                      <div class="col-md-6 form-group">
+                       <label>Comments</label>
+                       <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+               
+                       </div>
+                      <div class="col-md-12">
+                        <br>
+                         <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                      </div>
+                      
+                    </div>
+                  <div class="space10"></div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-borderless table-hover tableborder align-middle citytable">
+                          <thead class="headerbackground text-white">
+                             <tr>
+                                 <th></th>
+                                 <th>Sr No.</th>
+                                 <th>Document Name</th>
+                                 <th>Document Type</th>
+                               </tr>
+               
+               
+                              
+                          </thead>
+                        <tbody>
+                             <tr *ngFor="let Data of DocumentData ; let i=index">
+                                 <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                             </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+		
+		<!-- End Document Upload Code -->
+           
+          
+          </div> 
+          <div class="form-group   btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary" (click)="EditTransportation()">Update</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>   
+		  <!-- <div *ngIf="successmsg" class="form-group form-text" >Updated Successfully</div> -->
+            </div>
+          </form>
+          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+    <!--Edit Transporation Modal-->
+
+
+    <!--Delete Transporation Modal-->
+
+    <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">    
+           <div class="modal-content">
+              <div class="modal-header" >
+                <button type="button" class="close" data-dismiss="modal">&times;</button>       
+              </div>
+            <div class="modal-body">    
+       <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Transportation Details</div>    
+            </div>
+            <div class="modal-footer">
+             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="Deletewotransportation()">Yes</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!--Delete Transporation Modal-->
+	
+	<!--sales modal start-->
+	
+	<div id="myModalWOSalesDetails" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg-screen">    
+     <div class="modal-content">
+        <div class="modal-header" >
+            <h4>Sales Details</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button> 	
+        </div>
+      <div class="modal-body">    
+   
+     <div class="form-group">
+      
+	 <table class="table table-borderless table-hover tableborder align-middle citytable">
+    <thead class="headerbackground text-white">
+	<tr>
+		<th>Sr No</th>
+		<th>Quantity Received</th>
+		<th>Delivery Date</th>
+		<th>Unloading Date</th>
+		<th>Processing Charges(Rs/kg)</th>
+		<th>GST No</th>
+		<th>Material value</th>
+		<th>Net Amount</th>
+		<th>Proof Of Delivery</th>
+           
+        </tr>
+        </thead>
+        <tbody>
+       <tr *ngFor="let Data of WOSalesDetailsdata ; let i=index"> 
+	   
+			<td>{{i+1}}</td>
+           <td>{{Data.QuantityReceived}} </td>
+           <td>{{Data.DeliveryDate| date:'dd/MM/yyyy'}} </td>
+           <td>{{Data.UnloadingDate| date:'dd/MM/yyyy'}} </td>
+           <td>{{Data.ProcessingCharges}} </td>
+           <td>{{Data.GSTNo}} </td>
+           <td>{{Data.NetAmount}} </td>
+           <td>{{Data.Comments}} </td>
+            <td>Supporting Documents(Weight confirmation, co-processing certificate)</td>
+     
+        </tr>
+
+  
+  </tbody>
+   </table>
+		 
+		
+    </div> 
+   
+   
+      </div>
+	  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+	
+    </div>

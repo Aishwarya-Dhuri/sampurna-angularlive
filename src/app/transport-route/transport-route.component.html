@@ -1,0 +1,365 @@
+<div class="container">
+<div class="CitymainDiv">
+<div class="col-md-12"> 
+<h2 align="center" class="labelclass col-md-12 labelstyle"> Transport Routes </h2>
+<div class="table-responsive">
+
+<!-- Add new customer button -->
+
+
+<div class="float-right">
+<button class="btn btn-primary Addcitybtton" data-toggle="modal" data-target="#myModal" (click)="ResetFrom()">Add Transport Route</button>
+</div>
+<table class="table table-borderless table-hover tableborder align-middle citytable">
+<thead class="headerbackground text-white">
+<tr>
+<th></th>
+<th>Sr No</th>
+<th>Transport Routes</th>
+<th>From State</th>
+<th>To State</th>
+<th>From City</th>
+<th>To city</th>
+<th>From Suburb</th>
+<th>To Suburb</th>
+<th>Via City</th>
+<th>Via Suburb</th>
+<th>Comments</th>
+
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let Data of transportdata ; let i=index">
+
+<td><label (click)="EditTransportrouteData(Data.TransportRouteName,Data.FromCityId,Data.FromSuburbId,Data.ToCityId,Data.ToSuburbId,Data.ViaCityId,Data.ViaSuburbId,Data.Comments,Data.TransportRouteId,Data.FromStateId,Data.ToStateId,Data.TransporterCode)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+
+<label (click)="DeleteTransportrouteData(Data.TransportRouteName,Data.FromCityId,Data.FromSuburbId,Data.ToCityId,Data.ToSuburbId,Data.ViaCityId,Data.ViaSuburbId,Data.Comments,Data.TransportRouteId)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label>
+</td>
+
+<td>{{i+1}}</td>
+<td>{{Data.TransportRouteName}}</td>
+<td>{{Data.FromState}}</td>
+<td>{{Data.ToState}}</td>
+<td>{{Data.FromCity}}</td>
+<td>{{Data.ToCity}}</td>
+<td>{{Data.FromSuburb}}</td>
+<td>{{Data.ToSuburb}}</td>
+<td>{{Data.ViaCity}}</td>
+<td>{{Data.ViaSuburb}}</td>
+<td>{{Data.Comments}}</td>
+
+</tbody>
+</table>
+</div>
+<div class="loadingTable">
+<img *ngIf="loading" src="../assets/images/Loading.gif">
+</div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+<div class="modal-dialog modal-lg">
+<!-- Modal content-->
+<div class="modal-content">
+<div class="modal-header" >
+<h4 class="text-center">Add Transport Route</h4>
+
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<!-- <h4 class="modal-title" >Add New City</h4> -->
+</div>
+<div class="modal-body"> 
+<form [formGroup]="TransportForm" (ngSubmit)="onSubmit()" >
+<div class="form-group">
+<div class="col-md-12 row">
+<div class="col-md-6 ">
+<label>Transport Routes&nbsp;</label>
+<input type="text" formControlName="TransportRouteName" placeholder="Enter Transport Routes" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.TransportRouteName.errors }" />
+<div *ngIf="submitted && f.TransportRouteName.errors" class="invalid-feedback" >
+<div *ngIf="f.TransportRouteName.errors.required">Transport Route is Required</div>
+</div>
+</div>
+
+<div class="col-md-6  form-group">
+        <label>Transport Route Code&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="TransporterCode"   class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TransporterCode.errors }"  readonly /> 
+            <div *ngIf="submitted && f.TransporterCode.errors" class="invalid-feedback" >
+              <div *ngIf="f.TransporterCode.errors.required">Trasporter Code is Required</div>
+          </div>
+          </div>
+
+
+<div class="col-md-6  form-group">
+<label>Select "From State"&nbsp;<sup style="color:red">*</sup> </label>	
+
+<select class="form-control" formControlName="FromStateId" [ngClass]="{ 'is-invalid': submitted && f.FromStateId.errors }" (change)="GetStateMappingStateTRRoute($event.target.value)">
+<option [selected]=true  value="0">Select State</option>
+<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+</select> 
+</div>
+<div class="col-md-6  form-group">
+<label>Select "To State"&nbsp;<sup style="color:red">*</sup> </label>	
+
+<select class="form-control" formControlName="ToStateId" [ngClass]="{ 'is-invalid': submitted && f.ToStateId.errors }" (change)="GetStateMappingStateTRRoute1($event.target.value)">
+<option [selected]=true  value="0">Select State</option>
+<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+</select> 
+</div>
+<div class="col-md-6  form-group">
+<label>Select "From City"&nbsp;<sup style="color:red">*</sup> </label>
+<select class="form-control form-group" (change)="getFromsuburboncityId1($event.target.value)" formControlName="FromCityId" [ngClass]="{ 'is-invalid': submitted && f.FromCityId.errors }" (change)="OnChangeFromCity($event.target.value)">
+<option [selected]=true  value="0">Select City</option>
+<option *ngFor="let Data of fromcitydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+</select>
+<div *ngIf="submitted && f.FromCityId.errors" class="invalid-feedback" >
+<div *ngIf="f.FromCityId.errors.required">From City is Required</div>
+</div>
+</div>
+
+<div class="col-md-6  form-group">
+<label>Select "To City"&nbsp;<sup style="color:red">*</sup> </label>
+<select name="fromcity" class="form-control" (change)="getFromsuburboncityId2($event.target.value)" formControlName="ToCityId" [ngClass]="{ 'is-invalid': submitted && f.ToCityId.errors }" (change)="OnChangeToCity($event.target.value)" >
+<option [selected]=true  value="0">Select City</option>
+<option *ngFor="let Data of tocitydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+</select>
+<div *ngIf="submitted && f.ToCityId.errors" class="invalid-feedback" >
+<div *ngIf="f.ToCityId.errors.required">To city is Required</div>
+</div>
+</div>
+
+<div class="col-md-6  form-group">
+<label>Select "From Suburb"&nbsp;<sup style="color:red">*</sup> </label>
+<select name="fromcity" class="form-control" formControlName="FromSuburbId" [ngClass]="{ 'is-invalid': submitted && f.FromSuburbId.errors }" (change)="OnChangeFromSuburb($event.target.value)">
+<option [selected]=true value="0">Select suburb</option>
+<option *ngFor="let Data of fromsuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+</select>
+<div *ngIf="submitted && f.FromSuburbId.errors" class="invalid-feedback" >
+<div *ngIf="f.FromSuburbId.errors.required">From Suburb is Required</div>
+</div>
+</div>
+
+<div class="col-md-6 form-group">
+<label>Select "To Suburb"&nbsp;<sup style="color:red">*</sup></label>
+<select name="fromcity" class="form-control" formControlName="ToSuburbId" [ngClass]="{ 'is-invalid': submitted && f.ToSuburbId.errors }"  (change)="GenerateTransportRoutesCode()">
+<option [selected]=true  value="0">Select suburb</option>
+<option *ngFor="let Data of tosuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+</select>
+<div *ngIf="submitted && f.ToSuburbId.errors" class="invalid-feedback" >
+<div *ngIf="f.ToSuburbId.errors.required">To Suburb is Required</div>
+</div>
+</div>
+
+<div class="col-md-6 form-group">
+<label>Select "Via City" </label>
+<select name="fromcity" class="form-control" formControlName="ViaCityId" (change)="getFromsuburboncityId1($event.target.value)"  (change)="GenerateTransportRoutesCodeViaCity()">
+<option [selected]=true value="0">Select via City</option>
+<option *ngFor="let Data of fromcitydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+</select>
+
+</div>
+
+<div class="col-md-6 form-group">
+<label>Select "Via Suburb" </label>
+<select name="fromcity" class="form-control" formControlName="ViaSuburbId"  (change)="GenerateTransportRoutesCodeViaSuburb()" >
+<option [selected]=true value="0">Select via Suburb</option>
+<option *ngFor="let Data of tosuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+</select>
+
+</div>
+
+
+
+<div class="col-md-6 form-group">
+<label>Details/Comments</label>	
+<textarea formControlName="Comments" placeholder="Comments" class="form-control" ></textarea>
+
+
+</div> 
+
+</div>
+
+<div class="form-group btn-submit">
+<button class="btn btn-primary">Submit </button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">	
+</div>
+<!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+</div> 
+</form> 
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog modal-lg">
+<!-- Modal content-->
+<div class="modal-content">
+<div class="modal-header" >
+        <h4>Edit Transport Route</h4>
+
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<!-- <h4 class="modal-title" >Add New City</h4> -->
+</div>
+<div class="modal-body"> 
+<form [formGroup]="TransportForm">
+<div class="form-group">
+<div class="col-md-12 row">
+  <div class="col-md-6  form-group">
+    <label>Transport Routes&nbsp;</label>
+    <input type="text" formControlName="TransportRouteName" placeholder="Enter Transport Routes" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TransportRouteName.errors }" />
+    <div *ngIf="submitted && f.TransportRouteName.errors" class="invalid-feedback" >
+    <div *ngIf="f.TransportRouteName.errors.required">Transport Route is Required</div>
+    </div>
+    </div>
+
+<div class="col-md-6  form-group">
+        <label>Transporter Route Code&nbsp;<sup style="color:red">*</sup></label>
+            <input type="text" formControlName="TransporterCode"   class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TransporterCode.errors }"  readonly /> 
+            <div *ngIf="submitted && f.TransporterCode.errors" class="invalid-feedback" >
+              <div *ngIf="f.TransporterCode.errors.required">Trasporter Code is Required</div>
+          </div>
+          </div>
+
+<div class="col-md-6  form-group">
+<label>Select "From State"&nbsp;<sup style="color:red">*</sup> </label>	
+
+<select class="form-control" formControlName="FromStateId" [ngClass]="{ 'is-invalid': submitted && f.FromStateId.errors }" (change)="GetStateMappingStateTRRoute($event.target.value)">
+<option [selected]=true [disabled]="true">Select State</option>
+<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+</select> 
+</div>
+
+<div class="col-md-6  form-group">
+<label>Select "To State"&nbsp;<sup style="color:red">*</sup> </label>	
+
+<select class="form-control" formControlName="ToStateId" [ngClass]="{ 'is-invalid': submitted && f.ToStateId.errors }" (change)="GetStateMappingStateTRRoute($event.target.value)">
+<option [selected]=true [disabled]="true" value="">Select State</option>
+<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+</select> 
+</div>
+
+<div class="col-md-6  form-group">
+  <label>Select "From City"&nbsp;<sup style="color:red">*</sup> </label>
+  <select class="form-control" (change)="getFromsuburboncityId1($event.target.value)" formControlName="FromCityId" [ngClass]="{ 'is-invalid': submitted && f.FromCityId.errors }" >
+  <option [selected]=true  value="0">Select City</option>
+  <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+  </select>
+  <div *ngIf="submitted && f.FromCityId.errors" class="invalid-feedback" >
+  <div *ngIf="f.FromCityId.errors.required">From City is Required</div>
+  </div>
+  </div>
+
+<div class="col-md-6  form-group">
+<label>Select "To City"&nbsp;<sup style="color:red">*</sup> </label>
+<select name="fromcity" class="form-control" (change)="getFromsuburboncityId2($event.target.value)" formControlName="ToCityId" [ngClass]="{ 'is-invalid': submitted && f.ToCityId.errors }" >
+<option [selected]=true [disabled]="true">Select City</option>
+<option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+</select>
+<div *ngIf="submitted && f.ToCityId.errors" class="invalid-feedback" >
+<div *ngIf="f.ToCityId.errors.required">To city is Required</div>
+</div>
+</div>
+
+<div class="col-md-6  form-group">
+  <label>Select "From Suburb"&nbsp;<sup style="color:red">*</sup> </label>
+  <select name="fromcity" class="form-control" formControlName="FromSuburbId" [ngClass]="{ 'is-invalid': submitted && f.FromSuburbId.errors }" (change)="OnChangeFromSuburb($event.target.value)">
+  <option [selected]=true value="0">Select suburb</option>
+  <option *ngFor="let Data of Tosuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+  </select>
+  <div *ngIf="submitted && f.FromSuburbId.errors" class="invalid-feedback" >
+  <div *ngIf="f.FromSuburbId.errors.required">From Suburb is Required</div>
+  </div>
+  </div>
+
+<div class="col-md-6  form-group">
+<label>Select "To Suburb" &nbsp;<sup style="color:red">*</sup></label>
+<select name="fromcity" class="form-control" formControlName="ToSuburbId" [ngClass]="{ 'is-invalid': submitted && f.ToSuburbId.errors }" (change)="GenerateTransportRoutesCode()">
+<option [selected]=true [disabled]="true">Select suburb</option>
+<option *ngFor="let Data of Tosuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+</select>
+<div *ngIf="submitted && f.ToSuburbId.errors" class="invalid-feedback" >
+<div *ngIf="f.ToSuburbId.errors.required">To Suburb is Required</div>
+</div>
+</div>
+
+<div class="col-md-6  form-group">
+<label>Select "Via City" </label>
+<select name="fromcity" class="form-control" (change)="getViasuburboncityId($event.target.value)" formControlName="ViaCityId" (change)="GenerateTransportRoutesCodeViaCity()">
+<option [selected]=true [disabled]="true">Select City</option>
+<option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+</select>
+
+</div>
+
+<div class="col-md-6  form-group">
+<label>Select "Via Suburb" </label>
+<select name="fromcity" class="form-control" formControlName="ViaSuburbId" (change)="GenerateTransportRoutesCodeViaSuburb()">
+<option [selected]=true [disabled]="true">Select via Suburb</option>
+<option *ngFor="let Data of Viasuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+</select>
+
+</div>
+
+<div class="col-md-6  form-group">
+<label>Details/Comments</label>	
+<textarea formControlName="Comments" placeholder="Comments" class="form-control"></textarea>
+
+
+</div> 
+
+</div>
+<div class="form-group btn-submit">
+<button class="btn btn-primary" (click)="AddUpdateDeleteTransportRoute()" >Update </button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">	
+</div>
+<!-- <div *ngIf="successmsg" class="form-group form-text">Upadated Successfully</div> -->
+</div> 
+</form> 
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal -->
+<div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog"> 
+<div class="modal-content">
+<div class="modal-header" >
+<button type="button" class="close" data-dismiss="modal">&times;</button> 
+</div>
+<div class="modal-body"> 
+<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Transport Routes?</div> 
+</div>
+<div class="modal-footer">
+<button (click)="AddUpdateDeleteTransportRoute()" type="button" class="btn btn-default" data-dismiss="modal" >Yes</button>
+<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog"> 
+<div class="modal-content">
+<div class="modal-header" >
+<button type="button" class="close" data-dismiss="modal">&times;</button> 
+</div>
+<div class="modal-body"> 
+<div class="alert alert-success"> {{AlertMessage}}</div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+</div>
+</div>
+</div>
+</div>

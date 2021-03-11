@@ -1,0 +1,587 @@
+
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle" *ngIf="isAdmin">Work Order/Transaction Details</h2>
+     <h2 align="center" class="labelclass col-md-12 labelstyle" *ngIf="isManufacturer">Work Order Details</h2>
+
+	 <div class="row" style="margin-top: 20px;">
+	 <div class="col-md-6" *ngIf="isAdmin">
+	 <input type="" placeholder="Search By Manufacturer/Brand Name..." class="form-group form-control searchtextbox"  name="" (input)="SearchWorkOrder($event.target.value)">
+	 </div>
+	 <div class="col-md-6">
+	 <div>
+	 <div style="display:flex">
+	 <button  (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button ">Export To Excel </button>
+	 	<button (click)="print()" class="btn btn-primary Addcitybtton  print-button" style="margin-left:7px;">Print </button>
+		  <button class="btn btn-primary Addcitybtton " style="margin-left:7px;" (click)="ResetFrom()" data-toggle="modal" data-target="#myModal">Add Work Order</button>
+	 </div>
+	 </div>
+	 </div>
+	 </div>
+	  <form [formGroup]="WorkorderFilterForm">
+	 <div class="row">
+	 <div class="col-md-6">
+	  <label class="todate Workordermainlabel">Expiry Date</label>
+	   <div class="row">
+	 <div class="col-md-6">
+	 <label class="todate">From Date</label>
+	<input type="date"  max="{{FromDateValidation1}}" class="form-control form-group" 	formControlName="EFromDate" (change)="DateValidationToDate1()"/></div>  
+	<div class="col-md-6">
+	 <label class="todate">To Date</label>
+	<input type="date"  min="{{ToDateValidation1}}"  class="form-control form-group" formControlName="EToDate" (change)="SearchOnDate1()"/> </div>  
+	 </div> 
+	 </div>
+	<div class="col-md-6">
+	  <label class="todate Workordermainlabel">Order Placement Date</label>
+	   <div class="row">
+	 <div class="col-md-6">
+	 <label class="todate">From Date</label>
+	<input type="date"  max="{{FromDateValidation}}" class="form-control form-group" 	formControlName="OFromDate" (change)="DateValidationToDate()"/> </div>  
+	<div class="col-md-6">
+	 <label class="todate">To Date</label>
+	<input type="date"  min="{{ToDateValidation}}"  class="form-control form-group" formControlName="OToDate" (change)="SearchOnDate()"/> </div>  
+	 </div> 
+	 </div>
+	 </div>	
+	 
+	</form> 
+	
+	 <!-- ////////////////////// -->
+  <div style="margin-top: 20px;">
+   
+	 <div id="print-section">
+     <div class="table-responsive">
+     
+     <table id="header-fixed" class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th class="doNotPrint"></th>
+          <th>Sr No</th>
+		   <th>Work Order Code</th>
+       <th>Manufacturer Name </th>
+        <th>Creation Date</th>
+          <th>OrderPlacementDate</th>
+          <!-- <th class="padding-left-right-70">Details</th> -->
+          <th>Status</th>
+       <th>Total Volume</th> 
+     <th>Total billing value</th> 
+      <th>Expiry Date</th>
+    <th>Target completion rate %</th>
+    <th>Achieved Volume in %</th>
+	  <th>Billing %</th>
+	  <th>Billed Value</th>   <!-- <th class="doNotPrint"></th> -->
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of WorkOrdersdata ; let i=index">
+	  
+	  <td class="doNotPrint">
+	  
+	  <a  *ngIf="isAdmin" (click)="EditViewworkorderData(Data.WorkOrderCode,Data.ManufacturerId,Data.TotalVolume,Data.ExpiryDate,Data.CreationDate,Data.OrderPlacementDate,Data.Details,Data.WOStatus,Data.WorkOrderId,Data.TotalVolumeUnitId,Data.ClientWorkOrderCode)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<a  *ngIf="isAdmin" (click)="DeleteViewworkorderData(Data.WorkOrderCode,Data.ManufacturerId,Data.TotalVolume,Data.ExpiryDate,Data.CreationDate,Data.OrderPlacementDate,Data.Details,Data.WOStatus,Data.WorkOrderId,Data.TotalVolumeUnitId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		
+		<label><span>  <button class="btn btn-primary Addcitybtton "  (click)="RedirectToWOItems
+		(Data.WorkOrderId,Data.WorkOrderCode)"  data-dismiss="modal" data-toggle="modal" data-target="#myModalCityAdd" routerLink="/ViewWorkOrderDetails" >View/Add Waste Material Type</button></span></label>
+	
+		</td>
+	  
+	  
+	    <td>{{i+1}}</td>
+		<td>{{Data.WorkOrderCode}}</td>
+	    <td>{{Data.ManufacturerName}}</td>
+       <td>{{Data.CreationDate| date:'dd/MM/yyyy'}}</td>
+        <td>{{Data.OrderPlacementDate| date:'dd/MM/yyyy'}}</td>
+        <!-- <td class="address10">{{Data.Details}}</td> -->
+		
+		<td><span *ngIf="Data.WOStatusName=='Signed'" style="color:Green">{{Data.WOStatusName}}</span>
+	  <span *ngIf="Data.WOStatusName=='Not Signed'" style="color:Red">{{Data.WOStatusName}}</span>
+	  <span *ngIf="Data.WOStatusName=='Terminated'" style="color:Red">{{Data.WOStatusName}}</span>
+    <span *ngIf="Data.WOStatusName=='30 Days to Expire'" style="color:Orange">{{Data.WOStatusName}}</span>
+    <span *ngIf="Data.WOStatusName=='Expired/Terminated'" style="color:Red">{{Data.WOStatusName}}</span>
+    <span *ngIf="Data.WOStatusName=='Closed'" style="color:Orange">{{Data.WOStatusName}}</span>
+
+
+	  </td>
+		
+        <!-- <td>{{Data.WOStatusName}}</td> -->
+        <td>{{Data.TotalVolume}}</td>
+        <td>{{Data.BillingValue}}</td>
+        <td>{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</td>
+    <td>{{Data.ArchivePercent}}%</td>
+    <td>{{Data.ArchivePercent}}%</td>
+
+     <td>  {{Data.BillingPerc}}%</td>
+     <td>{{Data.BilledAmount}}</td>
+     
+	   
+	   <!-- <td class="doNotPrint"><span>  <button class="btn btn-primary Addcitybtton "  data-dismiss="modal" data-toggle="modal" data-target="#myModalCityAdd" routerLink="/ViewWorkOrderDetails" (click)="RedirectToWOItems(Data.WorkOrderId,Data.WorkOrderCode)">&nbsp;&nbsp;View Details</button></span></td> -->
+    
+     
+      </tr>
+    
+    
+    
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	 </div>
+	   <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  </div>
+  </div>
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Work Order</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+         <div class="modal-body">    
+   
+  <form [formGroup]="WorkorderForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <div class="col-md-12 row">
+        <div class="col-md-6  form-group">
+            <label class="" >Select Manufacturer/Brand Name&nbsp;<sup style="color:red">*</sup></label>		  
+            <select class="form-control" formControlName="ManufacturerId" [ngClass]="{ 'is-invalid': submitted && f.ManufacturerId.errors }" (change)="GenerateWOCode($event.target.value)" >
+                    <option [selected]=true [disabled]="true">Select Manufacturer/Brand</option>
+                      <option *ngFor="let Data of MFData" value="{{Data.Manufacturerid}}"  > {{Data.MFName}}</option>
+            </select> 
+            <div *ngIf="submitted && f.ManufacturerId.errors" class="invalid-feedback" >
+                <div *ngIf="f.ManufacturerId.errors.required">Manufacturer/Brand is Required</div>
+            </div>
+        </div>
+	  
+        <div class="col-md-6  form-group">
+          <label>Work Order Code&nbsp;<sup style="color:red">*</sup></label>
+              <input type="text" formControlName="WorkOrderCode"  placeholder="Enter Work Order Code" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WorkOrderCode.errors }"  readonly /> 
+          <div *ngIf="submitted && f.WorkOrderCode.errors" class="invalid-feedback" >
+                <div *ngIf="f.WorkOrderCode.errors.required">Work Order Code is Required</div>
+          </div>
+        </div>
+		
+		
+	  
+	   <div class="col-md-6 form-group">
+          <label>Select Work Order Status&nbsp;<sup style="color:red">*</sup></label>
+		    <select class="form-control " formControlName="WOStatus" [ngClass]="{ 'is-invalid': submitted && f.WOStatus.errors }">
+              <option [selected]=true [disabled]="true">Select Work Order Status</option>
+                 <option *ngFor="let Data of workorderStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.WOStatus.errors" class="invalid-feedback" >
+            <div *ngIf="f.WOStatus.errors.required"> Work Order Status is Required</div>
+        </div>
+      </div>
+	  
+	  
+	    <div class="col-md-6 form-group">
+          <label >Expiry Date&nbsp;<sup style="color:red">*</sup></label>
+          <input type="date"  formControlName="ExpiryDate" placeholder=" Expiry Date" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }" max="{{ChechExpiryValidation}}" />
+		   <div *ngIf="submitted && f.ExpiryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.ExpiryDate.errors.required"> Expiry Date is Required</div>
+        </div>
+      </div>
+	  
+	    <div class="col-md-6 form-group">
+          <label >Creation Date&nbsp;<sup style="color:red">*</sup></label>
+		    <input type="Date"  value="{{TodayDateC}}"  class="form-control form-group"  readonly  />	
+      </div>
+	  
+	   <div class="col-md-6 form-group">
+          <label>Work  Order Placement Date&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="OrderPlacementDate"  placeholder="Order Placement Date" type="date" class="form-control " [ngClass]="{ 'is-invalid': submitted && f.OrderPlacementDate.errors }" />
+		  <div *ngIf="submitted && f.OrderPlacementDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.OrderPlacementDate.errors.required">Work Order Placement Date is Required</div>
+        </div>
+      </div>
+	  
+	    <div class="col-md-6  form-group">
+        <label >Manufacturer/Brand Work Order Code &nbsp;</label>
+        <input type="text"  formControlName="ClientWorkOrderCode" class="form-control " placeholder="Enter Manufacturer/Brand Work Order Code" [ngClass]="{ 'is-invalid': submitted && f.ClientWorkOrderCode.errors }">
+        <div *ngIf="submitted && f.ClientWorkOrderCode.errors" class="invalid-feedback" >
+              <div *ngIf="f.ClientWorkOrderCode.errors.required"> Manufacturer/Brand Work Order Code is Required</div>
+          </div>
+      </div>
+
+	    <div class="col-md-6  form-group">
+      <label>Work Order Details/Comments &nbsp;</label>
+          <textarea  formControlName="Details" class="form-control" placeholder="Enter Work Order Details/Comments" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }"></textarea>
+		  <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+            <div *ngIf="f.Details.errors.required"> Work Order Details/Comments is Required</div>
+        </div>
+      </div>
+	  
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">
+          <div id="accordion" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                      <a class="card-title">
+                       <b>Document Upload</b>
+                      </a>
+                  </div>
+                  <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                      <form  [formGroup]="DocUploadForm"  novalidate>
+                          <div class="row">
+                              <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                              <div class="col-md-6">
+                               <label class="form-group" >Comments</label>
+                               <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+                       
+                               </div>
+                              <div class="col-md-12">
+                                
+                                 <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+        
+                              </div>
+                              
+                            </div>
+                     
+                        <div class="space10"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Document Name</th>
+                                         <th>Document Type</th>
+                                         <th>Comments</th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                   <tr *ngFor="let Data of DocumentData ; let i=index">
+                                       <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                        <th>{{i + 1}}</th>								  
+                                        <th>{{Data.DocumentName}}</th>
+                                        <th>{{Data.DocumentTypeName}}</th>
+                                        <th>{{Data.DocumentDetails}}</th>
+                                   </tr>
+                                </tbody>
+                                </table>
+      
+                              </div>
+                            </div>
+                          </div>
+                          <div class="space10"></div>
+                        </form>
+                    </div>
+              </div>
+            </div>
+      </div>
+    </div>
+      <div class="form-group   btn-submit">
+          <div class="space10"></div>
+
+          <button class="btn btn-primary Addcitybtton" > Submit</button>
+		  <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+              <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>   -->
+      </div>
+
+        </div>
+		   </form>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+        
+  </div>
+</div>
+<!-- Add Modal -->
+
+
+<!-- Edit Modal myModaledit  -->
+   <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Work Order</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+         <div class="modal-body">    
+  
+  <form [formGroup]="WorkorderForm">
+      <div class="form-group">
+      <div class="col-md-12 row">
+      
+	 
+  
+      <div class="col-md-6 form-group">
+      <label  >Select Manufacturer/Brand Name&nbsp;<sup style="color:red">*</sup></label>		  
+		  <select class="form-control " formControlName="ManufacturerId" [ngClass]="{ 'is-invalid': submitted && f.ManufacturerId.errors }">
+              <option [selected]=true [disabled]="true">Select Manufacturer</option>
+                <option *ngFor="let Data of MFData" value="{{Data.Manufacturerid}}" >{{Data.MFName}} </option>
+               </select> 
+		<div *ngIf="submitted && f.ManufacturerId.errors" class="invalid-feedback" >
+            <div *ngIf="f.ManufacturerId.errors.required">Manufacturer/Brand Name is Required</div>
+        </div>
+      </div>
+	  
+	   <div class="col-md-6 form-group">
+      <label>Work Order Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="WorkOrderCode"  placeholder="Enter Work Order Code" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WorkOrderCode.errors }" readonly  /> 
+		  <div *ngIf="submitted && f.WorkOrderCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.WorkOrderCode.errors.required">Work Order Code is Required</div>
+        </div>
+        </div>
+	  
+	   <div class="col-md-6  form-group">
+      <label >Select Work Order Status&nbsp;<sup style="color:red">*</sup></label>
+		 <select class="form-control" formControlName="WOStatus" [ngClass]="{ 'is-invalid': submitted && f.WOStatus.errors }">
+              <option [selected]=true [disabled]="true">Select Manufacturer</option>
+                 <option *ngFor="let Data of workorderStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.WOStatus.errors" class="invalid-feedback" >
+            <div *ngIf="f.WOStatus.errors.required"> Work Order Status is Required</div>
+        </div>
+			   
+      </div>
+	  
+	  
+	    <div class="col-md-6  form-group">
+          <label>Expiry Date&nbsp;<sup style="color:red">*</sup></label>
+          <input type="date" value="{{DispalayDate}}" formControlName="ExpiryDate" placeholder=" Expiry Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }" max="{{DispalayDate}}" />
+		   <div *ngIf="submitted && f.ExpiryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.ExpiryDate.errors.required"> Expiry Date is Required</div>
+        </div>
+      </div>
+	  
+	    <div class="col-md-6  form-group">
+          <label>Creation Date&nbsp;<sup style="color:red">*</sup></label>
+		    <input type="Date" formControlName="CreationDate"   value={{DispalayCreationDate}} class="form-control"  readonly  />	
+      </div>
+	  
+	   <div class="col-md-6  form-group">
+          <label >Work Order Placement Date&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="OrderPlacementDate" placeholder="Enter Work Order Placement Date" value="{{DispalayDate1}}" type="date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.OrderPlacementDate.errors }" />
+		  <div *ngIf="submitted && f.OrderPlacementDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.OrderPlacementDate.errors.required">Work Order Placement Date is Required</div>
+        </div>
+      </div>
+      <div class="col-md-6  form-group">
+        <label >Manufacturer/Brand Work Order Code&nbsp;</label>
+        <input type="text"  formControlName="ClientWorkOrderCode" class="form-control" placeholder="Enter Manufacturer/Brand Work Order" [ngClass]="{ 'is-invalid': submitted && f.ClientWorkOrderCode.errors }">
+        <div *ngIf="submitted && f.ClientWorkOrderCode.errors" class="invalid-feedback" >
+              <div *ngIf="f.ClientWorkOrderCode.errors.required"> Manufacturer/Brand Work Order Code is Required</div>
+          </div>
+        </div>
+	  
+	    <div class="col-md-6  form-group">
+      <label >Work Order Details/Comments&nbsp;</label>
+          <textarea  formControlName="Details" class="form-control" placeholder="Enter Work Order Details/Comments" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }"></textarea>
+		  <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+            <div *ngIf="f.Details.errors.required"> Work Order Details/Comments is Required</div>
+        </div>
+      </div>
+	  
+	  
+	  
+      
+     
+ 
+    </div>
+    <div class="col-md-12">
+        <div id="accordion1" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                  <form  [formGroup]="DocUploadForm"  novalidate>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                      <div class="col-md-6">
+                       <label class="form-group" >Comments</label>
+                       <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+               
+                       </div>
+                      <div class="col-md-12">
+                        
+                         <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                      </div>
+                      
+                    </div>
+                    <div class="space10"></div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-responsive">
+                           <div class="space10"></div>
+                          <table class="table table-borderless table-hover tableborder align-middle citytable">
+                            <thead class="headerbackground text-white">
+                               <tr>
+                                   <th></th>
+                                   <th>Sr No.</th>
+                                   <th>Document Name</th>
+                                   <th>Document Type</th>
+                                   <th>Comments</th>
+                                 </tr>
+                               
+                            </thead>
+                          <tbody>
+                             <tr *ngFor="let Data of DocumentData ; let i=index">
+                                 <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                             </tr>
+                          </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+                   </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+      <div class="form-group   btn-submit">
+        <div class="space10"></div>
+          <button class="btn btn-primary Addcitybtton" (click)="EditWO()" > Update</button>
+		  <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+              <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div>   -->
+      </div>
+
+        </div>
+		   </form>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+        
+  </div>
+</div>
+<!--Delete Modal--> 
+
+<div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Work Order?</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button (click)="CheckValidationForDelete()"  type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <!--Delete Modal--> 
+
+
+
+<!--Confirmation Mdal-->
+<div id="myModalconfirmation" class="modal fade " role="dialog"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body height-120">    
+ <div class="alert alert-success">Work Order added Successfully.</div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"  (click)="RedirectToSubForm()" >Ok</button>
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="/ViewWorkOrder">No</button>      </div> -->
+    </div>
+  </div>
+</div> 
+</div>
+
+<!--Confirmation Modal ends-->
+   <!--Delete Modal-->
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
+    

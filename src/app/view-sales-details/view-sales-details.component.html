@@ -1,0 +1,834 @@
+<div class="container">
+    <div class="CitymainDiv">
+      <div class="col-md-12"> 
+       <h2 align="center" class="labelclass col-md-12 labelstyle">Sales Details </h2>
+    <div class="row" >
+	<div class="row col-md-12 button-margin">
+      <!--  <div class="col-md-3">
+         <input type="" placeholder="Search Sales Details . . . ." class="form-group form-control" >
+       </div> -->
+	   <div class="col-md-6 form-group">
+      
+         <input type="" placeholder="Search by Sales Code . . . ." class="form-control searchtextbox" 
+		 (input)="SearchSalesDetails($event.target.value)">
+       </div>
+       <div style="float:right;">
+        <div style="display:flex">
+         <button  (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button ">Export To Excel </button>
+           <button (click)="print()" class="btn btn-primary Addcitybtton  print-button" style="margin-left:7px;">Print </button>
+           &nbsp;&nbsp;
+           <button class="btn btn-primary Addcitybtton"  data-toggle="modal" data-target="#myModalAddsales" (click)="ResetFrom()" >Add Sales Details</button>
+         </div>
+         </div>
+	   <div class="col-md-3 form-group ">
+       <label>From Date :</label>
+         <input type="date" placeholder="Select Date" class="form-control" (change)="SearchSalesDetailsByDate1($event.target.value)">
+       </div>
+       <div class="col-md-3 form-group ">
+          <label >To Date :</label>
+        <input type="date" placeholder="Select Date" class="form-control" (change)="SearchSalesDetailsByDate($event.target.value)">
+      </div>
+       
+      </div>
+      <div id="print-section">
+
+       <div class="table-responsive">
+       
+       <table class="table table-borderless table-hover tableborder align-middle citytable">
+        <thead class="headerbackground text-white">
+        <tr>
+		  <th class="doNotPrint"></th>
+            <th>Sr No</th>
+			      <th>Sales Code</th>
+            <th>Quantity Received</th>
+            <th>Material Delivery Date</th>
+            <th>Material Unloading Date</th>
+            <th>Material Processing Rate (Rs/Kg)</th>
+            <th>GST Rate (%) for Processing </th>
+            <th>Sales Material Value (inclusive GST in Rs)</th>
+            <th>Net Amount (Receivable)</th>
+            <th>Proof Of Delivery</th>
+           
+        </tr>
+        </thead>
+        <tbody>
+       <tr *ngFor="let Data of WOSalesDetailsdata ; let i=index">
+	   <td class="doNotPrint"><label  (click)="EditWOSalesDetailsData(Data.WOTransporterId,Data.TransporterId,Data.DeliveryDate,Data.UnloadingDate,Data.QuantityReceived,Data.Rate,Data.SalesRate,Data.MaterialValue,Data.GSTNo,Data.ProcessingCharges,Data.NetAmount,Data.Comments,Data.WOSalesId,Data.CoProcessingCertificate,Data.ReceivingCopy,Data.SalesCode,Data.QuantityUnit,Data.RecyclerId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+		
+	<!-- <label  (click)="DeleteWOSalesDetailsData(Data.WOTransporterId,Data.TransporterId,Data.DeliveryDate,Data.UnloadingDate,Data.QuantityReceived,Data.Rate,Data.SalesRate,Data.MaterialValue,Data.GSTNo,Data.ProcessingCharges,Data.NetAmount,Data.Comments,Data.WOSalesId,Data.CoProcessingCertificate,Data.ReceivingCopy,Data.SalesCode,Data.QuantityUnit)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label> -->
+	</td>
+	   
+	   
+              <td>{{i+1}}</td>
+            <td>{{Data.SalesCode}} </td>
+           <td>{{Data.QuantityReceived}} </td>
+           <td>{{Data.DeliveryDate| date:'dd/MM/yyyy'}} </td>
+           <td>{{Data.UnloadingDate| date:'dd/MM/yyyy'}} </td>
+           <td>{{Data.ProcessingCharges}} </td>
+           <td>{{Data.GSTNo}} </td>
+           <td>{{Data.MaterialValue}} </td>
+           <td>{{Data.NetAmount}} </td>
+           <!-- <td>{{Data.Comments}} </td> -->
+            <td>Supporting Documents(Weight confirmation, co-processing certificate)</td>
+        </tr>
+  
+      </tbody>
+       </table>
+       
+    
+       </div>
+      </div>
+	    <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+    </div>
+    </div>
+
+    <!--Add sales details Modal-->
+
+    <div id="myModalAddsales" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+             
+                  <h4>Add Sales Details</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <!--   <h4 class="modal-title" >Add New City</h4> -->
+              </div>
+            <div class="modal-body">    
+			<form [formGroup]="WOSalesDetailsForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+          
+          <div class="col-md-12 row">
+        <div class="col-md-6">
+       <label class="form-group" >Select Trasportation Code&nbsp;<sup style="color:red">*</sup></label> 
+             <select class="form-control form-group" formControlName="WOTransporterId" [ngClass]="{ 'is-invalid': submitted && f.WOTransporterId.errors }" (change)="GetTranspoterId($event.target.value)" >
+              <option [selected]=true [disabled]="true">Select Transportation Code</option>
+                <option *ngFor="let Data of wotransportationdata" value="{{Data.WOTransporterId}}" >{{Data.TrasporterCode}} </option>
+               </select>
+			 
+			 
+			 <div *ngIf="submitted && f.WOTransporterId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WOTransporterId.errors.required"> Transportation Code is Required</div>
+        </div>  
+		</div>	
+
+		
+		 <!-- <div class="col-md-6">
+               <label class="form-group">Transporter &nbsp;<sup style="color:red">*</sup></label>
+                <select class="form-control form-group" formControlName="TransporterId" [ngClass]="{ 'is-invalid': submitted && f.TransporterId.errors }">
+              <option [selected]=true [disabled]="true">Select Transporter </option>
+                <option *ngFor="let Data of Transportdata" value="{{Data.TransporterId}}" >{{Data.TRName}} &nbsp;({{Data.TRCode}})</option>
+               </select>
+
+				<div *ngIf="submitted && f.TransporterId.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransporterId.errors.required">Transporter is Required</div>
+        </div> 
+      </div> -->
+	  
+	    <div class="col-md-6">
+       <label class="form-group">Select Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control form-group" formControlName="RecyclerId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerId.errors }"  (change)="GenerateSalesCode($event.target.value)" >
+              <option [selected]=true [disabled]="true">Select Recycler Name</option>
+                <option *ngFor="let Data of wotransportationREdata" value="{{Data.recylerid}}" >{{Data.RecyclerName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.RecyclerId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerId.errors.required">Recycler Name is Required</div>
+        </div>
+      </div>
+ 
+       <div class="col-md-6">
+      <label class="form-group" >Sales Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="SalesCode"   class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.SalesCode.errors }"  readonly /> 
+		  <div *ngIf="submitted && f.SalesCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.SalesCode.errors.required">Sales Code is Required</div>
+        </div>
+        </div>
+            <div class="col-md-6">
+               <label class="form-group">Material Delivery Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" formControlName="DeliveryDate"  placeholder="Enter Material Delivery Date" (onchange)="DeliveryDateEqualToUnloadingDate()"class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.DeliveryDate.errors }" max="{{TodayDate}}" (change)="UnloadingDateValidation()"/> 
+				<div *ngIf="submitted && f.DeliveryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.DeliveryDate.errors.required">Material Delivery Date is Required</div>
+        </div> 
+      </div>
+            <div class="col-md-6">
+                 <label class="form-group">Material Unloading Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" formControlName="UnloadingDate"  placeholder="Enter Material Unloading Date" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.UnloadingDate.errors }"  min="{{UnloadingDate}}" />  
+				<div *ngIf="submitted && f.UnloadingDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.UnloadingDate.errors.required">Material Unloading Date is Required</div>
+        </div> 
+            </div>
+ 
+			
+			
+			<div class="col-md-6">
+            <label class="form-group" >Material Quantity Received (in Kg)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="QuantityReceived"  placeholder="Enter Material Quantity Received (in Kg)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.QuantityReceived.errors }" #qtyrecv /> 
+
+				<div *ngIf="submitted && f.QuantityReceived.errors" class="invalid-feedback" >
+            <div *ngIf="f.QuantityReceived.errors.required">Material Quantity Received  is Required</div>
+        </div> 
+				
+            </div>
+      
+            <div class="col-md-6">
+              <label class="form-group" >Quantity Unit&nbsp;<sup style="color:red">*</sup></label>
+             
+                 <select name="MaterialunitID" formControlName="QuantityUnit" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.QuantityUnit.errors }">
+              <option [selected]=true [disabled]="true">Select Quantity Unit</option>
+              <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+           </select>
+           <div *ngIf="submitted && f.QuantityUnit.errors" class="invalid-feedback" >
+                     <div *ngIf="f.QuantityUnit.errors.required">Quantity Unit is Required</div>
+                 </div>
+             </div>
+
+
+			<div class="col-md-6">
+            <label class="form-group" >Sales Material GST Rate (%)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="Rate" placeholder="Enter Sales Material GST Rate (%)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.Rate.errors }" #qtyrecv /> 
+
+                <div *ngIf="submitted && f.Rate.errors" class="invalid-feedback" >
+                    <div *ngIf="f.Rate.errors.required"> Sales Material GST Rate  is Required</div>
+                </div> 
+                
+                    </div>
+           
+			
+			
+            
+			
+			
+			<!-- Start Material value = Rcvd qtty * Sales rate  (change)="calculate(qtyrecv.value, ratenum.value)" -->
+			
+		  
+		  <div class="col-md-6">
+           <label class="form-group" >Material Sales Rate&nbsp;<sup style="color:red">*</sup></label>
+			<input type="number"  formControlName="SalesRate" (input)=" calculateMaterialValue()" placeholder="Enter Material Sales Rate" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && f.SalesRate.errors }" #qtyrecv  /> 
+
+      <div *ngIf="submitted && f.SalesRate.errors" class="invalid-feedback" >
+          <div *ngIf="f.SalesRate.errors.required">Material Sales Rate is Required</div>
+      </div> 
+      
+          </div>
+		  
+		   <div class="col-md-6 result">
+           <label class="form-group" >Sales Material Value (inclusive GST in Rs)</label>
+		   <input value="{{netamt1}}" formControlName="MaterialValue" class="form-control form-group" readonly #materialvlaue />			   
+          </div>
+	
+		
+			
+			<!-- End Material value = Rcvd qtty * Sales rate  -->
+			
+			
+			<!-- Start Net Amt = Material value + processing charge  -->
+			
+				<div class="col-md-12 row">
+			 <div class="col-md-4">
+            <label class="form-group" >GST Rate (%)<br> for Processing &nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="GSTNo"  placeholder="Enter GST Rate (%) for Processing " class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.GSTNo.errors }" />  
+				<div *ngIf="submitted && f.GSTNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTNo.errors.required">GST Rate (%) for Processing  is required</div>
+        </div> 
+            </div>
+			
+		  
+		  <div class="col-md-4">
+           <label class="form-group" >Material Processing Rate (Rs/Kg)<sup style="color:red">*</sup></label>
+			<input type="number" formControlName="ProcessingCharges" (input)="calculateNetamount()"  placeholder="Enter Material Processing Rate (Rs/Kg)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.ProcessingCharges.errors }" #processcharge />  
+			
+			<div *ngIf="submitted && f.ProcessingCharges.errors" class="invalid-feedback" >
+            <div *ngIf="f.ProcessingCharges.errors.required">Material Processing Rate is required</div>
+        </div> 
+		
+          </div>
+		  
+		   <div class="col-md-4 result">
+           <label class="form-group" >Net Amount (Receivable)</label>
+           <br>
+		   <input value="{{netamt}}" formControlName="NetAmount" class="form-control form-group" readonly />			   
+          </div>
+		  
+		  
+		  
+		  
+	
+			</div>
+      <div class="col-md-6">
+          <label class="form-group" >Details/Comments</label>	
+      <textarea formControlName="Comments" placeholder="Details/Comments" class="form-control form-group" ></textarea>
+     
+     
+         </div>
+			<!-- End Net Amt = Material value + processing charge  -->
+			
+			<!-- <div class="col-md-6">
+			 <label class="form-group">Upload Co Processing Certificate &nbsp;<sup style="color:red">*</sup></label>
+			<input type="file" formControlName="CoProcessingCertificate" class="form-group form-control file1 browse" (change)="getFiles($event,'CPC')"> 
+				
+			</div>
+			
+			<div class="col-md-6">
+			 <label class="form-group">Upload Receiving Copy &nbsp;<sup style="color:red">*</sup></label>
+			<input type="file" formControlName="ReceivingCopy" class=" form-group form-control file1 browse" (change)="getFiles($event,'RC')" > 
+				
+      </div> -->
+      
+      <div class="col-md-12">
+          <div id="accordionWO" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                      <a class="card-title">
+                       <b>WOrk Order Items</b>
+                      </a>
+                  </div>
+                  <div id="collapseOne" class="card-body collapse" data-parent="#accordionWO" >
+                  
+
+                      
+                      <div class="space10"></div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="table-responsive">
+                             <div class="space10"></div>
+                            <table class="table table-borderless table-hover tableborder align-middle citytable">
+                              <thead class="headerbackground text-white">
+                                 <tr>
+                                    
+                                     <th>Sr No.</th>
+                                     <th>WorkOrderCode</th>
+                                     <th>WorkOrdersItemCode</th>
+                                     <th>Tonnage</th>
+                                   </tr>
+                                 
+                              </thead>
+                            <tbody>
+                               <tr *ngFor="let Data of WorkOrderDataForSales ; let i=index">
+                                   
+                                   <th>{{i + 1}}</th>								  
+                                  <th>{{Data.WorkOrderCode}}</th>
+                                  <th>{{Data.WorkOrdersItemCode}}</th>
+                                  <th>{{Data.Tonnage}}</th>
+                               </tr>
+                            </tbody>
+                            </table>
+ 
+                          </div>
+                        </div>
+                      </div>
+                     
+                  </div>
+                  
+                  
+              </div>
+          </div>
+      
+      </div>
+
+      <div class="col-md-12">
+          <br>
+
+          <div id="accordion1" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne2">
+                      <a class="card-title">
+                       <b>Document Upload</b>
+                      </a>
+                  </div>
+                  <div id="collapseOne2" class="card-body collapse" data-parent="#accordion1" >
+                    <form  [formGroup]="DocUploadForm"  novalidate>
+
+                      <div class="row">
+                       <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                        <div class="col-md-6">
+                         <label class="form-group" >Comments</label>
+                         <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+                 
+                         </div>
+                        <div class="col-md-12">
+                          
+                           <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+ 
+                        </div>
+                        
+                      </div>
+                      <div class="space10"></div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="table-responsive">
+                             <div class="space10"></div>
+                            <table class="table table-borderless table-hover tableborder align-middle citytable">
+                              <thead class="headerbackground text-white">
+                                 <tr>
+                                     <th></th>
+                                     <th>Sr No.</th>
+                                     <th>Document Name</th>
+                                     <th>Document Type</th>
+                                     <th>Comments</th>
+                                   </tr>
+                                 
+                              </thead>
+                            <tbody>
+                               <tr *ngFor="let Data of DocumentData ; let i=index">
+                                   <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                   <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                               </tr>
+                            </tbody>
+                            </table>
+ 
+                          </div>
+                        </div>
+                      </div>
+                     </form>
+                  </div>
+                  
+                  
+              </div>
+          </div>
+      
+      </div>
+		
+            
+            <!-- <div class="col-md-6"> -->
+        <!-- <label class="uplodfile"> Select Proof of Delivery :</label> -->
+            <!-- <input type="file" name="file" accept="image/*" class=" form-group"/> -->
+        <!-- </div> -->
+               
+          </div> 
+          <div class="form-group   btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary">Submit</button>  
+	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>
+		    <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>  -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+			</form>
+          </div>
+            </div>
+      </div>
+      </div>
+
+    <!--Add Sales Details Modal-->
+
+
+    <!--Edit sales Details Modal myModaledit-->
+        <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4>Edit Sales Details</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <!--   <h4 class="modal-title" >Add New City</h4> -->
+              </div>
+            <div class="modal-body">    
+			<form [formGroup]="WOSalesDetailsForm">
+              <div class="form-group">
+          
+          <div class="col-md-12 row">
+        <div class="col-md-6">
+       <label class="form-group" >Select Transportation Code<sup style="color:red">*</sup></label> 
+             <select class="form-control form-group" formControlName="WOTransporterId" [ngClass]="{ 'is-invalid': submitted && f.WOTransporterId.errors }" >
+              <option [selected]=true [disabled]="true">Select Transportation Code</option>
+                <option *ngFor="let Data of wotransportationdata" value="{{Data.WOTransporterId}}" >{{Data.TrasporterCode}} </option>
+               </select>
+			 
+			 
+			 <div *ngIf="submitted && f.WOTransporterId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WOTransporterId.errors.required">Transportation Code is Required</div>
+        </div>  
+  </div>	
+
+		
+		 <!-- <div class="col-md-6">
+               <label class="form-group">Transporter &nbsp;<sup style="color:red">*</sup></label>
+                <select class="form-control form-group" formControlName="TransporterId" [ngClass]="{ 'is-invalid': submitted && f.TransporterId.errors }">
+              <option [selected]=true [disabled]="true">Select Transporter </option>
+                <option *ngFor="let Data of Transportdata" value="{{Data.TransporterId}}" >{{Data.TRName}} &nbsp;({{Data.TRCode}})</option>
+               </select>
+
+				<div *ngIf="submitted && f.TransporterId.errors" class="invalid-feedback" >
+            <div *ngIf="f.TransporterId.errors.required">Transporter is Required</div>
+        </div> 
+      </div> -->
+	  
+	    <div class="col-md-6">
+       <label class="form-group">Select Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control form-group" formControlName="RecyclerId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerId.errors }" >
+              <option [selected]=true [disabled]="true">Select Recycler Name</option>
+                <option *ngFor="let Data of wotransportationREdata" value="{{Data.recylerid}}" >{{Data.RecyclerName}} </option>
+               </select> 
+			   
+			   
+			    <div *ngIf="submitted && f.RecyclerId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerId.errors.required">Recycler Name is Required</div>
+        </div>
+      </div>
+ 
+       <div class="col-md-6">
+      <label class="form-group" >Sales Code&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="SalesCode"   class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.SalesCode.errors }"  readonly /> 
+		  <div *ngIf="submitted && f.SalesCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.SalesCode.errors.required">Sales Code is Required</div>
+        </div>
+        </div>
+            <div class="col-md-6">
+               <label class="form-group">Material Delivery Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" value="{{DispalayDate}}" formControlName="DeliveryDate" (onchange)="DeliveryDateEqualToUnloadingDate()" placeholder="Enter Material Delivery Date" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.DeliveryDate.errors }" /> 
+				<div *ngIf="submitted && f.DeliveryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.DeliveryDate.errors.required">Material Delivery Date is Required</div>
+        </div> 
+      </div>
+            <div class="col-md-6">
+                 <label class="form-group">Material Unloading Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" value="{{DispalayDate1}}" formControlName="UnloadingDate"  placeholder="Enter Material Unloading Date" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.UnloadingDate.errors }" />  
+				<div *ngIf="submitted && f.UnloadingDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.UnloadingDate.errors.required">Material Unloading Date is Required</div>
+        </div> 
+            </div>
+ 
+			
+		
+			<div class="col-md-6">
+            <label class="form-group" >Material Quantity Received (in Kg)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="QuantityReceived"  placeholder="Enter Material Quantity Received (in Kg)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.QuantityReceived.errors }" #qtyrecv1 /> 
+
+				<div *ngIf="submitted && f.QuantityReceived.errors" class="invalid-feedback" >
+            <div *ngIf="f.QuantityReceived.errors.required">Material Quantity Received is Required</div>
+        </div> 
+				
+            </div>
+      
+            <div class="col-md-6">
+              <label class="form-group" >Quantity Unit&nbsp;<sup style="color:red">*</sup></label>
+             
+                 <select name="MaterialunitID" formControlName="QuantityUnit" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.QuantityUnit.errors }">
+              <option [selected]=true [disabled]="true">Select Quantity Unit</option>
+              <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+           </select>
+           <div *ngIf="submitted && f.QuantityUnit.errors" class="invalid-feedback" >
+                     <div *ngIf="f.QuantityUnit.errors.required">Quantity Unit is Required</div>
+                 </div>
+             </div>
+
+
+			<div class="col-md-6">
+            <label class="form-group" >Sales Material GST Rate (%)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="Rate"  placeholder="Enter Sales Material GST Rate (%)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.Rate.errors }" #qtyrecv1 /> 
+
+                <div *ngIf="submitted && f.Rate.errors" class="invalid-feedback" >
+                    <div *ngIf="f.Rate.errors.required">Sales Material GST Rate (%) is Required</div>
+                </div> 
+                
+                    </div>
+            
+			
+			
+           
+			
+			
+			<!-- Start Material value = Rcvd qtty * Sales rate (change)="calculate1(qtyrecv1.value, ratenum1.value)" -->
+			<div class="col-md-12 row">
+		  
+		  <div class="col-md-6">
+           <label class="form-group" >Material Sales Rate&nbsp;<sup style="color:red">*</sup></label>
+			<input type="number" formControlName="SalesRate" (input)=" calculateMaterialValue()"  placeholder="Enter Material Sales Rate" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.SalesRate.errors }" #qtyrecv1 /> 
+
+      <div *ngIf="submitted && f.SalesRate.errors" class="invalid-feedback" >
+          <div *ngIf="f.SalesRate.errors.required">Material Sales Rate is Required</div>
+      </div> 
+      
+          </div>
+		  
+		   <div class="col-md-6 result">
+           <label class="form-group" >Sales Material Value (inclusive GST in Rs)</label>
+		   <input value="{{netamt1}}" formControlName="MaterialValue" class="form-control form-group" readonly #materialvlaue1 />			   
+          </div>
+	
+			</div>
+			
+			<!-- End Material value = Rcvd qtty * Sales rate  -->
+			
+			
+			<!-- Start Net Amt = Material value + processing charge  -->
+			
+				<div class="col-md-12 row">
+			<div class="col-md-4">
+            <label class="form-group" >GST Rate (%)<br> for Processing &nbsp;<sup style="color:red">*</sup></label>
+                <input type="number" formControlName="GSTNo"  placeholder="Enter GST Rate (%) for Processing " class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.GSTNo.errors }" />  
+				<div *ngIf="submitted && f.GSTNo.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTNo.errors.required">GST Rate (%) for Processing  is required</div>
+        </div> 
+            </div>
+			
+		  
+		  <div class="col-md-4">
+           <label class="form-group" >Material Processing Rate (Rs/Kg)<sup style="color:red">*</sup></label>
+			<input type="number" formControlName="ProcessingCharges" (input)="calculateNetamount()"  placeholder="Enter Material Processing Rate (Rs/Kg)" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.ProcessingCharges.errors }" #processcharge1 />  
+			
+			<div *ngIf="submitted && f.ProcessingCharges.errors" class="invalid-feedback" >
+            <div *ngIf="f.ProcessingCharges.errors.required">Material Processing Rate (Rs/Kg) is required</div>
+        </div> 
+		
+          </div>
+		  
+		   <div class="col-md-4 result">
+           <label class="form-group" >Net Amount (Receivable)</label><br>
+		   <input value="{{netamt}}" formControlName="NetAmount" class="form-control form-group" readonly />			   
+          </div>
+	
+			</div>
+			
+			<!-- End Net Amt = Material value + processing charge  -->
+<!-- 			
+			<div class="col-md-6">
+			 <label class="form-group">Upload Co Processing Certificate &nbsp;<sup style="color:red">*</sup><span>Old File : &nbsp;&nbsp; {{OldCPC}}</span></label>
+			<input type="file" formControlName="CoProcessingCertificate" class="form-group form-control file1 browse" (change)="getFiles($event,'CPC')"> 
+				
+			</div>
+			
+			<div class="col-md-6">
+			 <label class="form-group">Upload Receiving Copy &nbsp;<sup style="color:red">*</sup><span>Old File : &nbsp;&nbsp;{{OldRC}}</span></label>
+			<input type="file" formControlName="ReceivingCopy" class=" form-group form-control file1 browse" (change)="getFiles($event,'RC')" > 
+				
+			</div> -->
+			
+			<div class="col-md-6">
+             <label class="form-group" >Details/Comments</label>	
+				 <textarea formControlName="Comments" placeholder="Details/Comments" class="form-control form-group" ></textarea>
+				
+				
+            </div>
+
+
+            <div class="col-md-12">
+                <div id="EditaccordionWO" class="accordion">
+                    <div class="card mb-0">
+                        <div class="card-header collapsed" data-toggle="collapse" href="#Editcollapse">
+                            <a class="card-title">
+                             <b>WOrk Order Items</b>
+                            </a>
+                        </div>
+                        <div id="Editcollapse" class="card-body collapse" data-parent="#EditaccordionWO" >
+                        
+      
+                            
+                            <div class="space10"></div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="table-responsive">
+                                   <div class="space10"></div>
+                                  <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                    <thead class="headerbackground text-white">
+                                       <tr>
+                                          
+                                           <th>Sr No.</th>
+                                           <th>WorkOrderCode</th>
+                                           <th>WorkOrdersItemCode</th>
+                                           <th>Tonnage</th>
+                                         </tr>
+                                       
+                                    </thead>
+                                  <tbody>
+                                     <tr *ngFor="let Data of WorkOrderDataForSales ; let i=index">
+                                         
+                                         <th>{{i + 1}}</th>								  
+                                        <th>{{Data.WorkOrderCode}}</th>
+                                        <th>{{Data.WorkOrdersItemCode}}</th>
+                                        <th>{{Data.Tonnage}}</th>
+                                     </tr>
+                                  </tbody>
+                                  </table>
+       
+                                </div>
+                              </div>
+                            </div>
+                           
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            
+            </div>
+
+
+
+
+            <div class="col-md-12">
+                <br>
+
+                <div id="accordion12" class="accordion">
+                    <div class="card mb-0">
+                        <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo12">
+                            <a class="card-title">
+                             <b>Document Upload</b>
+                            </a>
+                        </div>
+                        <div id="collapseTwo12" class="card-body collapse" data-parent="#accordion12" >
+                          <form  [formGroup]="DocUploadForm"  novalidate>
+                            <div class="row">
+                              <div class="col-md-6">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control form-group" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                              <div class="col-md-6">
+                               <label class="form-group" >Comments</label>
+                               <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control form-group" ></textarea>	
+                       
+                               </div>
+                              <div class="col-md-12">
+                                
+                                 <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+       
+                              </div>
+                              
+                            </div>
+                          <div class="space10"></div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Document Name</th>
+                                         <th>Document Type</th>
+                                         <th>Comments</th>
+                                       </tr>
+                                  </thead>
+                                <tbody>
+                                     <tr *ngFor="let Data of DocumentData ; let i=index">
+                                         <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                          <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                                     </tr>
+                                  </tbody>
+                                </table>
+       
+                              </div>
+                            </div>
+                          </div>
+                          </form>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            
+            </div>
+            <!-- <div class="col-md-6"> -->
+        <!-- <label class="uplodfile"> Select Proof of Delivery :</label> -->
+            <!-- <input type="file" name="file" accept="image/*" class=" form-group"/> -->
+        <!-- </div> -->
+               
+          </div> 
+        
+          <div class="form-group   btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary" (click)="EditSalesDetails()">Update</button>  
+	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>
+         
+		   <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div>  -->
+            </div>
+           
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+          </div>
+            </div>
+      </div>
+      </div>
+    <!--Edit sales Details Modal-->
+
+
+    <!--Delete Sales Details-->
+
+    <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">    
+           <div class="modal-content">
+              <div class="modal-header" >
+                <button type="button" class="close" data-dismiss="modal">&times;</button>       
+              </div>
+            <div class="modal-body">    
+       <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Sales Details</div>    
+            </div>
+            <div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteWOSalesDetails()">Yes</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!--Delete Sales Details-->
+
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>

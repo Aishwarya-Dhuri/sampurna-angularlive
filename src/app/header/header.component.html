@@ -1,0 +1,137 @@
+
+  <nav class="navbar navbar-expand-lg navbar-light navbar-bg"  *ngIf="nav.visible" >
+    <div class="container">
+  <a class="navbar-brand" href="index.html"><img src="../assets/images/sampurna_logo.png"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-md-auto" *ngIf="isAdmin">
+      <li class="nav-item active">
+        <a class="nav-link"routerLink="/dashboard" >Dashboard <span class="sr-only">(current)</span></a>
+      </li>
+     <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Enrolment forms
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          
+          <a class="dropdown-item" routerLink="/ManufacturerEnrolment">Manufacturers/Brands</a>
+          <a class="dropdown-item" routerLink="/AggregatorEnrolment" >Aggregators</a>
+          <a class="dropdown-item" routerLink="/TransporterEnrolment" >Transporters</a>
+          <a class="dropdown-item" routerLink="/RecyclerEnrolement" >Recyclers</a>
+          
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Work Order
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      
+          <a class="dropdown-item" routerLink="/ViewWorkOrder">View Work Order</a>
+          <a class="dropdown-item" routerLink="/CollectionPurchase" >View Collection/Purchase</a>
+          <a class="dropdown-item" routerLink="/Transportation" >View Transportation</a>
+          <a class="dropdown-item" routerLink="/ViewSalesDetails">View Sales Details</a>
+          <a class="dropdown-item" routerLink="/ViewBills">View Bills</a>
+        
+          
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Reports
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" routerLink="/dashboard">Work Order Details</a>
+          <a class="dropdown-item" routerLink="/dashboard">Collection/Purchase Details</a>
+          <a class="dropdown-item" routerLink="/dashboard" >Transportation Details</a>
+          <a class="dropdown-item" routerLink="/dashboard" >Recycling Details</a>
+          <a class="dropdown-item" routerLink="/dashboard">Billing Details</a>
+          <a class="dropdown-item" routerLink="/dashboard" >Consolidated Details</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" >
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Masters
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" routerLink="/city">City</a>
+          <a class="dropdown-item" routerLink="/subrubs">Suburbs</a>
+          <a class="dropdown-item" routerLink="/statemaster">State</a>
+          <a class="dropdown-item" routerLink="/DocumentType">Document Type</a>
+          <a class="dropdown-item" routerLink="/WesteMaterial">Waste Materials</a>
+          <a class="dropdown-item" routerLink="/MaterialUnit">Material Unit</a>
+          <!-- <a class="dropdown-item" routerLink="/waste-type">Waste Material Form</a> -->
+          <a class="dropdown-item" routerLink="/RecyclingType">Recycling Type</a>
+		       <a class="dropdown-item" routerLink="/Pages">Pages</a>
+          <a class="dropdown-item" routerLink="/role">Roles</a>
+          <a class="dropdown-item" routerLink="/RoleAccess">Role Access</a>
+          <a class="dropdown-item" routerLink="/TransportRoute">Transport Route</a>
+          <a class="dropdown-item" routerLink="/users">Users</a>
+          <a class="dropdown-item" routerLink="/ManufacturerType">Manufacturer Type</a>
+          <a class="dropdown-item" routerLink='/AggregatorType'>Aggregator Type</a>
+          <a class="dropdown-item" routerLink='/ProcessingType'>Processing Type</a>
+          <a class="dropdown-item" routerLink='/VehicaleType'>Vehicle Type</a>
+          <a class="dropdown-item" routerLink='/BillingStatus'>Billing Status</a>
+          <a class="dropdown-item" routerLink='/transstatus'>Transportation Status</a>
+          <a class="dropdown-item" routerLink='/recyclerstatus'>PCB Status</a>
+          <a class="dropdown-item" routerLink='/aggrementstatus'>Agreement Status</a>
+          <a class="dropdown-item" routerLink='/wostatus'>WorkOrder Status</a>
+         
+        
+
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink='/' (click)="Logout()">Logout</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-md-auto" *ngIf="isManufacturer">
+      <li class="nav-item">
+        <a class="nav-link"routerLink="/dashboard" >Dashboard </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link"routerLink="/dashboard" >Account Details </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link"routerLink="/ViewWorkOrder" >Work Order</a>
+      </li>
+
+
+      <li class="nav-item">
+        <a class="nav-link"routerLink="/CollectionPurchase" >Transaction Details </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link"routerLink="/ViewBills" >Bills</a>
+      </li>
+
+     
+
+     
+    
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Reports
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" routerLink="/dashboard">Work Order Reports</a>
+          <a class="dropdown-item" routerLink="/dashboard">Transaction Reports</a>
+          <!-- <a class="dropdown-item" routerLink="/dashboard" >Transportation Details</a> -->
+          <!-- <a class="dropdown-item" routerLink="/dashboard" >Recycling Details</a> -->
+          <a class="dropdown-item" routerLink="/dashboard">Billing Reports</a>
+          <!-- <a class="dropdown-item" routerLink="/dashboard" >Consolidated Details</a> -->
+        </div>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link" routerLink='/' (click)="Logout()">Logout</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>

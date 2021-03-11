@@ -1,0 +1,1256 @@
+<div class="container">
+  <div class="AggregatoremainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Aggregators</h2>
+	 
+	  <div class="col-md-12 row button-margin">
+	  <div class="col-md-6 row">
+     
+		<input type="" placeholder="Search By Aggregator City,State,Name,Aggrement Status ...." class="form-group form-control searchtextbox" name="" (input)="SearchAggregator($event.target.value)">
+     </div>
+	 
+	  <div class="col-md-2">
+		<button (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button">Export To Excel </button>
+    </div>
+	 
+	  <div class="col-md-2">
+		<button (click)="print()" class="btn btn-primary Addcitybtton float-right print-button">Print </button>
+     </div>
+	 
+	 
+	    <div class="col-md-2">
+	 <div class="float-right">
+      <button class="btn btn-primary Addcitybtton"  (click)="ResetFrom()"  data-toggle="modal" data-target="#myModal" >Add Aggregators</button>
+      </div>
+      </div>
+      </div>
+	  
+	   <form [formGroup]="AggregatorFilterForm">
+	   
+	   <div class="col-md-12 row">
+	    
+	    <div class="col-md-3">
+	   <label class="">State</label>
+     <select class="form-control form-group" (change)="FilterOnState($event.target.value)" 
+	  formControlName="FilterState">
+              <option [selected]=true  value=
+				"0">All State</option>
+			<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}" >{{Data.StateName}} </option>
+       </select> 
+      </div>
+	  
+	  <div class="col-md-3">    
+		   <label class="">City</label>          
+		<select formControlName="FilterOnCity" class="form-control form-group" (change)="FilterOnCity($event.target.value)" >
+                <option [selected]=true  value="0">All City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+        </select> 
+     </div>
+	 
+	
+	  
+	  <div class="col-md-3">
+		<label class="">Aggregator Name</label>
+		<select class="form-control form-group" (change)="FilterOnName($event.target.value)" formControlName="FilterOnName">
+			<option [selected]=true  value="">All Aggregator </option>
+			<option *ngFor="let Data of AGNameList" value="{{Data.Name}}" >{{Data.Name}} </option>
+        </select>
+      </div>
+	    
+	  <div class="col-md-3">
+	 <label class="">Select Agreement Status</label>
+		<select class="form-control form-group" (change)="FilterOnAGStatus($event.target.value)" formControlName="FilterOnAGStatus">
+                <option [selected]=true  value="0">All Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata1" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+         </select> 
+      </div>
+	  
+      </div>
+	  
+	  </form>
+	  
+	  <div id="print-section">
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+    
+     
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	  <th class="doNotPrint"></th>
+    <th>Sr No</th>
+          <th>Aggregator Code</th>
+          <th>Aggregator Name</th>
+          <th>Address</th>
+          <th>State</th>
+          <th>City</th>
+          <th>Suburb</th>
+         <th>Details</th> 
+      <th>GST No</th>
+      <th>Agreement Status</th>
+      <th>Waste Material Form</th>
+      <th>Expiry Date</th>
+     
+      <!-- <th class="doNotPrint"></th> -->
+    
+      
+   
+      </tr>
+      </thead>
+	  
+	  
+      <tbody>
+     <tr *ngFor="let Data of aggregatordata ; let i=index"> 
+	 
+	 <td class="doNotPrint"><label  (click)=" EditAggregatorData(Data.AGCode,Data.AGName,Data.Address,Data.StateId,Data.CityId,Data.SuburbId,Data.AGDetails,Data.GSTNo,Data.AgreementStatusId,Data.ExpiryDate,Data.DispalayDate,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.PanCard,Data.AggregatorId,Data.CreationDate)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+		
+		<label  (click)=" DeleteAggregatorData(Data.AGCode,Data.AGName,Data.Address,Data.StateId,Data.CityId,Data.SuburbId,Data.AGDetails,Data.GSTNo,Data.AgreementStatusId,Data.ExpiryDate,Data.DispalayDate,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.PanCard,Data.AggregatorId,Data.CreationDate)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label>
+		<label (click)="GetAggregatorId(Data.AggregatorId,Data.AGName)">
+		<span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#Typeofweste">Type of Waste</button></span></label>
+		</td>
+	 
+	 
+ <td>{{i+1}}</td> 
+      <td>{{Data.AGCode}}</td> 
+         <td>{{Data.AGName}}</td> 
+         <td>{{Data.Address}}</td> 
+       <td>{{Data.StateName}}</td> 
+       <td>{{Data.CityName}}</td> 
+       <td>{{Data.SuburbName}}</td> 
+       <td>{{Data.AGDetails}}</td> 
+       <td>{{Data.GSTNo}}</td> 
+       <td><span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='Terminated'" style="color:Red">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='30 Days to Expire'" style="color:Orange">{{Data.AgreementStatusName}}</span>
+	  </td>
+     <td>{{Data.WasteMaterialFormName}}</td> 
+    <td>{{Data.ExpiryDate | date:'dd/MM/yyyy'}}</td>
+          
+       <!-- <td  class="doNotPrint"(click)="GetAggregatorId(Data.AggregatorId,Data.AGName)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#Typeofweste">Type of Waste</button></span></td> -->
+      </tr>
+   
+    
+    
+    </tbody>
+     </table>
+     </div>
+	 </div>
+	  <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  </div>
+
+  <!--Add new agregator Modal -->
+<div id="myModal" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+    <h4>Add New Aggregators</h4>
+<form [formGroup]="AggregatorForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-group">
+	 <div class="col-md-12 row">
+	<div class="col-md-6">
+	<label class="modelAggregatorname lbl-margin">Aggregator Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="AGName" class="form-control form-group" placeholder="Enter Aggregator Name"  [ngClass]="{ 'is-invalid': submitted && f.AGName.errors }" (change)="GenerateMFCode($event.target.value)"/>
+		
+		<div *ngIf="submitted && f.AGName.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGName.errors.required">Aggregator Name is Required</div>
+        </div>
+        </div>
+	
+	<div class="col-md-6">
+		 <label class="modelAggregatorCode lbl-margin">Aggregator Code&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="AGCode" class="form-control form-group" placeholder="Enter Aggregator Code" [ngClass]="{ 'is-invalid': submitted && f.AGCode.errors }" [disabled]="true" readonly />
+		
+			<div *ngIf="submitted && f.AGCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGCode.errors.required">Aggregator Code is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		 <label class="modelAggregatorDetails lbl-margin">Address&nbsp;<sup style="color:red">*</sup></label>
+		<textarea  formControlName="Address" class="form-control form-group" placeholder="Enter Address" [ngClass]="{ 'is-invalid': submitted && f.Address.errors }">
+</textarea>
+<div *ngIf="submitted && f.Address.errors" class="invalid-feedback" >
+            <div *ngIf="f.Address.errors.required">Address is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+       <label class="lbl-margin">State<sup style="color:red">*</sup> :</label>
+         <select class="form-control form-group" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingState()">
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+   
+		<div class="col-md-6">
+		<label class="modelManufacturename lbl-margin">City&nbsp;<sup style="color:red">*</sup></label>
+      <select class="form-control form-group" (change)="getAgFromsuburboncityId($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+                <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback">
+            <div *ngIf="f.CityId.errors.required">City is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		<label class="modelManufacturename lbl-margin">Subrub&nbsp;<sup style="color:red">*</sup></label>
+		  <select  class="form-control form-group"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && f.SuburbId.errors }">
+	   <option [selected]=true [disabled]="true">Select Suburb</option>
+    <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+  </select>
+  <div *ngIf="submitted && f.SuburbId.errors" class="invalid-feedback" >
+            <div *ngIf="f.SuburbId.errors.required">Suburb is Required</div>
+        </div>
+		</div>		
+		
+		<div class="col-md-6">
+		 <label class="modelAggregatorDetails lbl-margin">Details&nbsp;<sup style="color:red">*</sup></label>
+		<textarea  formControlName="AGDetails" class="form-control form-group" placeholder="Enter Aggregator Details" [ngClass]="{ 'is-invalid': submitted && f.AGDetails.errors }">
+</textarea>
+<div *ngIf="submitted && f.AGDetails.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGDetails.errors.required">Details  is Required</div>
+        </div>
+		</div>
+		
+
+		<div class="col-md-6">
+		<label class="modelDisposer lbl-margin">GST No</label>
+        <input type="text" formControlName="GSTNo" class="form-control form-group"   placeholder="Enter GST No" />
+		
+		
+		</div>
+		
+		
+		<div class="col-md-6">
+		<label class="modelDisposer lbl-margin">PAN Number&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="Pancard" class="form-control form-group"   placeholder="Enter PAN No" [ngClass]="{ 'is-invalid': submitted && f.Pancard.errors }" />
+		
+		<div *ngIf="submitted && f.Pancard.errors" class="invalid-feedback" >
+            <div *ngIf="f.Pancard.errors.required">Pan Card is Required</div>
+        </div>
+		</div>
+		
+		
+		
+		<div class="col-md-6">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control form-group" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }">
+                <option [selected]=true [disabled]="true">Select AgreementStatus</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+		</div>
+		<div class="col-md-6"> 
+        <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="Date" formControlName="CreationDate" value="{{TodayDateC}}" class="form-control form-group" placeholder="Select Creation Date" readonly /> 
+		   
+      </div> 
+		 	<div class="col-md-6"> 
+        <label class="modelGST lbl-margin">Expiry Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="Date" formControlName="ExpiryDate" class="form-control form-group" placeholder="Select Expiry Date" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }" /> 
+		<div *ngIf="submitted && f.ExpiryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+        </div>
+      </div> 
+		
+	<!-- <div class="col-md-6">
+   <label class="modelAggregatorDetails lbl-margin">Waste Material Form&nbsp;<sup style="color:red">*</sup></label> 
+  <select class="form-control form-group" formControlName="WasteMaterialFormId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialFormId.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material Form</option>
+            <option *ngFor="let Data of wastetypereqData" value="{{Data.WasteMaterialFormId}}">{{Data.WasteMaterialFormName}} </option>
+          </select>
+			   
+		<div *ngIf="submitted && f.WasteMaterialFormId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialFormId.errors.required">Waste material Form is Required</div>
+        </div>	  
+   </div> 
+   
+   	
+	  
+	 
+	  
+	  <div class="col-md-6">
+		</div>-->
+
+		<div class="col-md-6">
+       <label class="modelDetails"><b>Primary Details :</b></label>
+       <label class="modelManufactureAddress">Name<sup style="color:red">*</sup> </label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf=" f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		
+      <label class="modelManufactureAddress">Designation<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control form-group" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+		<div *ngIf=" f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+		
+		
+      <label class="modelManufactureAddress">Phone<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }" />
+		<div *ngIf=" f.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="f.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Phone Number
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.PrimaryCntTelNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+        </div>
+		
+		
+		
+		   <label class="modelManufactureAddress">Telephone</label>
+         <input type="text" formControlName="PrimaryCntLandlineNo"   class="form-control form-group" placeholder="Enter Landline Number" />
+		  <div *ngIf=" f.PrimaryCntLandlineNo.errors" class="invalid-feedback" >	
+		  <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>
+			</div>
+
+        <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" placeholder="Enter Email" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required [email]="true"/>
+			
+			<div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+			
+		
+      </div>
+	 
+   <div class="col-md-6">
+	 
+     <label class="modelDetails"><b>Secondary Details :</b>&nbsp;<input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+       Same as above
+    </label>
+	 
+	 
+	
+	
+       <label class="modelManufactureAddress">Name</label>
+        <input type="text" formControlName="SecCntName" class="form-control form-group" placeholder="Enter Name" />
+		
+		
+      <label class="modelManufactureAddress">Designation</label>
+        <input type="text" formControlName="SecCntDesignation"   class="form-control form-group" placeholder="Enter Designation" />
+		
+		
+		
+		
+      <label class="modelManufactureAddress">Phone</label>
+        <input type="text"  formControlName="SecCntTelNo" class="form-control form-group" placeholder="Enter Phone Number" pattern="^((\\+91-?)|0)?[0-9]{10}$" />
+		 <div *ngIf=" f.SecCntTelNo.errors" class="custom-Invalid-feedback" >	
+		<div *ngIf="f.SecCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.SecCntTelNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+			</div>	
+
+		
+		 <label class="modelManufactureAddress">Telephone</label>
+         <input type="text" formControlName="SecCntLandlineNo"   class="form-control form-group" placeholder="Enter Telephone" />
+		  <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >	
+		  <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>
+			</div>
+		  
+		
+		
+		<label class="modelManufactureAddress">Email</label>
+        <input type="text" formControlName="SecCntEmail" class="form-control form-group" placeholder="Enter Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"  [email]="true" /> 
+		<div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+			<div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+		
+		
+		
+          </div>
+		  
+
+		
+    </div> 
+		
+		
+    </div> 
+    
+	<div class="form-group   btn-submit">
+          <button class="btn btn-primary">Submit</button>&nbsp;&nbsp;
+          <!-- <button class="btn btn-secondary" disabled  id="nextbutton">Next</button>   -->
+
+	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	 <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+</form>   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="ResetFrom()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add New Aggregator Modal -->
+<!--My Modal Alert-->
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" (click)="ResetFrom()" data-dismiss="modal" data-toggle="modal" data-target="#addtypeweste">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--My Modal Alert-->
+
+<!--Edit New Aggregator myModaledit-->
+
+<div id="myModaledit" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+    <h4>Edit Aggregators</h4>
+<form [formGroup]="AggregatorForm" novalidate>
+    <div class="form-group">
+	 <div class="col-md-12 row">
+	 <div class="col-md-6">
+	<label class="modelAggregatorname lbl-margin">Aggregator Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="AGName" class="form-control form-group" placeholder="Enter Aggregator Name"  [ngClass]="{ 'is-invalid': submitted && f.AGName.errors }" (change)="GenerateMFCode($event.target.value)"/>
+		
+		<div *ngIf="submitted && f.AGName.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGName.errors.required">Aggregator Name is Required</div>
+        </div>
+        </div>
+	
+	<div class="col-md-6">
+		 <label class="modelAggregatorCode lbl-margin">Aggregator Code&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="AGCode" class="form-control form-group" placeholder="Enter Aggregator Code" [ngClass]="{ 'is-invalid': submitted && f.AGCode.errors }" [disabled]="true" readonly />
+		
+			<div *ngIf="submitted && f.AGCode.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGCode.errors.required">Aggregator Code is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		 <label class="modelAggregatorDetails lbl-margin">Address&nbsp;<sup style="color:red">*</sup></label>
+		<textarea  formControlName="Address" class="form-control form-group" placeholder="Enter Address" [ngClass]="{ 'is-invalid': submitted && f.Address.errors }">
+</textarea>
+<div *ngIf="submitted && f.Address.errors" class="invalid-feedback" >
+            <div *ngIf="f.Address.errors.required">Address  is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+       <label class="lbl-margin"> State<sup style="color:red">*</sup></label>
+         <select class="form-control form-group" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingState()" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	
+	 <div *ngIf=" f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+      </div>
+   
+		<div class="col-md-6">
+		<label class="modelManufacturename lbl-margin">City&nbsp;<sup style="color:red">*</sup></label>
+      <select class="form-control form-group" (change)="getAgFromsuburboncityId($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+                <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback">
+            <div *ngIf="f.CityId.errors.required">City is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		<label class="modelManufacturename lbl-margin">Subrub&nbsp;<sup style="color:red">*</sup></label>
+		  <select name="fromcity" class="form-control form-group"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && f.SuburbId.errors }">
+	   <option [selected]=true [disabled]="true">Select Suburb</option>
+    <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+  </select>
+  <div *ngIf="submitted && f.SuburbId.errors" class="invalid-feedback" >
+            <div *ngIf="f.SuburbId.errors.required">Suburb is Required</div>
+        </div>
+		</div>		
+		
+		<div class="col-md-6">
+		 <label class="modelAggregatorDetails lbl-margin">Details&nbsp;<sup style="color:red">*</sup></label>
+		<textarea  formControlName="AGDetails" class="form-control form-group" placeholder="Enter Aggregator Details" [ngClass]="{ 'is-invalid': submitted && f.AGDetails.errors }">
+</textarea>
+<div *ngIf="submitted && f.AGDetails.errors" class="invalid-feedback" >
+            <div *ngIf="f.AGDetails.errors.required">Details  is Required</div>
+        </div>
+		</div>
+		
+
+		<div class="col-md-6">
+		<label class="modelDisposer lbl-margin">GST No</label>
+        <input type="text" formControlName="GSTNo" class="form-control form-group"   placeholder="Enter GST No"  />
+		
+		
+		</div>
+		
+		
+		<div class="col-md-6">
+		<label class="modelDisposer lbl-margin">PAN Number&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="Pancard" class="form-control form-group"   placeholder="Enter PAN No" [ngClass]="{ 'is-invalid': submitted && f.Pancard.errors }" />
+		
+		<div *ngIf="submitted && f.Pancard.errors" class="invalid-feedback" >
+            <div *ngIf="f.Pancard.errors.required">Pan Card is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control form-group" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }">
+                <option [selected]=true [disabled]="true">Select AgreementStatus</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+		</div>
+		
+		
+	   <div class="col-md-6"> 
+        <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="Date" formControlName="CreationDate" value="{{DispalayCreationDate}}" class="form-control form-group" placeholder="Select Creation Date" readonly /> 
+		   
+      </div> 
+		
+			<div class="col-md-6"> 
+        <label class="modelGST lbl-margin">Expiry Date&nbsp;<sup style="color:red">*</sup></label> 
+         <input type="Date" value="{{DispalayDate}}" formControlName="ExpiryDate" class="form-control form-group" placeholder="Select Expiry Date" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }" /> 
+		<div *ngIf="submitted && f.ExpiryDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+        </div>
+      </div> 
+		
+	<!-- <div class="col-md-6">
+   <label class="modelAggregatorDetails lbl-margin">Waste Material Form&nbsp;<sup style="color:red">*</sup></label> 
+  <select class="form-control form-group" formControlName="WasteMaterialFormId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialFormId.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material Form</option>
+            <option *ngFor="let Data of wastetypereqData" value="{{Data.WasteMaterialFormId}}">{{Data.WasteMaterialFormName}} </option>
+          </select>
+			   
+		<div *ngIf="submitted && f.WasteMaterialFormId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialFormId.errors.required">Waste material Form is Required</div>
+        </div>	  
+   </div>
+   
+   
+	 
+	  
+	  <div class="col-md-6">
+		</div> -->
+
+		 <div class="col-md-6">
+       <label class="modelDetails lbl-margin"><b>Primary Details :</b></label>
+       <label class="modelManufactureAddress">Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name"[ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf="submitted && f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		
+		
+      <label class="modelManufactureAddress lbl-margin">Designation&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control form-group" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+		<div *ngIf="submitted && f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+	
+		<label class="modelManufactureAddress">Phone<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }" />
+		<div *ngIf=" f.PrimaryCntTelNo.errors" class="custom-Invalid-feedback" >		
+            <div *ngIf="f.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Phone Number
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.PrimaryCntTelNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+        </div>
+		
+		
+		
+        <label class="modelManufactureAddress">Telephone</label>
+         <input type="text" formControlName="PrimaryCntLandlineNo" class="form-control form-group" placeholder="Enter Telephone" />
+		 <div *ngIf=" f.PrimaryCntLandlineNo.errors" class="custom-Invalid-feedback" >
+		 <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+			</div>	
+		
+			
+		
+		
+     <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control form-group" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required [email]="true"/>
+			
+			<div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+		
+      </div>
+	 
+  <div class="col-md-6">
+	 
+     <label class="modelDetails"><b>Secondary Details :</b>&nbsp;<input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+       Same as above
+    </label>
+	 
+	 
+	
+	
+       <label class="modelManufactureAddress">Name</label>
+        <input type="text" formControlName="SecCntName" class="form-control form-group" placeholder="Enter Name" />
+		
+		
+      <label class="modelManufactureAddress">Designation</label>
+        <input type="text" formControlName="SecCntDesignation"   class="form-control form-group" placeholder="Enter Designation" />
+		
+		
+		
+		
+    <label class="modelManufactureAddress">Phone</label>
+        <input type="text"  formControlName="SecCntTelNo" class="form-control form-group" placeholder="Enter Phone" />
+		  <div *ngIf=" f.SecCntTelNo.errors" class="custom-Invalid-feedback" >
+		<div *ngIf="f.SecCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.SecCntTelNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+			</div>	
+		
+		 <label class="modelManufactureAddress">Telephone</label>
+         <input type="text" formControlName="SecCntLandlineNo"   class="form-control form-group" placeholder="Enter Telephone" />
+		  <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >
+		 <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>
+			</div>
+		  
+		
+		
+		<label class="modelManufactureAddress">Email</label>
+        <input type="text" formControlName="SecCntEmail" class="form-control form-group" placeholder="Enter Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"  [email]="true" />
+	<div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+			<div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+			
+          </div>		  
+		
+    </div> 
+		
+		
+    </div> 
+	<div class="form-group   btn-submit">
+          <button class="btn btn-primary" (click)="AddUpdateDeleteAggregator()">Update</button>  
+	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	 <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+</form>   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="ResetFrom()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--End Edit New Aggregator-->
+
+
+ <!--Delete Aggregator --> 
+<div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" data-backdrop="static" data-keyboard="false"> 
+   <div class="modal-dialog">    
+      <div class="modal-content"> 
+        <div class="modal-header" >
+         <button type="button" class="close" data-dismiss="modal">&times;</button>     
+        </div> 
+      <div class="modal-body">   
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Aggregator Details?</div> 
+      
+       </div>
+       <div class="modal-footer">
+	   <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteAggregator()">Yes</button> 
+       <button type="button" class="btn btn-default" data-dismiss="modal" >No</button> 
+      </div>  
+     </div> 
+ </div> 
+ </div> 
+<!-- <!--Delete Aggregator--> 
+
+
+
+
+<!-- <!--Table Type of waste Aggregator--> 
+ <div id="Typeofweste" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog modal-lg-screen ">    
+      <div class="modal-content"> 
+         <div class="modal-header " > 
+          <button type="button" class="close" data-dismiss="modal">&times;</button> 
+       </div> 
+      <div class="modal-body">    
+    <h4> Type of Waste </h4> 
+	 <div class="float-right"> 
+    <button class="btn btn-primary Addcitybtton" data-dismiss="modal" data-toggle="modal" data-target="#addtypeweste" (click)="ResetFrom()">Add Type of Waste</button> 
+    </div> 
+	
+	
+
+      <div class="form-group"> 
+        <label class="modelManufacturename namefloat">Aggregator Name :&nbsp;&nbsp;{{Aggregatorname}}</label> 
+		 <div class="table-responsive">
+		 <table class="table table-borderless table-hover tableborder align-middle citytable"> 
+    <thead class="headerbackground text-white"> 
+  <tr> 
+  <th></th>
+       <th>Sr No</th> 
+       <th>Waste Material</th> 
+	 <th> Handling Capacity</th> 
+	 <th> Material Unit</th> 
+	 <th>Point Of Contact Name</th> 
+	 <th>Phone</th> 
+	 <th>Email ID</th>
+		
+		<th>Operating Cities</th> 
+		<th>Operating Suburb</th> 
+	<!-- <th>Waste type</th> -->
+	 <th>Types of Processing</th> 
+		 <th>Current Recycling Rates(Rs./Kg)</th> 
+		 
+		
+		
+     </tr>
+    </thead> 
+   <tbody> 
+      <tr *ngFor="let Data of AGWasteTypesdata ; let i=index">
+	  
+	  <td><label  (click)="EditAGWasteTypeData(Data.WasteMaterialId,Data.HandlingCapacity,Data.HandlingCapacityMatUnitID,Data.PrimaryCntName,Data.PrimaryCntTelNo,Data.PrimaryCntEmail,Data.OperatingCities,Data.OperatingSuburbs,Data.ProcessingTypeId,Data.CurrentRecylRates,Data.AGWasteTypeId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledittypeofweste" class="btn-color">Edit</span> </label>
+		
+		<label  (click)="DeleteAGWasteTypeData(Data.WasteMaterialId,Data.HandlingCapacity,Data.HandlingCapacityMatUnitID,Data.PrimaryCntName,Data.PrimaryCntTelNo,Data.PrimaryCntEmail,Data.OperatingCities,Data.OperatingSuburbs,Data.ProcessingTypeId,Data.CurrentRecylRates,Data.AGWasteTypeId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldeletetetypeofweste" class="btn-color">Delete</span> </label>
+		</td>
+	  
+      <td>{{i+1}}</td> 
+	   <td>{{Data.WasteMaterialName}}</td> 
+      <td>{{Data.HandlingCapacity}}</td> 
+    <td>{{Data.HandlingCapacityMatUnitName}}</td>  
+   <td>{{Data.PrimaryCntName}}</td> <td>{{Data.PrimaryCntTelNo}}</td>  <td>{{Data.PrimaryCntEmail}}</td> 
+      <td>{{Data.OperatingCitiesDesc}}</td> 
+       <td>{{Data.OperatingSuburbsDesc}}</td>
+      <!-- <td>waste type</td> -->
+       <td>{{Data.ProcessingTypeName}}</td> 
+       <td>{{Data.CurrentRecylRates}}</td> 
+      
+  
+    
+     </tr>
+   
+  
+    
+   </tbody>
+    </table> 
+		 
+		
+    </div>  
+   
+    <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+       </div> 
+	  </div> 
+       <div class="modal-footer"> 
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+       </div> 
+     </div> 
+   </div> 
+ </div> 
+
+
+<!-- <!--Table Type waste Aggregator--> 
+
+
+<!-- <!--Add Type of waste Aggregator--> 
+
+ <div id="addtypeweste" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog modal-lg">     
+      <div class="modal-content"> 
+         <div class="modal-header" > 
+            <h4>Add Type of Waste</h4> 
+
+           <button type="button" class="close" data-dismiss="modal">&times;</button>        
+   </div> 
+     <div class="modal-body">     
+	<form [formGroup]="AgWastetypeForm"  (ngSubmit)="onSubmitAgWatetype()">
+    <div class="form-group"> 
+	 <div class=" col-md-12 row"> 
+  <div class="col-md-12">
+      <label class="modelManufacturename namefloat">Aggregator Name :&nbsp;&nbsp;{{Aggregatorname}}</label> 
+    </div>
+  <div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Waste Material&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material</option>
+            <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}} </option>
+          </select>
+		  
+		   <div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialId.errors.required">Waste Material is Required</div>
+        </div>
+   </div> 
+       
+		 <div class=" col-md-6"> 
+		 <label class="modelAggregatorDetails">Handling Capacity&nbsp;<sup style="color:red">*</sup></label> 
+  <input type="number" formControlName="HandlingCapacity" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }"/> 
+		 <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacity.errors.required">Handling Capacity is Required</div>
+        </div>
+		 </div> 
+		 
+	<div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Material Unit&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="HandlingCapacityMatUnitID" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacityMatUnitID.errors }">
+            <option [selected]=true [disabled]="true">Select Material Unit</option>
+            <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}">{{Data.MaterialUnit}} </option>
+          </select>
+		  
+		  <div *ngIf="submitted && g.HandlingCapacityMatUnitID.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacityMatUnitID.errors.required"> Material Unit is Required</div>
+        </div>
+   </div> 
+   
+   <!--New Waste material form-->
+   <div class="col-md-6">
+    <label class="modelAggregatorDetails lbl-margin">Waste Material Form&nbsp;<sup style="color:red">*</sup></label> 
+   <select class="form-control form-group" formControlName="WasteMaterialFormId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialFormId.errors }">
+             <option [selected]=true [disabled]="true">Select Waste Material Form</option>
+             <option *ngFor="let Data of wastetypereqData" value="{{Data.WasteMaterialFormId}}">{{Data.WasteMaterialFormName}} </option>
+           </select>
+          
+     <div *ngIf="submitted && g.WasteMaterialFormId.errors" class="invalid-feedback" >
+             <div *ngIf="g.WasteMaterialFormId.errors.required">Waste material Form is Required</div>
+         </div>	  
+    </div>
+ <!--New Waste material form-->
+
+ <div class=" col-md-12"> 
+  
+   <label class="modelAggregatorDetails"><b>Point of Contact:</b></label> 
+   <label class="modelAggregatorDetails">Name&nbsp;<sup style="color:red">*</sup></label> 
+   <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntName.errors }" /> 
+	<div *ngIf="submitted && g.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="g.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		
+  <label class="modelAggregatorDetails">Phone&nbsp;<sup style="color:red">*</sup></label> 
+ <input type="text" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntTelNo.errors }" pattern="^((\\+91-?)|0)?[0-9]{10}$" /> 
+ 
+ <div *ngIf=" g.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="g.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Phone Number
+			</div>
+			<div *ngIf="g.PrimaryCntTelNo.errors.minlength">
+			Phone Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="g.PrimaryCntTelNo.errors.maxlength"> 
+			Phone Number can be max 10 digit long
+			</div>	
+			<div *ngIf="g.PrimaryCntTelNo.errors.pattern"> 
+			Phone Number Should be Numerical
+			</div>	
+        </div>
+
+		
+ 
+  <label class="form-group">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required [email]="true"/>
+			
+			<div *ngIf="g.PrimaryCntEmail.invalid && (g.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="g.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="g.PrimaryCntEmail.errors.email && !g.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback">
+			Please input valid email ID
+			</div>
+			</div>
+ </div> 
+   <div class="col-md-12 row" > 
+ <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Cities&nbsp;<sup style="color:red">*</sup></label> 
+    
+ <!--<ng-multiselect-dropdown
+  [placeholder]="'Select City'"
+  [data]="citydata1"
+ formControlName="OperatingCities"
+  [settings]="CitydropdownSettings"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)">
+</ng-multiselect-dropdown>-->
+
+
+ <select class="form-control form-group" formControlName="OperatingCities" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+
+
+<div *ngIf="submitted && g.OperatingCities.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidAGCT" class="custom-Invalid-feedback" >
+           City is Required
+        </div>
+        </div>
+   </div> 
+
+  
+   <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Subrubs&nbsp;<sup style="color:red">*</sup></label> 
+ <select class="form-control form-group" formControlName="OperatingSuburbs" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true [disabled]="true">Select Suburb</option>
+                <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select> 
+
+<div *ngIf="submitted && g.OperatingSuburbs.errors" class="custom-invalid-feedback " >
+<div *ngIf="!IsValidAGSB" class="custom-Invalid-feedback" >
+           Suburb is Required
+        </div>
+        </div>
+
+<!-- <div *ngIf="!IsValidAGSB" class="custom-Invalid-feedback" > -->
+           <!-- Suburb is Required -->
+        <!-- </div> -->
+
+
+
+
+  </div> 
+  
+  
+  <div class="col-md-6">
+   <label class="modelAggregatorDetails">Processing Type&nbsp;<sup style="color:red">*</sup></label> 
+<!--<select class="form-control form-group" formControlName="ProcessingTypeId" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }" >
+                <option [selected]=true [disabled]="true">Select Processing Type</option>
+                <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}" >{{Data.ProcessingType}} </option>
+ </select> -->
+ 
+  <ng-multiselect-dropdown
+		   [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onItemSelect($event)"
+>
+</ng-multiselect-dropdown>
+			   
+			    <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-Invalid-feedback" >
+ <div *ngIf="g.ProcessingTypeId.errors.required">Processing Type is Required</div> 
+        </div>
+           
+        </div>
+ 
+   
+   
+   
+  
+  <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Current Recycling Rates(Rs./Kg)&nbsp;</label> 
+   <input type="currentrecyclingrates" formControlName="CurrentRecylRates" class="form-control form-group" placeholder="Enter Current Recycling Rates(Rs./Kg)" [ngClass]="{ 'is-invalid': submitted && g.CurrentRecylRates.errors }"/> 
+   <div *ngIf="submitted && g.CurrentRecylRates.errors" class="invalid-feedback" >
+            <div *ngIf="g.CurrentRecylRates.errors.required">Current Recycling Rates is Required</div>
+        </div>
+   </div> 
+  
+  
+  
+     </div> 
+    </div>  
+	 </div> 
+	
+    <div class="form-group btn-submit"> 
+         <button [disabled]="loading" class="btn btn-primary" >Submit</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		 
+     </div> 
+	 	<!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+   </form>
+       </div>
+       <div class="modal-footer"> 
+         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="StopTimer()">Close</button> 
+      </div> 
+     </div>
+   </div> 
+ </div> 
+<!-- <!--Add Type of waste --> 
+
+
+
+
+<!-- <!--Edit Type of waste Aggregator myModaledittypeofweste--> 
+<div id="myModaledittypeofweste" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false"> 
+  <div class="modal-dialog modal-lg">     
+      <div class="modal-content"> 
+         <div class="modal-header" > 
+           <button type="button" class="close" data-dismiss="modal">&times;</button>        
+   </div> 
+     <div class="modal-body">     
+   <h4>Edit Type of Waste</h4> 
+	<form [formGroup]="AgWastetypeForm" novalidate>
+       <div class="form-group"> 
+	 <div class=" col-md-12 row"> 
+  
+  <div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Waste Material&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="WasteMaterialId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }">
+            <option [selected]=true [disabled]="true">Select Waste Material</option>
+            <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}">{{Data.WasteMatName}} </option>
+          </select>
+		  
+		   <div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialId.errors.required">Waste Material is Required</div>
+        </div>
+   </div> 
+       
+		 <div class=" col-md-6"> 
+		 <label class="modelAggregatorDetails">Handling Capacity&nbsp;<sup style="color:red">*</sup></label> 
+  <input type="number" formControlName="HandlingCapacity" class="form-control form-group"  [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }"/> 
+		 <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacity.errors.required">Handling Capacity is Required</div>
+        </div>
+		 </div> 
+		 
+	<div class=" col-md-6"> 
+   <label class="modelAggregatorDetails">Material Unit&nbsp;<sup style="color:red">*</sup></label>  
+    <select class="form-control form-group" formControlName="HandlingCapacityMatUnitID" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacityMatUnitID.errors }">
+            <option [selected]=true [disabled]="true">Select Material Unit</option>
+            <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}">{{Data.MaterialUnit}} </option>
+          </select>
+		  
+		  <div *ngIf="submitted && g.HandlingCapacityMatUnitID.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacityMatUnitID.errors.required"> Material Unit is Required</div>
+        </div>
+   </div> 	
+		
+ <!--New Waste material form-->
+ <div class="col-md-6">
+  <label class="modelAggregatorDetails lbl-margin">Waste Material Form&nbsp;<sup style="color:red">*</sup></label> 
+ <select class="form-control form-group" formControlName="WasteMaterialFormId" [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialFormId.errors }">
+           <option [selected]=true [disabled]="true">Select Waste Material Form</option>
+           <option *ngFor="let Data of wastetypereqData" value="{{Data.WasteMaterialFormId}}">{{Data.WasteMaterialFormName}} </option>
+         </select>
+        
+   <div *ngIf="submitted && g.WasteMaterialFormId.errors" class="invalid-feedback" >
+           <div *ngIf="g.WasteMaterialFormId.errors.required">Waste material Form is Required</div>
+       </div>	  
+  </div>
+  <!--New Waste material form-->
+
+ <div class=" col-md-12"> 
+  
+   <label class="modelAggregatorDetails"><b>Point of Contact:</b></label> 
+   <label class="modelAggregatorDetails">Name&nbsp;<sup style="color:red">*</sup></label> 
+   <input type="text" formControlName="PrimaryCntName" class="form-control form-group" placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntName.errors }" /> 
+	<div *ngIf="submitted && g.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="g.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+		
+  <label class="modelAggregatorDetails">Phone&nbsp;<sup style="color:red">*</sup></label> 
+ <input type="text" formControlName="PrimaryCntTelNo" class="form-control form-group" placeholder="Enter Phone " [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntTelNo.errors }" pattern="^((\\+91-?)|0)?[0-9]{10}$" /> 
+ <div *ngIf="submitted && g.PrimaryCntTelNo.errors" class="invalid-feedback feedback-pos">
+            <div *ngIf="g.PrimaryCntTelNo.errors.required">Please input 10 digit Phone Number</div>
+        </div>
+		
+ 
+    <label class="form-group">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.PrimaryCntEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required [email]="true"/>
+			
+			<div *ngIf="g.PrimaryCntEmail.invalid && (g.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="g.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="g.PrimaryCntEmail.errors.email && !g.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback">
+			Please input valid email ID
+			</div>
+			</div>
+
+			
+ </div> 
+   <div class="col-md-12 row" > 
+ <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Cities&nbsp;<sup style="color:red">*</sup></label> 
+    
+ <!--<ng-multiselect-dropdown
+  [placeholder]="'Select City'"
+  [data]="citydata1"
+ formControlName="OperatingCities"
+  [settings]="CitydropdownSettings"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+  
+>
+</ng-multiselect-dropdown>-->
+<select class="form-control form-group" formControlName="OperatingCities" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}">{{Data.CityName}} </option>
+               </select> 
+
+   </div> 
+
+  
+   <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Subrubs&nbsp;<sup style="color:red">*</sup></label> 
+
+  
+ <!-- <ng-multiselect-dropdown
+  [placeholder]="'Select Suburb'"
+  [data]="suburbdata"
+  formControlName="OperatingSuburbs"
+  [settings]="SuburbdropdownSettings"
+  (onSelect)="onItemSuburbSelect($event)"
+  (onSelectAll)="onSelectSuburbAll($event)"
+  [ngClass]="{ 'is-invalid': submitted && g.OperatingSuburbs.errors }" 
+>
+</ng-multiselect-dropdown>-->
+ <select class="form-control form-group" formControlName="OperatingSuburbs" [ngClass]="{ 'is-invalid': submitted && g.OperatingCities.errors }" >
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+               </select> 
+
+
+
+
+  </div> 
+  
+  
+  <div class="col-md-6">
+   <label class="modelAggregatorDetails">Processing Type&nbsp;<sup style="color:red">*</sup></label> 
+<!--<select class="form-control form-group" formControlName="ProcessingTypeId" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }" >
+                <option [selected]=true [disabled]="true">Select Processing Type</option>
+                <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}" >{{Data.ProcessingType}} </option>
+ </select>-->
+ <ng-multiselect-dropdown
+		   [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+ formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+>
+</ng-multiselect-dropdown> 
+			   
+			    <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-Invalid-feedback" >
+ <div *ngIf="g.ProcessingTypeId.errors.required">Processing Type is Required</div> 
+        </div>
+   </div> 
+   
+   
+   
+  
+  <div class="col-md-6"> 
+   <label class="modelAggregatorDetails">Current Recycling Rates(Rs./Kg)&nbsp;<sup style="color:red">*</sup></label> 
+   <input type="currentrecyclingrates" formControlName="CurrentRecylRates" class="form-control form-group" placeholder="Enter Current Recycling Rates(Rs./Kg)" [ngClass]="{ 'is-invalid': submitted && g.CurrentRecylRates.errors }"/> 
+   <div *ngIf="submitted && g.CurrentRecylRates.errors" class="invalid-feedback" >
+            <div *ngIf="g.CurrentRecylRates.errors.required">Current Recycling Rates is Required</div>
+        </div>
+   </div> 
+  
+  
+  
+     </div> 
+    </div>  
+	 </div> 
+	
+    <div class="form-group btn-submit"> 
+         <button [disabled]="loading" class="btn btn-primary" (click)="AddUpdateDeleteAgWastetype()">Update</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		 
+     </div> 
+	 	<!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+   </form>
+       </div>
+       <div class="modal-footer"> 
+         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+      </div> 
+     </div>
+   </div> 
+ </div> 
+<!-- <!--Edit Type of waste Aggregator--> 
+
+
+<!-- start delete Modal Aggregate Typeofweste -->
+
+<div id="myModaldeletetetypeofweste" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false"> 
+   <div class="modal-dialog">    
+      <div class="modal-content"> 
+        <div class="modal-header" >
+         <button type="button" class="close" data-dismiss="modal">&times;</button>     
+        </div> 
+      <div class="modal-body">   
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Aggregator Type of Waste Details?</div> 
+      
+       </div>
+       <div class="modal-footer">
+     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteAgWastetype()">Yes</button> 
+       <button type="button" class="btn btn-default" data-dismiss="modal">No</button> 
+      </div> 
+     </div> 
+ </div> 
+ </div> 
+
+
+<!-- End delete Modal Aggregate Typeofweste -->
+
+
+
+</div>

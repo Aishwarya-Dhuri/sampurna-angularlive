@@ -1,0 +1,267 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle">Users  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" (click)="ResetFrom()" data-toggle="modal" data-target="#myModal">Add User</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th></th>
+          <th>Sr No</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact No</th>
+         
+        
+          
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of userdata ; let i=index">
+	  
+	  <td><a  (click)="EditUserData(Data.UserName,Data.UserId,Data.UserPasswd,Data.UserTypeId,Data.UserEmail,Data.UserTelNo)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a (click)="DeleteUserData(Data.UserName,Data.UserId,Data.UserPasswd,Data.UserTypeId,Data.UserEmail,Data.UserTelNo)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.UserName}}</td>
+        <td>{{Data.UserEmail}}</td>
+        <td>{{Data.UserTelNo}}</td>
+     <!-- <td (click)="EditUserData(Data.UserName,Data.UserId,Data.UserPasswd,Data.UserTypeId,Data.UserEmail,Data.UserTelNo)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp;Edit</button></span></td>         -->
+       <!-- <td (click)="DeleteUserData(Data.UserName,Data.UserId,Data.UserPasswd,Data.UserTypeId,Data.UserEmail,Data.UserTelNo)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+      </tr>
+   
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	 <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  </div>
+  
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add User</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+        <div class="modal-body">    
+    
+  <form [formGroup]="userForm"(ngSubmit)="onSubmit()">
+       <div class="col-md-12 row">
+          <div class="col-md-6 form-group">
+              <label>Select User Type&nbsp;<sup style="color:red">*</sup></label>
+                 <select class="form-control"formControlName="UserTypeId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserTypeId.errors }">
+                      <option [selected]=true [disabled]="true">Select User Type</option>
+                       <option *ngFor="let Data of roledata" value="{{Data.RoleId}}">{{Data.RoleName}} </option>
+                      </select> 
+                <div *ngIf="submitted && f.UserTypeId.errors" class="invalid-feedback" >
+                   <div *ngIf="f.UserTypeId.errors.required">User Type is Required</div>
+               </div>
+             </div>
+
+  
+             <div class="col-md-6 form-group"> 
+                <label>Email&nbsp;<sup style="color:red">*</sup></label>
+                <input type="text" placeholder="Enter Email" formControlName="UserEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required/>
+                <div *ngIf="submitted && f.UserEmail.errors" class="invalid-feedback">
+                <div *ngIf="f.UserEmail.errors.required feedback-pos">Please Enter Valid Email</div>
+                </div>
+                
+            </div>
+
+
+
+    <div class="col-md-6 form-group">
+     <label>User Name&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="UserName"  placeholder="Enter User Name" class="form-control"[ngClass]="{ 'is-invalid': submitted && f.UserName.errors }" /> 
+		  <div *ngIf="submitted && f.UserName.errors" class="invalid-feedback" >
+            <div *ngIf="f.UserName.errors.required">User Name is Required</div>
+        </div>
+  </div>
+
+
+
+ 
+      <div class="col-md-6 form-group">
+       <label>Password&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="UserPasswd" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserPasswd.errors }" placeholder="Enter Password" class="form-control" type="password" /> 
+		  <div *ngIf="submitted && f.UserPasswd.errors" class="invalid-feedback" >
+            <div *ngIf="f.UserPasswd.errors.required">Password is Required</div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 form-group">	
+          <label>Contact No&nbsp;<sup style="color:red">*</sup></label>	
+                 <input formControlName="UserTelNo" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserTelNo.errors }" placeholder="Enter Contact No" class="form-control" />
+             <div *ngIf="submitted && f.UserTelNo.errors" class="invalid-feedback" >
+                   <div *ngIf="f.UserTelNo.errors.required">Contact No is Required</div>
+               </div>
+             </div>
+         
+      
+      <!-- <div class="col-md-6"> -->
+       <!-- <label>Enrolment Type :</label> -->
+          <!-- <select class="form-control form-group"> -->
+            <!-- <option>Enrolment Type</option> -->
+            <!-- <option>Enrolment Type</option> -->
+            <!-- <option>Enrolment Type</option> -->
+          <!-- </select> -->
+      <!-- </div> -->
+      
+      </div> 
+  
+      <div class="form-group btn-submit" style="margin-top:15px;">
+          <button [disabled]="loading"  class="btn btn-primary">Submit</button>    
+          <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  
+	  <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+  </form>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+        </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit User</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+         <div class="modal-body">    
+  
+   <form [formGroup]="userForm">
+       <div class="col-md-12 row">
+          <div class="col-md-6 form-group">
+              <label>Select User Type&nbsp;<sup style="color:red">*</sup></label>
+                 <select class="form-control"formControlName="UserTypeId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserTypeId.errors }" >
+                      <option [selected]=true [disabled]="true">Select User Type</option>
+                       <option *ngFor="let Data of roledata" value="{{Data.RoleId}}">{{Data.RoleName}} </option>
+                      </select> 
+                <div *ngIf="submitted && f.UserTypeId.errors" class="invalid-feedback" >
+                   <div *ngIf="f.UserTypeId.errors.required">User Type is Required</div>
+               </div>
+             </div>
+    <div class="col-md-6 form-group">
+     <label>User Name&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="UserName"  placeholder="Enter User Name" class="form-control"[ngClass]="{ 'is-invalid': submitted && f.UserName.errors }"  /> 
+		  <div *ngIf="submitted && f.UserName.errors" class="invalid-feedback" >
+            <div *ngIf="f.UserName.errors.required">User Name is Required</div>
+        </div>
+  </div>	
+  <div class="col-md-6 form-group"> 
+			<label>Email&nbsp;<sup style="color:red">*</sup></label>
+			<input type="text" placeholder="Enter Email" formControlName="UserEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserEmail.errors }" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required />
+			<div *ngIf="submitted && f.UserEmail.errors" class="invalid-feedback feedback-pos">
+			<div *ngIf="f.UserEmail.errors.required"> Please Enter Valid Email</div>
+			</div>
+			
+	</div>
+
+ 
+  
+      <div class="col-md-6 form-group" style="display: none;">
+       <label>Password&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="UserPasswd" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserPasswd.errors }" placeholder="Enter Password" class="form-control" type="password"  /> 
+		  <div *ngIf="submitted && f.UserPasswd.errors" class="invalid-feedback" >
+            <div *ngIf="f.UserPasswd.errors.required">Password is Required</div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 form-group">	
+          <label>Contact No&nbsp;<sup style="color:red">*</sup></label>	
+                 <input formControlName="UserTelNo" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.UserTelNo.errors }" placeholder="Enter Contact No" class="form-control" />
+             <div *ngIf="submitted && f.UserTelNo.errors" class="invalid-feedback" >
+                   <div *ngIf="f.UserTelNo.errors.required">Contact No is Required</div>
+               </div>
+             </div>  
+         
+      
+      <!-- <div class="col-md-6"> -->
+       <!-- <label>Enrolment Type :</label> -->
+          <!-- <select class="form-control form-group"> -->
+            <!-- <option>Enrolment Type</option> -->
+            <!-- <option>Enrolment Type</option> -->
+            <!-- <option>Enrolment Type</option> -->
+          <!-- </select> -->
+      <!-- </div> -->
+      
+      </div> 
+  
+      <div class="form-group btn-submit" style="margin-top:15px;">
+          <button [disabled]="loading"  class="btn btn-primary" (click)="AddUpdateDeleteUser()">Update</button>    
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  
+	  <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+  </form>   
+    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      
+      </div>
+        </div>
+  </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this User?</div>    
+        </div>
+        <div class="modal-footer">
+         <button type="button" (click)="AddUpdateDeleteUser()" class="btn btn-default" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>

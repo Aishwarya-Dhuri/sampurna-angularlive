@@ -1,0 +1,248 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle">Vehicle Types  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton"  data-toggle="modal" (click)="ResetFrom()" data-target="#myModal">Add Vehicle Type</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th></th>
+          <th>Sr No</th>
+          <th>Vehicle Types</th>
+          <th>Max. Load Capacity</th>
+          <th>Body Type</th>
+          <th>Vehicle Dimension (LxBxH) (in Ft)</th>
+        
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of vehicletypedata ; let i=index">
+	  
+	  <td><a  (click)="EditVehicletypeData(Data.VehicleType,Data.LoadCapacity,Data.BodyType,Data.VechicleDims,Data.VehicleTypeId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a  (click)="DeleteVehicletypeData(Data.VehicleType,Data.LoadCapacity,Data.BodyType,Data.VechicleDims,Data.VehicleTypeId)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.VehicleType}}</td>
+        <td>{{Data.LoadCapacity}}</td>
+        <td>{{Data.BodyType}}</td>
+        <td>{{Data.VechicleDims}}</td>
+    <!-- <td (click)="EditVehicletypeData(Data.VehicleType,Data.VehicleTypeId,Data.LoadCapacity,Data.BodyType )"><span>  <button class="btn btn-primary Addcitybtton "  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp;Edit</button></span></td> -->
+        
+       <!-- <td (click)="DeleteVehicletypeData(Data.VehicleType,Data.VehicleTypeId)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+      </tr>
+        
+    </tbody>
+     </table>
+     
+  
+     </div>
+	 <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Vehicle Type</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+        <div class="modal-body">    
+    
+  <form [formGroup]="vehicletypeForm" (ngSubmit)="onSubmit()">
+   <div class="form-group">
+      <div class="col-md-12 row">
+     
+	  
+	  <div class="col-md-6 form-group">
+      <label>Vehicle Type&nbsp;<sup style="color:red">*</sup></label>
+       <input formControlName="VehicleType"  placeholder="Enter Vehicle Type" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VehicleType.errors }" /> 
+	   <div *ngIf="submitted && f.VehicleType.errors" class="invalid-feedback" >
+            <div *ngIf="f.VehicleType.errors.required">Vehicle Type is Required</div>
+        </div>
+        </div>
+     
+	  <div class="col-md-6 form-group">
+       <label>Max. Load Capacity&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="LoadCapacity"  placeholder="Enter Max. Load Capacity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LoadCapacity.errors }"  /> 
+		   <div *ngIf="submitted && f.LoadCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="f.LoadCapacity.errors.required">Max. Load Capacity is Required</div>
+        </div>
+        </div>
+      
+	   <!-- <div class="col-md-6">
+        <label>Body Type&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="BodyType"  placeholder="Enter Body Type" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.BodyType.errors }"  /> 
+		  <div *ngIf="submitted && f.BodyType.errors" class="invalid-feedback" >
+            <div *ngIf="f.BodyType.errors.required">BodyType is Required</div>
+        </div>
+        </div> -->
+    
+        <div class="col-md-6 form-group">
+          <label> Body Type&nbsp;<sup style="color:red">*</sup></label>
+               <select class="form-control" formControlName="BodyType" [ngClass]="{ 'is-invalid': submitted && f.BodyType.errors }">
+                   <option value="Open">Open</option>
+                   <option value="Close">Close</option>	
+                 </select>		
+             
+         
+           <div *ngIf="submitted && f.BodyType.errors" class="invalid-feedback" >
+                   <div *ngIf="f.BodyType.errors.required">Body Type is Required</div>
+               </div> 
+         </div>
+
+
+
+		 <div class="col-md-6 form-group">
+        <label>Vehicle Dimension (LxBxH) (in Ft)&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="VechicleDims"  placeholder="Enter Vehicle Dimension (LxBxH) (in Ft)" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VechicleDims.errors }"  /> 
+		  <div *ngIf="submitted && f.VechicleDims.errors" class="invalid-feedback" >
+            <div *ngIf="f.VechicleDims.errors.required">Vehicle Dimenssion (LxBxH) (in Ft)is Required</div>
+        </div>
+        </div>
+        </div>
+  
+      </div> 
+      <div class="form-group btn-submit">
+          <button class="btn btn-primary">Submit </button>    
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group  form-text">Added Successfully</div> -->
+  </form>    
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+      </div>
+        </div>
+  </div>
+  
+  <!-- Start Edit Modal myModaledit -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Vehicle Type</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+          </div>
+        <div class="modal-body">    
+     
+  <form [formGroup]="vehicletypeForm">
+   <div class="form-group">
+      <div class="col-md-12 row">
+     
+	  
+	  <div class="col-md-6 form-group">
+      <label>Vehicle Type&nbsp;<sup style="color:red">*</sup></label>
+       <input formControlName="VehicleType"  placeholder="Enter Vehicle Type" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VehicleType.errors }" /> 
+	   <div *ngIf="submitted && f.VehicleType.errors" class="invalid-feedback" >
+            <div *ngIf="f.VehicleType.errors.required">Vehicle Type is Required</div>
+        </div>
+        </div>
+     
+	  <div class="col-md-6 form-group">
+       <label>Max. Load Capacity&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="LoadCapacity"  placeholder="Enter Max. Load Capacity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LoadCapacity.errors }"  /> 
+		   <div *ngIf="submitted && f.LoadCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="f.LoadCapacity.errors.required">Max. Load Capacity is Required</div>
+        </div>
+        </div>
+      
+	   <!-- <div class="col-md-6">
+        <label>Body Type&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="BodyType"  placeholder="Enter Body Type" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.BodyType.errors }"  /> 
+		  <div *ngIf="submitted && f.BodyType.errors" class="invalid-feedback" >
+            <div *ngIf="f.BodyType.errors.required">BodyType is Required</div>
+        </div>
+        </div> -->
+
+        <div class="col-md-6 form-group">
+          <label> Body Type&nbsp;<sup style="color:red">*</sup></label>
+               <select class="form-control" formControlName="BodyType" [ngClass]="{ 'is-invalid': submitted && f.BodyType.errors }">
+                   <option value="Open">Open</option>
+                   <option value="Close">Close</option>	
+                 </select>		
+             
+         
+           <div *ngIf="submitted && f.BodyType.errors" class="invalid-feedback" >
+                   <div *ngIf="f.BodyType.errors.required">Body Type is Required</div>
+               </div> 
+         </div>
+
+
+		
+		 <div class="col-md-6 form-group">
+        <label>Vehicle Dimension (LxBxH) (in Ft)&nbsp;<sup style="color:red">*</sup></label>
+          <input formControlName="VechicleDims"  placeholder="Enter Vehicle Dimension (LxBxH) (in Ft)" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.VechicleDims.errors }"  /> 
+		  <div *ngIf="submitted && f.VechicleDims.errors" class="invalid-feedback" >
+            <div *ngIf="f.VechicleDims.errors.required">Vehicle Dimension (LxBxH) (in Ft) is Required</div>
+        </div>
+        </div>
+        </div>
+  
+      </div> 
+      <div class="form-group btn-submit">
+          <button class="btn btn-primary" (click)="AddUpdateDeleteVehicletype()">Update </button>    
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group  form-text">Updated Successfully</div> -->
+  </form>    
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+      </div>
+        </div>
+  </div>
+  <!-- End start Edit Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Vehicle Type?</div>    
+        </div>
+        <div class="modal-footer">
+         <button (click)="AddUpdateDeleteVehicletype()" type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+  </div>

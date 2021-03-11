@@ -1,0 +1,158 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Roles  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" (click)="ResetFrom()" data-toggle="modal" data-target="#myModal">Add Role</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th></th>
+          <th>Sr No</th>
+          <th>Role</th>
+        
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of roledata ; let i=index">
+	  
+	  <td><a  (click)="EditroleData(Data.RoleName,Data.RoleId)"><span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a  (click)="DeleteroleData(Data.RoleName,Data.RoleId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.RoleName}}</td>
+     <!-- <td (click)="EditroleData(Data.RoleName,Data.RoleId)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp; -->
+  <!-- Edit</button></span></td> -->
+        
+       <!-- <td (click)="DeleteroleData(Data.RoleName,Data.RoleId)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+      </tr>
+    
+    
+   
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	  <div class="loadingTable">
+<img *ngIf="loading" src="../assets/images/Loading.gif">
+</div>
+  </div>
+  
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Role</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+    
+  <form [formGroup]="RoleForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+          <label class="modelCityname">Role&nbsp;<sup style="color:red">*</sup></label>  
+          <input type="text" formControlName="RoleName" class="form-control" placeholder="Enter Role Name" [ngClass]="{ 'is-invalid': submitted && f.RoleName.errors }" />
+		  <div *ngIf="submitted && f.RoleName.errors" class="invalid-feedback" >
+            <div *ngIf="f.RoleName.errors.required">Role Name is Required</div>
+        </div>
+          </div>
+		  	
+      
+     
+      <div class="form-group btn-submit">
+        <button class="btn btn-primary">Submit</button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div> -->
+  </form>  
+</div>  
+  <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div> 
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Role</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+     
+  <form [formGroup]="RoleForm">
+       <div class="form-group">
+          <label class="modelCityname">Role&nbsp;<sup style="color:red">*</sup></label>  
+          <input type="text" formControlName="RoleName" class="form-control" placeholder="Enter Role Name" [ngClass]="{ 'is-invalid': submitted && f.RoleName.errors }" />
+		  <div *ngIf="submitted && f.RoleName.errors" class="invalid-feedback" >
+            <div *ngIf="f.RoleName.errors.required">Role Name is Required</div>
+        </div>
+          </div>
+      <div class="form-group   btn-submit">
+          <button (click)="AddUpdateDeleteRole()" class="btn btn-primary">Update</button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div> -->
+  </form>    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Role?</div>
+        
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteRole()">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+	
+	
+	
+  </div>
+  <div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>

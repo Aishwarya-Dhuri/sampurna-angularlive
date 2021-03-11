@@ -1,0 +1,1456 @@
+<div class="container">
+  <div class="recyclermainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Recyclers </h2>
+	 <div class="row button-margin"> 
+	   <div class="col-md-6">
+	   <input type="text" placeholder="Search By Recycler Name, Aggrement Status ...." class="form-group form-control searchtextbox" name="" (input)="SearchRecycler($event.target.value)">
+	   </div>
+	    <div class="col-md-2">
+		<button (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button">Export To Excel </button>
+        </div>
+	  <div class="col-md-2">
+		<button (click)="print()" class="btn btn-primary Addcitybtton float-right print-button">Print </button>
+    </div>
+	<div class="col-md-2">
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" data-dismiss="modal" (click)="ResetFrom()"  data-toggle="modal" data-target="#myModal">Add Recycler</button>
+      </div>
+	  </div>
+	  </div>
+	  
+	   <form [formGroup]="RecyclerSearchForm">
+	   <div class="row">
+	    
+	    <!-- <div class="col-md-3">
+	   <label class="">State</label>
+      <select class="form-control" (change)="FilterOnState($event.target.value)" 
+	  formControlName="FilterState">
+              <option [selected]=true [disabled]="true" value=
+				"0">Select State</option>
+			<option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}" >{{Data.StateName}} </option>
+       </select> 
+      </div>
+	  
+	  <div class="col-md-3">    
+		   <label class="">City</label>          
+		<select formControlName="FilterCity" class="form-control" (change)="FilterOnCity($event.target.value)" >
+                <option [selected]=true [disabled]="true" value=
+				"0">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+        </select> 
+     </div> -->
+	 
+	  <div class="col-md-6 form-group">
+		<label class="">Recycler Name</label>
+		<select class="form-control" (change)="FilterOnName($event.target.value)" formControlName="FilterName">
+			<option [selected]=true  value="">All Recycler Name</option>
+			<option *ngFor="let Data of Recyclerdata" value="{{Data.RecyclerName}}" >{{Data.RecyclerName}} </option>
+        </select>
+      </div>
+	    
+	  <div class="col-md-6 form-group">
+	 <label class="">Select Agreement Status</label>
+		<select class="form-control" (change)="FilterOnAGStatus($event.target.value)" formControlName="AgStatusNameId">
+                <option [selected]=true value="0">Select Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata1" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+         </select> 
+      </div>
+	  
+      </div>
+	  </form>
+	  
+	  
+	  
+ <div id="print-section">
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+    
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	   <th class="doNotPrint"></th>
+          <th>Sr No</th>
+          <th>Recycler Name</th>
+          <th class="padding-left-right-150">Billing Address</th>
+         <!-- <th>Details</th> -->
+        <!-- <th>Recycling Material</th> -->
+      <!-- <th>Recycling Type End products</th> -->
+      <!--<th>Non Operational Days</th>-->
+      <th>GST No</th>
+      <th>Agreement Status</th>
+    
+    
+      <th>Expiry Date</th>
+      <th>Signed Date</th>
+      <th>Last Date</th>
+
+	   <!-- <th class="doNotPrint">Recycler Document</th>  -->
+	  <!-- <th class="doNotPrint"></th> -->
+    
+    
+      </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let Data of Recyclerdata ; let i=index">  
+		
+		<td class="doNotPrint"><a  (click)="EditRecyclerData(Data.RecyclerName,Data.RecylerCode,Data.Address,Data.Details,Data.RecylingTypeEndProducts,Data.GSTNo,Data.AgreementStatusId,Data.ExpiryDate,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.RecylerId,Data.PCBDocumentName,Data.CertificateDocument,Data.MaterialDocument,Data.CreationDate,Data.SignedDate,Data.StateId,Data.CityId,Data.SuburbId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<a (click)="DeleteRecyclerData(Data.RecyclerName,Data.RecylerCode,Data.Address,Data.Details,Data.RecylingTypeEndProducts,Data.GSTNo,Data.AgreementStatusId,Data.ExpiryDate,Data.PrimaryCntName,Data.PrimaryCntDesignation,Data.PrimaryCntTelNo,Data.PrimaryCntLandlineNo,Data.PrimaryCntEmail,Data.SecCntName,Data.SecCntDesignation,Data.SecCntTelNo,Data.SecCntLandlineNo,Data.SecCntEmail,Data.RecylerId,Data.PCBDocumentName,Data.CertificateDocument,Data.MaterialDocument,Data.SignedDate,Data.StateId,Data.CityId,Data.SuburbId,Data.CreationDate)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		
+    <label (click)="RedirectToRecyclerMaterial(Data.RecylerId,Data.RecyclerName)" routerLink="/Recycler-AddMaterial"><span>  <button class="btn btn-primary Addcitybtton"  >View/Add Material</button></span>
+    </label>
+
+    <!-- <label (click)="GetRecyclerMaterialId(Data.RecylerId,Data.RecyclerName)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaleditMaterial">Add Material</button></span>
+    </label> -->
+
+		</td>
+	
+             <td>{{i+1}}</td>
+        <td>{{Data.RecyclerName}}</td>
+      <td class="address10">{{Data.Address}}</td>
+      <!-- <td>{{Data.Details}}</td> -->
+      <!-- <td>Recycling Material</td> -->
+      <!-- <td>{{Data.RecylingTypeEndProducts}}</td> -->
+     <!-- <td>{{Data.NonOpDays}}</td>-->
+      <td>{{Data.GSTNo}}</td>
+       <td><span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red">{{Data.AgreementStatusName}}</span>
+	  <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">{{Data.AgreementStatusName}}</span>
+    <span *ngIf="Data.AgreementStatusName=='30 Days to Expire'" style="color:Orange">{{Data.AgreementStatusName}}</span>
+    <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.AgreementStatusName}}</span>
+
+	  </td>
+     
+      
+     <!-- <td class="doNotPrint"><span>  <label class="btn-color" (click)="OpenDocument(Data.PCBDocumentName)">View Document</label></span></td>  -->
+      
+       
+      <!--  <td  class="doNotPrint"(click)="GetRecyclerMaterialId(Data.RecylerId,Data.RecyclerName)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaleditMaterial">Material</button></span></td> -->
+      <td>
+          <span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green"> {{Data.ExpiryDate| date:'dd/MM/yyyy'}} </span>
+          <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red"></span>
+          <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red"></span>
+        <!-- <span *ngIf="Data.DateDiff=='30'" style="color:Orange">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span> -->
+        <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red"></span>
+       </td>
+
+       <td>
+          <span *ngIf="Data.AgreementStatusName=='Signed'" style="color:Green">   {{Data.SignedDate| date:'dd/MM/yyyy'}} </span>
+          <span *ngIf="Data.AgreementStatusName=='Not Signed'" style="color:Red"></span>
+          <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">  {{Data.SignedDate| date:'dd/MM/yyyy'}}</span>
+          <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.SignedDate| date:'dd/MM/yyyy'}}</span>
+
+          <!-- <span *ngIf="Data.DateDiff=='30'" style="color:Orange">  {{Data.SignedDate| date:'dd/MM/yyyy'}}</span> -->
+        
+      </td>
+
+      <td>        
+          <span *ngIf="Data.AgreementStatusName=='Closed'" style="color:Red">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span>
+          <span *ngIf="Data.AgreementStatusName=='Expired/Terminated'" style="color:Red">{{Data.ExpiryDate| date:'dd/MM/yyyy'}}</span>
+    
+        </td>
+
+
+      </tr>
+    </tbody>
+     </table>
+     
+  </div>
+     </div>
+  </div>
+  </div>
+
+<!--Add new recycler-->
+
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header " >
+            <h4 class="text-center">Add New Recycler</h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+<form [formGroup]="RecyclerForm" (ngSubmit)="onSubmit()" >
+    <div class="form-group">
+	<div class="col-md-12 row">
+      
+		<div class="col-md-6 form-group">
+		  <label class="modelManufacturename">Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="RecyclerName" class="form-control" placeholder="Enter Recycler Name" [ngClass]="{ 'is-invalid': submitted && f.RecyclerName.errors }" (change)="GenerateRCCode($event.target.value)"  />
+		<div *ngIf="submitted && f.RecyclerName.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerName.errors.required">Recycler Name is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6 form-group">
+		  <label class="modelManufacturename">Recycler Code&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="RecylerCode" class="form-control"  [ngClass]="{ 'is-invalid': submitted && f.RecylerCode.errors }" readonly />
+		<div *ngIf="submitted && f.RecylerCode.errors" class="invalid-feedback"  >
+            <div *ngIf="f.RecylerCode.errors.required">Recycler Code is Required</div>
+        </div>
+		</div>
+		
+		
+		<div class="col-md-6 form-group">
+		<label class="modelManufactureAddress">Billing Address&nbsp;<sup style="color:red">*</sup></label> 
+        <textarea  formControlName="Address" class="form-control" placeholder="Enter Billing Address" [ngClass]="{ 'is-invalid': submitted && f.Address.errors }"></textarea>
+		
+		<div *ngIf="submitted && f.Address.errors" class="invalid-feedback" >
+            <div *ngIf="f.Address.errors.required">Billing Address is Required</div>
+        </div>
+    </div>
+    
+    <!--mapping start-->
+		<div class="col-md-6 form-group">
+      <label class="lbl-margin">Select State<sup style="color:red">*</sup> :</label>
+        <select class="form-control" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingStateRCForm($event.target.value)">
+              <option [selected]=true value="">Select State</option>
+               <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+              </select> 
+ 
+  <div *ngIf=" f.StateId.errors" class="invalid-feedback" >
+           <div *ngIf="f.StateId.errors.required">State is Required</div>
+       </div>
+     </div>
+  
+   <div class="col-md-6 form-group">
+   <label class="modelManufacturename lbl-margin">Select City&nbsp;<sup style="color:red">*</sup></label>
+     <select class="form-control" (change)="getRCFromsuburboncityId1($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+               <option [selected]=true value="">Select City</option>
+               <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+              </select> 
+         <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback">
+           <div *ngIf="f.CityId.errors.required">City is Required</div>
+       </div>
+   </div>
+   
+   <div class="col-md-6 form-group">
+   <label class="modelManufacturename lbl-margin">Select Suburb</label>
+     <select  class="form-control"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && f.SuburbId.errors }">
+    <option [selected]=true value="0">Select Suburb</option>
+   <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+ </select>
+ <div *ngIf="submitted && f.SuburbId.errors" class="invalid-feedback" >
+           <div *ngIf="f.SuburbId.errors.required">Suburb is Required</div>
+       </div>
+   </div>
+
+<!--mapping end-->		
+
+
+		
+		<div class="col-md-6 form-group">
+		 <label class="modelDetails"> Recycler Details/Comments</label>
+     <textarea formControlName="Details"  class="form-control" placeholder="Enter  Details/Comments" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }"></textarea>
+	 <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+            <div *ngIf="f.Details.errors.required">Recycler  Details/Comments is Required</div>
+        </div>
+	 </div>
+
+	 
+	 
+     <!-- <div class="col-md-6"> 
+    <label class="form-group" > Recycling Type end Products&nbsp;<sup style="color:red">*</sup></label>	 
+	 <textarea  formControlName="RecylingTypeEndProducts" class="form-control" placeholder="Enter Recycling Type end Products" [ngClass]="{ 'is-invalid': submitted && f.RecylingTypeEndProducts.errors }"></textarea>
+	 
+	  <div *ngIf="submitted && f.RecylingTypeEndProducts.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecylingTypeEndProducts.errors.required">Recyling Type end Products is Required</div>
+        </div>
+		
+	 </div> -->
+	 <div class="col-md-6 form-group"> 
+    <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+     <input type="Date" formControlName="CreationDate" value="{{TodayDateC}}" class="form-control" placeholder="Select Creation Date" readonly /> 
+   
+  </div> 
+  <div class="col-md-6 form-group">
+    <label class="modelGST lbl-margin" > GST No&nbsp;<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="GSTNo" class="form-control" placeholder="Enter GST No"  pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" [ngClass]="{ 'is-invalid': submitted && f.GSTNo.errors }" />
+      
+      <div  class="invalid-feedback" >
+            Enter Valid GST Number...
+          </div> 
+      </div>
+      <!--End Recycle aggremnt status -->
+  
+  <!-- <div class="col-md-6">
+        <label class="modelDisposer lbl-margin">Select PCB Status&nbsp;<sup style="color:red">*</sup></label>
+      <select class="form-control" formControlName="RecyclerStatusId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerStatusId.errors }">
+                  <option [selected]=true [disabled]="true">Select PCB Status</option>
+                  <option *ngFor="let Data of RecyclerStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+                 </select> 
+           <div *ngIf="submitted && f.RecyclerStatusId.errors" class="invalid-feedback" >
+              <div *ngIf="f.RecyclerStatusId.errors.required">PCB Status Required</div>
+          </div> 
+      </div> -->
+
+      
+
+
+
+
+	 <!-- <div class="col-md-6">
+	 <label class="form-group" > Non Operational Days&nbsp;<sup style="color:red">*</sup></label>
+				<select class="form-control" formControlName="NonOpDays" [ngClass]="{ 'is-invalid': submitted && f.NonOpDays.errors }">
+						<option value="Sunday">Sunday</option>
+						<option value="Monday">Monday</option>						
+						<option value="Tuesday">Tuesday</option>
+						<option value="Wednesday">Wednesday</option>
+						<option value="Thursday">Thursday</option>
+						<option value="Friday">Friday</option>
+						<option value="Saturday">Saturday</option>
+						
+					</select>		
+			
+	
+	  <div *ngIf="submitted && f.NonOpDays.errors" class="invalid-feedback" >
+            <div *ngIf="f.NonOpDays.errors.required">Non Operational Days is Required</div>
+        </div> 
+	</div>-->
+	
+	
+		
+		<!--Start Recycle aggremnt status -->
+		
+		 <div class="col-md-6 form-group">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" (change)="GetAgreementValue($event.target.value)">
+                <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+    </div>
+   
+
+      <div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block"></div>
+
+    <div class="col-md-6 form-group" *ngIf="SignedSelected" >
+      <label class="modelGST">Expiry Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+    <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+           <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+       </div>
+     </div>
+
+    <div class="col-md-6 form-group" *ngIf="TerminatedSelected">
+        <label class="modelGST">Last Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" max="{{TodayDateC}}" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+        <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.ExpiryDate.errors.required">Last Date is Required</div>
+      </div>
+    </div>
+    <div class="col-md-6 form-group" *ngIf="ShowBlock" >
+      <label class="modelGST">Signed Date<sup style="color:red">*</sup></label> 
+      <input type="date" formControlName="SignedDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.SignedDate.errors }">
+      <div *ngIf=" f.SignedDate.errors" class="invalid-feedback" >
+        <div *ngIf="f.SignedDate.errors.required">Signed Date is Required</div>
+    </div>
+  </div>
+  <div class="col-md-6"  style="display: block"></div>
+
+    <div class="space10"></div>
+    <br>
+	<div class="row col-md-12" style="padding-right: 0;">
+      <div class="space10"></div>
+
+	 <div class="col-md-6">
+		 <div class="form-group">
+       <label class="modelDetails lbl-margin"><b>Primary Contact Details:</b></label>
+       <br>
+       <label class="modelManufactureAddress">Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control" placeholder="Enter Name"[ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf="submitted && f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+      </div>
+    
+      <div class="form-group">
+      <label class="modelManufactureAddress lbl-margin">Designation&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+	  	<div *ngIf="submitted && f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label class="modelManufactureAddress">Mobile<sup style="color:red">*</sup></label>
+            <input type="number" formControlName="PrimaryCntTelNo" class="form-control" placeholder="Enter Mobile Number " [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }" pattern="[7-9]{1}[0-9]{9}" />
+        <div *ngIf=" f.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+                <div *ngIf="f.PrimaryCntTelNo.errors.required">
+                    Mobile Number is Required
+                </div>
+                <div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+                    Mobile Number must be at least 10 digit long
+                </div> 
+                <div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+                    Mobile Number can be max 10 digit long
+                </div>
+                <div *ngIf="f.PrimaryCntTelNo.errors.pattern"> 
+                    Please enter valid Mobile number
+                  </div>				
+          </div>
+      </div>
+		
+      <div class="form-group">
+        <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="PrimaryCntLandlineNo" class="form-control" placeholder="Enter Landline Number" />
+          <div *ngIf=" f.PrimaryCntLandlineNo.errors" class="invalid-feedback" pattern="^\d{3}-\d{3}-\d{4}$" >	
+            <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+                Please enter valid Landline number
+              </div>	
+            </div>	
+      </div>
+		
+      <div class="form-group">
+        <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+          <input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" placeholder="Enter Email"  pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$"   required [email]="true"/>
+          
+          <div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+          <div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+          <div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+          Please enter valid Email ID
+          </div>
+          </div> 
+      </div>      
+    </div>
+	 <div class="col-md-6">
+
+         <div>
+	           <label class="modelDetails"><b>Secondary Contact Details :</b>&nbsp;<br><input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+              Same as above
+            </label>
+	       </div>
+	
+         <div class="form-group">
+          <label class="modelManufactureAddress">Name</label>
+          <input type="text" formControlName="SecCntName" class="form-control" placeholder="Enter Name" />
+		    </div>
+    
+        <div class="form-group">
+          <label class="modelManufactureAddress">Designation</label>
+          <input type="text" formControlName="SecCntDesignation"   class="form-control" placeholder="Enter Designation" />
+		    </div>
+		
+        <div class="form-group">
+          <label class="modelManufactureAddress">Mobile</label>
+            <input type="number"  formControlName="SecCntTelNo" class="form-control" placeholder="Enter Mobile Number" pattern="[7-9]{1}[0-9]{9}"  />
+            <div *ngIf=" f.SecCntTelNo.errors" class="custom-Invalid-feedback" >	
+                <div *ngIf="f.SecCntTelNo.errors.required">
+                    Please input 10 digit Mobile Number
+                    </div>
+              <div *ngIf="f.SecCntTelNo.errors.minlength">
+                  Mobile Number must be at least 10 digit long
+              </div> 
+              <div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+                  Mobile Number can be max 10 digit long
+              </div>	
+              <div *ngIf="f.SecCntTelNo.errors.pattern"> 
+                  Please enter valid Mobile number
+                </div>	
+          </div>
+      </div>
+      <div class="form-group">
+        <label class="modelManufactureAddress">Landline</label>
+            <input type="number" formControlName="SecCntLandlineNo"   class="form-control" placeholder="Enter Landline Number" pattern="^\d{3}-\d{3}-\d{4}$" />
+        <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >	
+        <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+            Please enter valid Landline number
+          </div>
+          </div>
+      </div>
+		
+      <div class="form-group">
+        <label class="modelManufactureAddress">Email</label>
+            <input type="text" formControlName="SecCntEmail"  class="form-control" placeholder="Enter Email" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" [email]="true" />
+        <div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+          <div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+          Please enter valid Email ID
+          </div>
+          </div> 
+      </div>
+
+      <div class="space10"></div>
+      <div class="space10"></div>
+    </div>
+  </div><!--End of row-->
+  </div>
+      <div class="col-md-12">
+          <div id="accordion" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                      <a class="card-title">
+                       <b>Document Upload</b>
+                      </a>
+                  </div>
+                  <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                      <form  [formGroup]="DocUploadForm"  novalidate>
+
+                     <div class="row">
+                       <div class="col-md-6">
+                         <br>
+                          <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)" >
+                          <div *ngIf=" d.DocumentName.errors" class="custom-Invalid-feedback" >	
+                              <div *ngIf="d.DocumentName.errors.pattern"> 
+                                Please select document
+                                </div>
+                                </div>
+                       </div>
+                       <div class="col-md-6">
+                          <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                        
+                            <select class="form-control" formControlName="DocumentTypeId">
+                              <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                              <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                            </select>
+                  
+                  
+                       </div>
+                       <div class="col-md-6">
+                        <label class="form-group" >Comments</label>
+                        <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+                
+                        </div>
+                       <div class="col-md-12">
+                         <br>
+                          <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                       </div>
+                       
+                     </div>
+                     <div class="space10"></div>
+                     <div class="row">
+                       <div class="col-md-12">
+                         <div class="table-responsive">
+                            <div class="space10"></div>
+                           <table class="table table-borderless table-hover tableborder align-middle citytable">
+                             <thead class="headerbackground text-white">
+                                <tr>
+                                    <th></th>
+                                    <th>Sr No.</th>
+                                    <th>Document Name</th>
+                                    <th>Document Type</th>
+                                    <th>Comments</th>
+                                  </tr>
+                                
+                             </thead>
+                           <tbody>
+                              <tr *ngFor="let Data of DocumentData ; let i=index">
+                                  <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{i + 1}}</th>
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                              </tr>
+                           </tbody>
+                           </table>
+
+                         </div>
+                       </div>
+                     </div>
+                    </form>
+                  </div>
+                  
+                  
+              </div>
+          </div>
+      
+      </div>
+		<!-- <div class="col-md-6"> -->
+  <!-- <label class="uplodfile"> Select Recycler Document :</label> -->
+      <!-- <input type="file" name="file" accept="image/*" class=" form-group"/> -->
+  <!-- </div> -->
+		
+    <br>
+   <div class="form-group   btn-submit">
+     <br>
+          <button class="btn btn-primary" >Submit </button>  
+	      <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+    <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>  -->
+      </div>
+	  </form>
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add new Recycler-->
+<!--My Modal Alert -->
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default"  data-dismiss="modal" data-toggle="modal" >ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--My Modal Alert-->
+
+<!--Confirmation Mdal-->
+<div id="myModalconfirmation" class="modal fade " role="dialog"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body height-120">    
+ <div class="alert alert-success"> Recycler added Successfully.<br>Do you want to add Material?</div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"  (click)="RedirectToSubForm()" >Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="/RecyclerEnrolement">No</button>      </div>
+    </div>
+  </div>
+</div> 
+
+<!--Confirmation Modal ends-->
+
+
+
+
+
+
+<!--My Modal Alert Add-->
+<div id="myModalalertAdd" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-success"> {{AlertMessage}}</div>
+        
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-default" (click)="ResetFrom()" data-dismiss="modal" data-toggle="modal" data-target="#AddRecyclerWesteMaterial">ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--My Modal Alert-->
+<!--My Modal Alert Edit Delete-->
+
+<div id="myModalalertEditDelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" (click)="ResetFrom()" data-dismiss="modal" >ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--My Modal Alert-->
+
+<!--Edit recycler myModaledit-->
+
+<div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header " >
+            <h4 class="text-center">Edit Recycler </h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+<form [formGroup]="RecyclerForm" novalidate>
+    <div class="form-group">
+	<div class="col-md-12 row">
+      
+		<div class="col-md-6 form-group">
+		  <label class="modelManufacturename">Recycler Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="RecyclerName" class="form-control" placeholder="Enter Recycler Name" [ngClass]="{ 'is-invalid': submitted && f.RecyclerName.errors }"  />
+		<div *ngIf="submitted && f.RecyclerName.errors" class="invalid-feedback" >
+            <div *ngIf="f.RecyclerName.errors.required">Recycler Name is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6 form-group">
+		  <label class="modelManufacturename">Recycler Code&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="RecylerCode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.RecylerCode.errors }" readonly />
+		<div *ngIf="submitted && f.RecylerCode.errors" class="invalid-feedback"  >
+            <div *ngIf="f.RecylerCode.errors.required">Recycler Code is Required</div>
+        </div>
+		</div>
+		
+		
+		<div class="col-md-6 form-group">
+		<label class="modelManufactureAddress">Billing Address&nbsp;<sup style="color:red">*</sup></label> 
+        <textarea  formControlName="Address" class="form-control" placeholder="Enter Billing Address" [ngClass]="{ 'is-invalid': submitted && f.Address.errors }"></textarea>
+		
+		<div *ngIf="submitted && f.Address.errors" class="invalid-feedback" >
+            <div *ngIf="f.Address.errors.required">Billing Address is Required</div>
+        </div>
+		</div>
+		  <!--mapping start-->
+      <div class="col-md-6 form-group">
+          <label class="lbl-margin">Select State<sup style="color:red">*</sup> :</label>
+            <select class="form-control" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingStateRCForm($event.target.value)">
+                  <option [selected]=true value="">Select State</option>
+                   <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+                  </select> 
+     
+      <div *ngIf=" f.StateId.errors" class="invalid-feedback" >
+               <div *ngIf="f.StateId.errors.required">State is Required</div>
+           </div>
+         </div>
+      
+       <div class="col-md-6 form-group">
+       <label class="modelManufacturename lbl-margin">Select City&nbsp;<sup style="color:red">*</sup></label>
+         <select class="form-control" (change)="getRCFromsuburboncityId1($event.target.value)" formControlName="CityId" [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+                   <option [selected]=true value="0">Select City</option>
+                   <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+                  </select> 
+             <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback">
+               <div *ngIf="f.CityId.errors.required">City is Required</div>
+           </div>
+       </div>
+       
+       <div class="col-md-6 form-group">
+       <label class="modelManufacturename lbl-margin">Select Suburb</label>
+         <select  class="form-control"  formControlName="SuburbId" [ngClass]="{ 'is-invalid': submitted && f.SuburbId.errors }">
+        <option [selected]=true value="0">Select Suburb</option>
+       <option *ngFor="let Data of suburbdata" value="{{Data.SuburbId}}">{{Data.SuburbName}} </option>
+     </select>
+     <div *ngIf="submitted && f.SuburbId.errors" class="invalid-feedback" >
+               <div *ngIf="f.SuburbId.errors.required">Suburb is Required</div>
+           </div>
+       </div>
+    
+    <!--mapping end-->		
+		<div class="col-md-6 form-group">
+		 <label class="modelDetails"> Recycler Details/Comments &nbsp;</label>
+     <textarea formControlName="Details"  class="form-control" placeholder="Enter Recycler Details/Comments" [ngClass]="{ 'is-invalid': submitted && f.Details.errors }"></textarea>
+	 <div *ngIf="submitted && f.Details.errors" class="invalid-feedback" >
+            <div *ngIf="f.Details.errors.required">Recycler Details/Comments is Required</div>
+        </div>
+	 </div>
+
+
+		
+		<!--Start Recycle aggremnt status -->
+    <div class="col-md-6 form-group"> 
+      <label class="modelGST lbl-margin">Creation Date&nbsp;<sup style="color:red">*</sup></label> 
+       <input type="Date" formControlName="CreationDate" value="{{DispalayCreationDate}}" class="form-control" placeholder="Select Creation Date" readonly /> 
+     
+    </div> 
+
+    
+    <div class="col-md-6 form-group">
+        <label class="modelGST lbl-margin" > GST No&nbsp;<sup style="color:red">*</sup></label>
+              <input type="text" formControlName="GSTNo" class="form-control" placeholder="Enter GST No"  pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" [ngClass]="{ 'is-invalid': submitted && f.GSTNo.errors }" />
+          
+          <div  class="invalid-feedback" >
+                 Enter Valid GST Number...
+              </div> 
+          </div>
+          <!--End Recycle aggremnt status -->
+      
+      <!-- <div class="col-md-6">
+            <label class="modelDisposer lbl-margin">Select PCB Status&nbsp;<sup style="color:red">*</sup></label>
+          <select class="form-control" formControlName="RecyclerStatusId" [ngClass]="{ 'is-invalid': submitted && f.RecyclerStatusId.errors }">
+                      <option [selected]=true [disabled]="true">Select PCB Status</option>
+                      <option *ngFor="let Data of RecyclerStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+                     </select> 
+               <div *ngIf="submitted && f.RecyclerStatusId.errors" class="invalid-feedback" >
+                  <div *ngIf="f.RecyclerStatusId.errors.required">PCB Status Required</div>
+              </div> 
+          </div> -->
+		 <div class="col-md-6 form-group">	
+		<label class="modelDisposer lbl-margin">Select Agreement Status&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AgreementStatusId" [ngClass]="{ 'is-invalid': submitted && f.AgreementStatusId.errors }" (change)="GetAgreementValue($event.target.value)">
+                <option [selected]=true [disabled]="true">Select Agreement Status</option>
+                <option *ngFor="let Data of AggrementStatusdata" value="{{Data.StatusId}}" >{{Data.StatusName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.AgreementStatusId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AgreementStatusId.errors.required">Agreement Status is Required</div>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="NoneAgreementStatusSelected" style="display: block"></div>
+
+    <div class="col-md-6 form-group" *ngIf="SignedSelected" >
+      <label class="modelGST">Expiry Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+    <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+           <div *ngIf="f.ExpiryDate.errors.required">Expiry Date is Required</div>
+       </div>
+     </div>
+
+    <div class="col-md-6 form-group" *ngIf="TerminatedSelected">
+        <label class="modelGST">Last Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="ExpiryDate" class="form-control" max="{{TodayDateC}}" [ngClass]="{ 'is-invalid': submitted && f.ExpiryDate.errors }">
+        <div *ngIf=" f.ExpiryDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.ExpiryDate.errors.required">Last Date is Required</div>
+      </div>
+    </div>
+	
+		<div class="col-md-6 form-group" *ngIf="ShowBlock" >
+        <label class="modelGST">Signed Date<sup style="color:red">*</sup></label> 
+        <input type="date" formControlName="SignedDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.SignedDate.errors }">
+        <div *ngIf=" f.SignedDate.errors" class="invalid-feedback" >
+          <div *ngIf="f.SignedDate.errors.required">Signed Date is Required</div>
+      </div>
+    </div>
+    <div class="col-md-6"  style="display: block"></div>
+		
+		
+		
+     </div>
+    <div class="row col-md-12">
+     <div class="col-md-6">
+		 <div class="form-group">
+       <div class="space10"></div>
+       <label class="modelDetails lbl-margin"><b>Primary Contact Details:</b></label>
+       <br>
+       <label class="modelManufactureAddress">Name&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntName" class="form-control" placeholder="Enter Name"[ngClass]="{ 'is-invalid': submitted && f.PrimaryCntName.errors }"/>
+		<div *ngIf="submitted && f.PrimaryCntName.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntName.errors.required">Name is Required</div>
+        </div>
+     </div>
+     
+     <div class="form-group">
+      <label class="modelManufactureAddress lbl-margin">Designation&nbsp;<sup style="color:red">*</sup></label>
+        <input type="text" formControlName="PrimaryCntDesignation" class="form-control" placeholder="Enter Designation" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntDesignation.errors }"/>
+		<div *ngIf="submitted && f.PrimaryCntDesignation.errors" class="invalid-feedback" >
+            <div *ngIf="f.PrimaryCntDesignation.errors.required">Designation is Required</div>
+        </div>
+     </div>
+
+     <div class="form-group">
+		<label class="modelManufactureAddress">Mobile<sup style="color:red">*</sup></label>
+        <input type="number" formControlName="PrimaryCntTelNo" class="form-control" placeholder="Enter Mobile Number " pattern="[7-9]{1}[0-9]{9}"  [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntTelNo.errors }"  />
+		<div *ngIf=" f.PrimaryCntTelNo.errors" class="invalid-feedback" >		
+            <div *ngIf="f.PrimaryCntTelNo.errors.required">
+			Please input 10 digit Mobile Number
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.minlength">
+          Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.PrimaryCntTelNo.errors.maxlength"> 
+          Mobile Number can be max 10 digit long
+			</div>
+			<div *ngIf="f.PrimaryCntTelNo.errors.pattern"> 
+          Please enter valid Mobile number
+        </div>				
+        </div>
+     </div>
+		
+		 <div class="form-group">
+        <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="PrimaryCntLandlineNo" class="form-control"  pattern="^\d{3}-\d{3}-\d{4}$" placeholder="Enter Landline Number" />
+		 <div *ngIf=" f.PrimaryCntLandlineNo.errors" class="invalid-feedback" >	
+		 <div *ngIf="f.PrimaryCntLandlineNo.errors.pattern"> 
+        Please enter valid Landline number
+			</div>	
+			</div>	
+    </div>
+		
+    <div class="form-group">
+     <label class="modelManufactureAddress">Email<sup style="color:red">*</sup></label>
+			<input type="text" formControlName="PrimaryCntEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PrimaryCntEmail.errors }" placeholder="Enter Email"  pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$" required [email]="true"/>
+			
+			<div *ngIf="f.PrimaryCntEmail.invalid && (f.PrimaryCntEmail.dirty || submitted)" class="invalid-feedback ">
+			<div *ngIf="f.PrimaryCntEmail.errors.required"> Email ID Required </div>
+			<div *ngIf="f.PrimaryCntEmail.errors.email && !f.PrimaryCntEmail.errors.required" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+		
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div>
+         <div>
+            <div class="space10"></div>
+          <label class="modelDetails"><b>Secondary Contact Details :</b>&nbsp;
+            <br><input type="checkbox" checked="checked" formControlName="CheckboxSelect" (change)="toggleEditable($event)" />
+            Same as above
+          </label>
+        </div>
+
+          <div class="form-group">       
+            <label class="modelManufactureAddress">Name</label>
+        <input type="text" formControlName="SecCntName" class="form-control" placeholder="Enter Name" />
+		      <label class="modelManufactureAddress">Designation</label>
+        <input type="text" formControlName="SecCntDesignation"   class="form-control" placeholder="Enter Designation" />
+		</div>
+		
+    <div class="form-group"> 
+		
+      <label class="modelManufactureAddress">Mobile</label>
+        <input type="number"  formControlName="SecCntTelNo" class="form-control" placeholder="Enter Mobile Number" pattern="[7-9]{1}[0-9]{9}" />
+		<div *ngIf=" f.SecCntTelNo.errors" class="custom-Invalid-feedback" >	
+        <div *ngIf="f.PrimaryCntTelNo.errors.required">
+            Please input 10 digit Mobile Number
+            </div>
+			<div *ngIf="f.SecCntTelNo.errors.minlength">
+          Mobile Number must be at least 10 digit long
+			</div> 
+			<div *ngIf="f.SecCntTelNo.errors.maxlength"> 
+          Mobile Number can be max 10 digit long
+			</div>	
+			<div *ngIf="f.SecCntTelNo.errors.pattern"> 
+          Please enter valid Mobile number
+        </div>	
+			</div>
+    </div>
+    <div class="form-group"> 
+		 <label class="modelManufactureAddress">Landline</label>
+         <input type="number" formControlName="SecCntLandlineNo"   class="form-control" placeholder="Enter Landline Number" pattern="^\d{3}-\d{3}-\d{4}$"/>
+		 <div *ngIf=" f.SecCntLandlineNo.errors" class="custom-Invalid-feedback" >	
+		 <div *ngIf="f.SecCntLandlineNo.errors.pattern"> 
+        Please enter valid Landline number.
+			</div>
+			</div>
+		  </div>
+		
+      <div class="form-group">
+		<label class="modelManufactureAddress">Email</label>
+        <input type="text" formControlName="SecCntEmail"  class="form-control" placeholder="Enter Email" pattern="^([A-Za-z0-9_\-\.]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,3})$"  [email]="true" />
+		<div *ngIf="f.SecCntEmail.invalid && (f.SecCntEmail.dirty || submitted)" class="custom-Invalid-feedback">
+    
+      <div *ngIf="f.SecCntEmail.errors.email" class="custom-Invalid-feedback feedback-pos">
+			Please input valid email ID
+			</div>
+			</div> 
+    </div>
+    <div class="space10"></div>
+    <div class="space10"></div>
+  </div>
+    
+
+	
+			
+		
+		<!-- <div class="col-md-6"> -->
+  <!-- <label class="uplodfile"> Select Recycler Document :</label> -->
+      <!-- <input type="file" name="file" accept="image/*" class=" form-group"/> -->
+  <!-- </div> -->
+		
+    </div> 
+    <div class="col-md-12">
+        <div id="accordion1" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                    <form [formGroup]="DocUploadForm" novalidate>
+                     <div class="row">
+                       <div class="col-md-6">
+                         <br>
+                          <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)" >
+                          <div *ngIf=" d.DocumentName.errors" class="custom-Invalid-feedback" >	
+                              <div *ngIf="d.DocumentName.errors.pattern"> 
+                                Please select document
+                                </div>
+                                </div>
+                       </div>
+                       <div class="col-md-6">
+                          <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                        
+                            <select class="form-control" formControlName="DocumentTypeId">
+                              <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                              <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                            </select>
+                  
+                  
+                       </div>
+                       <div class="col-md-6">
+                        <label class="form-group" >Comments</label>
+                        <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+                
+                        </div>
+                       <div class="col-md-12">
+                         <br>
+                          <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                       </div>
+                       
+                     </div>
+                   <div class="space10"></div>
+                   <div class="row">
+                     <div class="col-md-12">
+                       <div class="table-responsive">
+                         <table class="table table-borderless table-hover tableborder align-middle citytable">
+                           <thead class="headerbackground text-white">
+                              <tr>
+                                  <th></th>
+                                  <th>Sr No.</th>
+                                  <th>Document Name</th>
+                                  <th>Document Type</th>
+                                  <th>Comments</th>
+
+                                </tr>
+								
+								
+                               
+                           </thead>
+                         <tbody>
+                              <tr *ngFor="let Data of DocumentData ; let i=index">
+                                  <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{ i + 1}}</th>
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                              </tr>
+                           </tbody>
+                         </table>
+
+                       </div>
+                     </div>
+                   </div>
+                   </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+  </div>
+  <br>
+   <div class="form-group   btn-submit">
+     <div class="space10"></div>
+          <button class="btn btn-primary" (click)="EditRecycler()">Update</button>  
+	<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+    <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div>  -->
+      </div>
+	  </form>
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Edit recycler-->
+
+
+<!--Delete Recycler-->
+
+<div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Recycling Details?</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal" (click)="
+       CheckValidationForDelete()">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete Recycler-->
+
+<!--Table modal material -->
+
+<div id="myModaleditMaterial" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog scrincss">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <h4> Recycler Material </h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button> 	
+        </div>
+		
+      <div class="modal-body">    
+	
+	<div class="float-right">
+    <button class="btn btn-primary Addcitybtton" data-dismiss="modal" data-toggle="modal" data-target="#AddRecyclerWesteMaterial" (click)="ResetFrom()">Add Material</button>
+    </div>
+	
+     <div class="form-group table-responsive">
+	  <label class="modelManufacturename namefloat">Recycler Name :&nbsp;&nbsp;{{RecyclerName}}</label> 
+       
+     <div class="table-responsive">
+		
+		 <table class="table table-borderless table-hover tableborder align-middle citytable">
+    <thead class="headerbackground text-white">
+    <tr>
+	<th></th>
+        <th>Sr No</th>
+        <th>Waste Material</th>
+        <th>Recycler Rate</th>
+        <th>Material Unit</th>
+        <th>Processing Type</th>
+        <th>Handling Capacity(MT)</th>
+        <th>Max Acceptable Tonnage(per day)</th>
+        <th>Min Acceptance Tonnage(per load)</th>
+        <th>Non Opr day's</th>
+    </tr>
+    </thead>
+    <tbody>
+   <tr *ngFor="let Data of RecyclerMaterialdata ; let i=index"> 
+ <td>{{i+1}}</td> 
+ 
+ <td><label  (click)="EditRecyclerMaterialData(Data.WasteMaterialId,Data.Rate,Data.MatUnitId,Data.ProcessingTypeId,Data.HandlingCapacity,Data.MaxAcceptableTonnage,Data.MinAcceptableTonnage,Data.NonOperationalDays,Data.RecyclerMatId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaleditRecylerMaterial" class="btn-color">Edit</span> </label>
+		
+		<label  (click)="DeleteRecyclerMaterialData(Data.WasteMaterialId,Data.Rate,Data.MatUnitId,Data.ProcessingTypeId,Data.HandlingCapacity,Data.MaxAcceptableTonnage,Data.MinAcceptableTonnage,Data.NonOperationalDays,Data.RecyclerMatId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldeleteRecylerMaterial" class="btn-color">Delete</span> </label>
+		</td>
+		
+    <td>{{Data.WasteMaterialName}}</td> 
+    <td>{{Data.Rate}}</td> 
+    <td>{{Data.MatUnitName}}</td> 
+    <td>{{Data.ProcessingTypeName}}</td>  
+    <td>{{Data.HandlingCapacity}}</td> 
+    <td>{{Data.MaxAcceptableTonnage}}</td> 
+    <td>{{Data.MinAcceptableTonnage}}</td> 
+    <td>{{Data.NonOperationalDays}}</td> 
+  
+	  
+    </tr>
+  
+  </tbody>
+   </table>
+    </div> 
+ <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+      </div>
+      </div>
+	  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--table modal material--> 
+
+
+
+<!---Start  Recycler waste Material details ---> 
+<div id="AddRecyclerWesteMaterial" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header" >
+            <h4>Add Recycler Material</h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+
+     <div class="form-group">
+        <form [formGroup]="RcMaterialForm"  (ngSubmit)="onSubmitRcmaterial()">
+	<div class="col-md-12 row">
+    	<div class="col-md-12">
+          <label class="modelManufacturename namefloat">Recycler Name :&nbsp;&nbsp;{{RecyclerName}}</label> 
+        </div>
+		<div class="col-md-6">
+		<label class="form-group" >Waste Material&nbsp;<sup style="color:red">*</sup></label>
+       <select name="WastematerialID" formControlName="WasteMaterialId" class="form-control"  [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }" >
+	   <option value="">Select Waste Material</option>
+    <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+  </select>
+  
+   <div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialId.errors.required">Waste Material is Required</div>
+        </div>
+  </div>
+  <div class="col-md-6">
+  <label class="form-group" >Recycler Rate(Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+  <input type="number" formControlName="Rate" class="form-control" placeholder="Enter Recycler Rate" [ngClass]="{ 'is-invalid': submitted && g.Rate.errors }"/>
+  <div *ngIf="submitted && g.Rate.errors" class="invalid-feedback" >
+            <div *ngIf="g.Rate.errors.required">Recycler Rate is Required</div>
+        </div>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-group" >Handling Capacity&nbsp;<sup style="color:red">*</sup></label>
+      <input type="Number" formControlName="HandlingCapacity" class="form-control" placeholder="Enter Handling Capacity" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }" />
+   <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+          <div *ngIf="g.HandlingCapacity.errors.required">Handling capacity is Required</div>
+      </div>
+  </div>
+		 <div class="col-md-6">
+		 <label class="form-group" >Material Unit&nbsp;<sup style="color:red">*</sup></label>
+		
+        <select name="MaterialunitID" formControlName="MatUnitId" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.MatUnitId.errors }">
+		 <option [selected]=true [disabled]="true">Select Material Unit</option>
+		 <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+  </select>
+  <div *ngIf="submitted && g.MatUnitId.errors" class="invalid-feedback" >
+            <div *ngIf="g.MatUnitId.errors.required">Material Unit is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		 <label class="form-group" >Processing Type&nbsp;<sup style="color:red">*</sup></label>
+	
+  
+     <ng-multiselect-dropdown
+     [placeholder]="'Select Processing Type'"
+[data]="processingtypedata"
+formControlName="ProcessingTypeId"
+[settings]="ProcessingTypedownSettings"
+
+>
+</ng-multiselect-dropdown>
+ 
+<div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+  <div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+              Processing Type is Required
+          </div>
+          </div>
+		</div>
+	
+		
+  <div class="col-md-6">
+   <label class="form-group" >Max Acceptable Tonnage(per day)&nbsp;<sup style="color:red">*</sup></label>
+  <input type="MaxAcceptableTonnage" formControlName="MaxAcceptableTonnage" class="form-control" placeholder="Enter Max Acceptable Tonnage" [ngClass]="{ 'is-invalid': submitted && g.MaxAcceptableTonnage.errors }" />
+  <div *ngIf="submitted && g.MaxAcceptableTonnage.errors" class="invalid-feedback" >
+            <div *ngIf="g.MaxAcceptableTonnage.errors.required">Max Acceptable Tonnage is Required</div>
+        </div>
+  </div>
+   
+
+
+<div class="col-md-6">
+		 <label class="form-group" >Min Acceptable Tonnage(per load)&nbsp;<sup style="color:red">*</sup></label>
+        <input type="Number" formControlName="MinAcceptableTonnage" class="form-control" placeholder="Enter Min Acceptable Tonnage" [ngClass]="{ 'is-invalid': submitted && g.MinAcceptableTonnage.errors }"/>
+		<div *ngIf="submitted && g.MinAcceptableTonnage.errors" class="invalid-feedback" >
+            <div *ngIf="g.MinAcceptableTonnage.errors.required">Min Acceptable Tonnage  is Required</div>
+        </div>
+		</div>
+		
+		
+		<div class="col-md-6">
+	 <label class="form-group" > Non Operational Days&nbsp;<sup style="color:red">*</sup></label>
+				<select class="form-control" formControlName="NonOperationalDays" [ngClass]="{ 'is-invalid': submitted && g.NonOperationalDays.errors }">
+						<option value="Sunday">Sunday</option>
+						<option value="Monday">Monday</option>						
+						<option value="Tuesday">Tuesday</option>
+						<option value="Wednesday">Wednesday</option>
+						<option value="Thursday">Thursday</option>
+						<option value="Friday">Friday</option>
+						<option value="Saturday">Saturday</option>
+						
+					</select>		
+			
+	
+	  <div *ngIf="submitted && g.NonOperationalDays.errors" class="invalid-feedback" >
+            <div *ngIf="g.NonOperationalDays.errors.required">Non Operational Days is Required</div>
+        </div> 
+	</div>
+	  
+		
+    </div> 
+    <div class="form-group   btn-submit">
+        <button class="btn btn-primary">Submit</button>
+		<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+ <!-- <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>		 -->
+    </div>
+</form>
+</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---End Recycler waste Material details -
+
+
+ <!---Edit Recycler waste Material details myModaleditRecylerMaterial --->  
+
+<div id="myModaleditRecylerMaterial" class="modal fade modalmakeScroll" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">    
+     <div class="modal-content">
+        <div class="modal-header" >
+            <h4>Edit Recycler Material</h4>
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+
+     <div class="form-group">
+        <form [formGroup]="RcMaterialForm">
+	<div class="col-md-12 row">
+		<div class="col-md-6">
+		<label class="form-group" >Waste Material&nbsp;<sup style="color:red">*</sup></label>
+       <select name="WastematerialID" formControlName="WasteMaterialId" class="form-control"  [ngClass]="{ 'is-invalid': submitted && g.WasteMaterialId.errors }" >
+	   <option value="">Select Waste Material</option>
+    <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+	<div *ngIf="submitted && g.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="g.WasteMaterialId.errors.required">Waste Material is Required</div>
+        </div>
+  </select>
+  </div>
+  <div class="col-md-6">
+  <label class="form-group" >Recycler Rate(Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+  <input type="number" formControlName="Rate" class="form-control" placeholder="Enter Recycler Rate" [ngClass]="{ 'is-invalid': submitted && g.Rate.errors }"/>
+  <div *ngIf="submitted && g.Rate.errors" class="invalid-feedback" >
+            <div *ngIf="g.Rate.errors.required">Recycler Rate is Required</div>
+        </div>
+  </div>
+  <div class="col-md-6">
+		  <label class="form-group" >Handling Capacity&nbsp;<sup style="color:red">*</sup></label>
+        <input type="Number" formControlName="HandlingCapacity" class="form-control" placeholder="Enter Handling Capacity" [ngClass]="{ 'is-invalid': submitted && g.HandlingCapacity.errors }" />
+		 <div *ngIf="submitted && g.HandlingCapacity.errors" class="invalid-feedback" >
+            <div *ngIf="g.HandlingCapacity.errors.required">Handling capacity is Required</div>
+        </div>
+		</div>
+		 <div class="col-md-6">
+		 <label class="form-group" >Material Unit&nbsp;<sup style="color:red">*</sup></label>
+		
+        <select name="MaterialunitID" formControlName="MatUnitId" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.MatUnitId.errors }">
+		 <option [selected]=true [disabled]="true">Select Material Unit</option>
+		 <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+  </select>
+  <div *ngIf="submitted && g.MatUnitId.errors" class="invalid-feedback" >
+            <div *ngIf="g.MatUnitId.errors.required">Material Unit is Required</div>
+        </div>
+		</div>
+		
+		<div class="col-md-6">
+		 <label class="form-group" >Processing Type&nbsp;<sup style="color:red">*</sup></label>
+		 
+		<!--<select name="processingtype" formControlName="ProcessingTypeId" class="form-control" [ngClass]="{ 'is-invalid': submitted && g.ProcessingTypeId.errors }">
+		
+		<option [selected]=true [disabled]="true">Select Processing Type</option>
+   <option *ngFor="let Data of processingtypedata" value="{{Data.ProcessingTypeId}}" >{{Data.ProcessingType}} </option>
+  </select>-->
+  
+   <ng-multiselect-dropdown
+  [placeholder]="'Select Processing Type'"
+  [data]="processingtypedata"
+  formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings">
+</ng-multiselect-dropdown>
+  <!-- <div *ngIf="submitted && g.ProcessingTypeId.errors" class="Custom-invalid-feedback" >
+            <div *ngIf="g.ProcessingTypeId.errors.required">Processing Type is Required</div>
+        </div> -->
+        <div *ngIf="submitted && g.ProcessingTypeId.errors" class="custom-invalid-feedback " >
+          <div *ngIf="!IsValidPT" class="custom-Invalid-feedback" >
+                      Processing Type is Required
+                  </div>
+            </div>
+		</div>
+		
+		 
+		
+  <div class="col-md-6">
+   <label class="form-group" >Max Acceptable Tonnage(per day)&nbsp;<sup style="color:red">*</sup></label>
+  <input type="MaxAcceptableTonnage" formControlName="MaxAcceptableTonnage" class="form-control" placeholder="Enter Max Acceptable Tonnage" [ngClass]="{ 'is-invalid': submitted && g.MaxAcceptableTonnage.errors }" />
+  <div *ngIf="submitted && g.MaxAcceptableTonnage.errors" class="invalid-feedback" >
+            <div *ngIf="g.MaxAcceptableTonnage.errors.required">Max Acceptable Tonnage is Required</div>
+        </div>
+  </div>
+   
+
+
+<div class="col-md-6">
+		 <label class="form-group" >Min Acceptable Tonnage(per load)&nbsp;<sup style="color:red">*</sup></label>
+        <input type="Number" formControlName="MinAcceptableTonnage" class="form-control" placeholder="Enter Min Acceptable Tonnage" [ngClass]="{ 'is-invalid': submitted && g.MinAcceptableTonnage.errors }"/>
+		<div *ngIf="submitted && g.MinAcceptableTonnage.errors" class="invalid-feedback" >
+            <div *ngIf="g.MinAcceptableTonnage.errors.required">Min Acceptable Tonnage  is Required</div>
+        </div>
+		</div>
+		
+		
+		<div class="col-md-6">
+	 <label class="form-group" > Non Operational Days&nbsp;<sup style="color:red">*</sup></label>
+				<select class="form-control" formControlName="NonOperationalDays" [ngClass]="{ 'is-invalid': submitted && g.NonOperationalDays.errors }">
+						<option value="Sunday">Sunday</option>
+						<option value="Monday">Monday</option>						
+						<option value="Tuesday">Tuesday</option>
+						<option value="Wednesday">Wednesday</option>
+						<option value="Thursday">Thursday</option>
+						<option value="Friday">Friday</option>
+						<option value="Saturday">Saturday</option>
+						
+					</select>		
+			
+	
+	  <div *ngIf="submitted && g.NonOperationalDays.errors" class="invalid-feedback" >
+            <div *ngIf="g.NonOperationalDays.errors.required">Non Operational Days is Required</div>
+        </div> 
+	</div>
+	  
+		
+    </div> 
+    <div class="form-group   btn-submit">
+        <button class="btn btn-primary" (click)="AddUpdateDeleteRCMaterial()">Update</button>
+		<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">
+ <!-- <div *ngIf="successmsg" class="form-group form-text">Updated Successfully</div>		 -->
+    </div>
+</form>
+</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <!---End Edit Recycler waste Material details ---> 
+
+<!-- <!---start delete Recycler waste Material details ---> 
+
+<div id="myModaldeleteRecylerMaterial" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Recycling Material Details?</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal" (click)="DeleteRCMaterial()">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---End delete Recycler waste Material details --->
+
+
+</div>

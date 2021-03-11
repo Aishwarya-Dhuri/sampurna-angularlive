@@ -1,0 +1,22 @@
+.fullwidthLI{
+    width:100%;
+    text-align: center;
+}
+.wrapper{
+    /* width: 80%; */
+    padding: 40px 0;
+    margin: auto;
+}
+.height-130{
+    height:130px !important;
+}
+.height-250{
+    height:250px !important;
+}
+input.largerCheckbox{
+    width: 20px;
+    height: 25px;
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+}

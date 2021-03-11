@@ -1,0 +1,223 @@
+<div class="container">
+  <div class="CitymainDiv">
+    <div class="col-md-12"> 
+     <h2 align="center" class="labelclass col-md-12 labelstyle"> Role Access  </h2>
+     <div class="table-responsive">
+     
+     <!-- Add new customer button -->
+     
+   
+      <div class="float-right">
+      <button class="btn btn-primary Addcitybtton" (click)="ResetFrom()" data-toggle="modal" data-target="#myModal">Add Role Access</button>
+      </div>
+     <table class="table table-borderless table-hover tableborder align-middle citytable">
+      <thead class="headerbackground text-white">
+      <tr>
+	    <th></th>
+          <th>Sr No</th> 
+          <th>Role Name </th>
+		  <th>Page Name</th>
+          <th>Access Role</th>
+       
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let Data of RoleAccessData ; let i=index">
+	  
+	  <td><a (click)="EditRoleAccessData(Data.RoleId,Data.PageId,Data.ViewPage,Data.EditPage,Data.AccessId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+		<a  (click)="DeleteRoleAccessData(Data.RoleId,Data.PageId,Data.ViewPage,Data.EditPage,Data.AccessId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </a>
+		</td>
+	  
+        <td>{{i+1}}</td>
+        <td>{{Data.RoleName}}</td>
+		 <td>{{Data.PageName}}</td>
+        <td><span *ngIf="Data.ViewPage">ViewPage</span>&nbsp; <span *ngIf="Data.EditPage">EditPage</span></td>
+    
+     <!-- <td (click)="EditRoleAccessData(Data.RoleId,Data.PageId,Data.ViewPage,Data.EditPage,Data.AccessId)"><span>  <button class="btn btn-primary Addcitybtton"  data-dismiss="modal" data-toggle="modal" data-target="#myModaledit"><i class="fas fa-pencil-alt iconcolor"></i>&nbsp;&nbsp;Edit</button></span></td> -->
+        
+
+	 <!-- <td (click)="DeleteRoleAccessData(Data.RoleId,Data.PageId,Data.ViewPage,Data.EditPage,Data.AccessId)"><span>  <button class="btn btn-primary Addcitybtton "  data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete"><i class="fas fa-trash-alt iconcolor"></i>&nbsp;&nbsp;Delete</button></span></td> -->
+    </tr>
+    
+    </tbody>
+     </table>
+     
+  
+     </div>
+	 <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+  </div>
+  </div>
+  
+  
+  
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Add Role Access</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+    
+ <form [formGroup]="RoleAccessForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+         
+       <label class="form-group" >Select Role&nbsp;<sup style="color:red">*</sup></label>
+           <select class="form-control form-group" formControlName="RoleId" [ngClass]="{ 'is-invalid': submitted && f.RoleId.errors }" value="role">
+                <option [selected]=true [disabled]="true">Select Role</option>
+                <option *ngFor="let Data of roledata" value="{{Data.RoleId}}">{{Data.RoleName}} </option>
+				
+               </select> 
+<div *ngIf="submitted && f.RoleId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RoleId.errors.required">Role is required</div>
+        </div>			   
+			   
+    
+    <label class="form-group" >Select Page&nbsp;<sup style="color:red">*</sup></label>
+     <select name="pageid" class="form-control form-group" formControlName="PageId" [ngClass]="{ 'is-invalid': submitted && f.PageId.errors }">
+                <option [selected]=true [disabled]="true">Select Page </option>
+                <option *ngFor="let Data of pagesdata" value="{{Data.PageId}}">{{Data.PageName}} </option>
+               </select> 
+    <div *ngIf="submitted && f.PageId.errors" class="invalid-feedback" >
+            <div *ngIf="f.PageId.errors.required">Page is required</div>
+        </div>
+    
+     <div class="form-group">
+     
+    <label class="form-group"> Select Role Access&nbsp;<sup style="color:red">*</sup></label>
+    
+    
+    <label class="form-check-label">
+    <input type="checkbox" checked="checked" [value]="false" formControlName="ViewPage"/>
+    <span class="checkmark">View page</span>
+	
+  </label>
+</div>
+<div class="form-group">
+     
+   <label class="form-check-label">
+    <input type="checkbox" checked="checked" formControlName="EditPage">
+    <span class="checkmark">Edit page</span>
+  </label>
+   </div>
+        
+      </div> 
+      <div class="form-group   btn-submit">
+          <button class="btn btn-primary">Submit</button>  
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <div *ngIf="successmsg" class="form-group form-text">Added Successfully</div>
+  </form> 
+</div>
+   <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>   
+        </div>
+       
+      </div>
+    </div>
+  
+  
+  <!-- Modal -->
+  <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+              <h4>Edit Role Access</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+    
+  <form [formGroup]="RoleAccessForm"> 
+      <div class="form-group">
+         
+       <label class="form-group" >Select Role&nbsp;<sup style="color:red">*</sup></label>
+           <select class="form-control form-group" formControlName="RoleId" [ngClass]="{ 'is-invalid': submitted && f.RoleId.errors }">
+               <option [selected]=true [disabled]="true">Select Role</option>
+                <option *ngFor="let Data of roledata" value="{{Data.RoleId}}">{{Data.RoleName}} </option>
+				
+               </select> 
+<div *ngIf="submitted && f.RoleId.errors" class="invalid-feedback" >
+            <div *ngIf="f.RoleId.errors.required">Role is required</div>
+        </div>			   
+			   
+    
+    <label class="form-group" >Select Page&nbsp;<sup style="color:red">*</sup></label>
+     <select name="pageid" class="form-control form-group" formControlName="PageId" [ngClass]="{ 'is-invalid': submitted && f.PageId.errors }">
+                <option [selected]=true [disabled]="true">Select Page </option>
+                <option *ngFor="let Data of pagesdata" value="{{Data.PageId}}">{{Data.PageName}} </option>
+               </select> 
+    <div *ngIf="submitted && f.PageId.errors" class="invalid-feedback" >
+            <div *ngIf="f.PageId.errors.required">Page is required</div>
+        </div>
+    
+     <div class="form-group">
+     
+    <label class="form-group"> Select Role Access&nbsp;<sup style="color:red">*</sup></label>
+    
+    
+    <label class="form-check-label">
+    <input type="checkbox" checked="checked"  formControlName="ViewPage">
+    <span class="checkmark">View page</span>
+  </label>
+   <label class="form-check-label">
+    <input type="checkbox" checked="checked" formControlName="EditPage">
+    <span class="checkmark">Edit page</span>
+  </label>
+   
+          </div>
+      </div> 
+      <div class="form-group   btn-submit">
+          <button class="btn btn-primary" (click)="AddUpdateDeleteRoleAccess()">Update</button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">		  
+      </div>
+	  <div *ngIf="successmsg" class="form-group form-text">Upadate Successfully</div>
+ </form> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">    
+       <div class="modal-content">
+          <div class="modal-header" >
+            <button type="button" class="close" data-dismiss="modal">&times;</button>       
+          </div>
+        <div class="modal-body">    
+   <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Role?</div>
+        
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="AddUpdateDeleteRoleAccess()">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!--My Modal Alert-->
+    <div id="myModalalert" class="modal fade" role="dialog"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">    
+         <div class="modal-content">
+            <div class="modal-header" >
+              <button type="button" class="close" data-dismiss="modal">&times;</button>       
+            </div>
+          <div class="modal-body">    
+     <div class="alert alert-success"> {{AlertMessage}}</div>
+          
+          </div>
+          <div class="modal-footer">
+           <button type="button" class="btn btn-default"  data-dismiss="modal"  >ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--My Modal Alert-->
+  </div>

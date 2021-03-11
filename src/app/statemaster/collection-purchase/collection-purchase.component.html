@@ -1,0 +1,950 @@
+<div class="container">
+    <div class="CitymainDiv">
+      <div class="col-md-12"> 
+       <h2 align="center" class="labelclass col-md-12 labelstyle" *ngIf="isAdmin">Collection & Purchase Details</h2>
+       <h2 align="center" class="labelclass col-md-12 labelstyle" *ngIf="isManufacturer">Transaction Details</h2>
+
+    <div class="row" style="margin-top: 20px;">
+       <div class="col-md-6" *ngIf="isAdmin" style="margin-top: 20px;">
+         <input type="text" placeholder="Search Collection & Purchase Details..." class="form-control searchtextbox"  (input)="SearchCollectionPurchases($event.target.value)">
+       </div>
+    
+       <div style="float:right;margin-left: 20px;margin-top: 20px;" >
+       <div style="display:flex">
+        <button  (click)="exportAsXLSX()" class="btn btn-primary Addcitybtton float-right print-button ">Export To Excel </button>
+          <button (click)="print()" class="btn btn-primary Addcitybtton  print-button" style="margin-left:7px;">Print </button>
+          &nbsp;&nbsp;
+          <button class="btn btn-primary Addcitybtton print-button"  data-toggle="modal" data-target="#myModal" (click)="ResetFrom()" *ngIf="isAdmin" >Add Collection & Purchase Details</button>
+        </div>
+        </div>
+      </div>
+	  <form [formGroup]="SearchCP">
+	  <div class="row">
+	  <div class="col-md-7">
+	  <div class="row">
+	  <div class="col-md-4 form-group">
+	<label>Aggregator</label>
+		<select class="form-control" formControlName="AggregatorId" (change)="SearchByAggregator($event.target.value)" >
+               <option [selected]=true value="0" >Select Aggregator</option>
+                <option *ngFor="let Data of aggregatordata" value="{{Data.AggregatorId}}" >{{Data.AGName}}  </option>
+               </select>
+	  </div>
+	  <div class="col-md-4 form-group">
+	<label>State</label>    
+               	 <select class="form-control" formControlName="StateId" (change)="SearchByState($event.target.value)" (change)="GetStateMappingState($event.target.value)"   >
+               <option [selected]=true  value="0">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+	  </div>
+	  <div class="col-md-4 form-group">
+	<label>City</label>
+		<select class="form-control" formControlName="CityId" (change)="SearchByCity($event.target.value)" >
+               <option [selected]=true  value="0">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+	  </div>	  
+	  </div>
+	  </div>
+	  
+	  <div class="col-md-5 form-group">
+	  <div class="row">
+	 <div class="col-md-6 ">
+	 <label>From Date</label>
+	<input type="date"  max="{{FromDateValidation}}" class="form-control" 	formControlName="FromDate" (change)="DateValidationToDate()"/> </div>  
+	<div class="col-md-6">
+	 <label class="todate">To Date</label>
+	<input type="date"  min="{{ToDateValidation}}"  class="form-control" formControlName="ToDate" (change)="SearchOnDate()"/> </div>  
+	 </div>
+	  </div>
+	  
+	  </div>
+	  
+	 
+	   
+	  
+	 </form>
+   <div id="print-section">
+       <div class="table-responsive">
+       
+       <table class="table table-borderless table-hover tableborder align-middle citytable">
+        <thead class="headerbackground text-white">
+        <tr>
+		<th class="doNotPrint" *ngIf="isAdmin"></th>
+            <th>Sr No</th>
+            <th>Collection Purchase Code</th>
+            <th>State</th>
+		      	<th>City</th>
+            <th>Suburbs</th>
+            <th>Aggregator</th> 
+            <th>Waste Material type</th> 
+            <th>Waste Material Unit</th> 
+            <!-- <th>Waste Material Form</th>  -->
+            <th>Collection or Purchase Rate (Rs/Kg)</th> 
+            <th>GST Rate</th> 
+            <th>Waste Material Quantity</th> 
+            <th>Total Collection or Purchase Cost (Inclusive GST in Rs)</th> 
+            <th>Creation Date</th> 
+            <th>Collection or Purchase Date</th> 			
+            <th>Details/Comments</th>
+			<!-- <th>Documents Uploaded</th> -->
+         
+        </tr>
+        </thead>
+        <tbody>
+         <tr *ngFor="let Data of collectionpurchasedata ; let i=index">
+		 <td class="doNotPrint" *ngIf="isAdmin">
+       <label  (click)="EditcollectionpurchaseData(Data.WorkOrderId,Data.WorkOrderItemId,Data.AggregatorId,Data.CollectionPurchaseCode,Data.StateId,Data.CityId,Data.SuburbID,Data.WasteMaterialId,Data.WasteMaterialUnitId,Data.WasteMaterialFormId,Data.PerKgRate,Data.GSTRate,Data.WasteMaterialQty,Data.TotalPaymtDownStr,Data.CreationDate,Data.PlacementDate,Data.Comments,Data.CollectionPurchaseId,Data.WeightReceiptDocument,Data.DeclarationRateDocument,Data.MaterialPhotoDocument,Data.ProcessingTypeId)"> <span data-dismiss="modal" data-toggle="modal" data-target="#myModaledit" class="btn-color">Edit</span> </label>
+		<label  (click)="DeletecollectionpurchaseData(Data.WorkOrderId,Data.WorkOrderItemId,Data.AggregatorId,Data.CollectionPurchaseCode,Data.StateId,Data.CityId,Data.SuburbID,Data.WasteMaterialId,Data.WasteMaterialUnitId,Data.WasteMaterialFormId,Data.PerKgRate,Data.GSTRate,Data.WasteMaterialQty,Data.TotalPaymtDownStr,Data.CreationDate,Data.PlacementDate,Data.Comments,Data.CollectionPurchaseId,Data.WeightReceiptDocument,Data.DeclarationRateDocument,Data.MaterialPhotoDocument)">  <span data-dismiss="modal" data-toggle="modal" data-target="#myModaldelete" class="btn-color">Delete</span> </label>
+		</td>
+		 
+		 
+			<td>{{i+1}}</td>
+			<td>{{Data.CollectionPurchaseCode}}</td>
+			<td>{{Data.State}}</td>
+            <td>{{Data.City}}</td>		 
+            <td>{{Data.Suburb}}</td>
+            <td>{{Data.AggregatorName}}</td>
+            <td>{{Data.WasteMaterialName}}</td> <!--!Waste Material type-->
+            <td>{{Data.MaterialUnitName}}</td>  <!--Waste Material Unit-->
+            <!-- <td>{{Data.WasteMaterialFormName}}</td>Waste Material Form -->
+ 		 <td>{{Data.PerKgRate}}</td>
+            <td>{{Data.GSTRate}}</td>          
+			<td>{{Data.WasteMaterialQty}}</td>
+            <td>{{Data.TotalPaymtDownStr}}</td>
+            <td>{{Data.CreationDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{Data.PlacementDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{Data.Comments}}</td>
+            <!-- <td>Supporting Documents(Material Image,Purchase Bills)</td> -->
+		 
+        </tr>
+     
+      
+      
+      </tbody>
+       </table>
+       
+    
+       </div>
+
+   </div>
+	     <div class="loadingTable">
+   <img *ngIf="loading"  src="../assets/images/Loading.gif">
+   </div>
+    </div>
+    
+
+
+    <!--Add Modal collection purchase-->
+    <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4 class="text-center">Add Collection & Purchase Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <!--   <h4 class="modal-title" >Add New City</h4> -->
+              </div>
+             <div class="modal-body">    
+         
+      <form [formGroup]="collectionpurchasForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+      <div class="col-md-12 row">
+    
+		<div class="col-md-6  form-group">
+           <label>Select State&nbsp;<sup style="color:red">*</sup></label>    
+               	 <select class="form-control" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingState($event.target.value)" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+			   
+          </div>
+		
+		
+		
+           <div class="col-md-6  form-group">
+           <label  >Select City&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" (change)="getAgFromsuburboncityId($event.target.value)" formControlName="CityId"  [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback" >
+            <div *ngIf="f.CityId.errors.required">City is Required</div>
+        </div>
+          </div>
+
+          
+           <div class="col-md-6  form-group">
+           <label>Select Suburbs&nbsp;</label>    
+               	<select class="form-control" formControlName="SuburbID" [ngClass]="{ 'is-invalid': submitted && f.SuburbID.errors }">
+                <option [selected]=true [disabled]="true">Select Suburbs</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}" >{{Data.SuburbName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.SuburbID.errors" class="invalid-feedback" >
+            <div *ngIf="f.SuburbID.errors.required">Suburb is Required</div>
+        </div>
+          </div>
+ 
+		 
+		  
+		  	<!--End  State-city-suburb mapping -->
+			 <div class="col-md-6  form-group">
+           <label> Select Waste Material Type&nbsp;<sup style="color:red">*</sup></label>    
+               	<select class="form-control" formControlName="WasteMaterialId"  (change)="OnCitySelect($event.target.value)" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialId.errors }">
+                <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+                <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialId.errors.required">Waste Material Type is Required</div>
+        </div>	
+          </div>
+		  
+		  
+		   <div class="col-md-6  form-group">
+           <label>Select Aggregator&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AggregatorId" [ngClass]="{ 'is-invalid': submitted && f.AggregatorId.errors }" (change)="GenerateCPCode($event.target.value)" (change)="ValidateWorkorders()">
+               <option [selected]=true [disabled]="true">Select Aggregator</option>
+                <option *ngFor="let Data of aggregatordata" value="{{Data.AggregatorId}}" >{{Data.AGName}} &nbsp;&nbsp;({{Data.AGCode}}) </option>
+               </select>
+			<div *ngIf="submitted && f.AggregatorId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AggregatorId.errors.required">Aggregator is Required</div>
+        </div>			   
+          </div>
+		  
+		  
+		  <div class="col-md-6 form-group">
+           <label>Collection Purchase Code &nbsp;<sup style="color:red">*</sup></label>
+		 <input type="text" formControlName="CollectionPurchaseCode"  placeholder="Enter Collection Purchase" class="form-control " readonly /> 
+						   
+          </div>
+		  
+           <div class="col-md-6 form-group">
+           <label>Select Waste Material Unit&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="WasteMaterialUnitId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialUnitId.errors }">
+               <option [selected]=true [disabled]="true">Select Material unit</option>
+                <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+               </select> 
+			   <div *ngIf="submitted && f.WasteMaterialUnitId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialUnitId.errors.required">Waste Material Unit is Required</div>
+        </div>	
+          </div>
+		  
+		
+		  
+		  <div class="col-md-6  form-group">
+           <label >Waste Material Quantity&nbsp;<sup style="color:red">*</sup></label>
+               <input type="Number" formControlName="WasteMaterialQty"  placeholder="Enter Waste Material Quantity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialQty.errors }"  />
+			   <div *ngIf="submitted && f.WasteMaterialQty.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialQty.errors.required">Waste Material Quantity is Required</div>
+        </div>	
+      </div>
+		  
+		   <div class="col-md-6 form-group">
+               <label>Collection or Purchase Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+               <br>
+                <input type="Number" formControlName="PerKgRate" placeholder="Enter Collection or Purchase Rate " class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PerKgRate.errors }" (input)=" CalPayMent()" value="{{FinalRate}}" /> 
+					<div *ngIf="submitted && f.PerKgRate.errors" class="invalid-feedback" >
+            <div *ngIf="f.PerKgRate.errors.required">Collection or Purchase Rate  is Required</div>
+        </div>	
+            </div>
+			
+			 <div class="col-md-6  form-group">
+               <label >Total Collection or Purchase Cost (Inclusive GST in Rs) &nbsp;<sup style="color:red">*</sup></label>
+                <input type="Number" formControlName="TotalPaymtDownStr" placeholder="Enter Total Collection or Purchase Cost" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TotalPaymtDownStr.errors }" (input)="CalRate()"  value="{{FinalPay}}"/>  
+				<div *ngIf="submitted && f.TotalPaymtDownStr.errors" class="invalid-feedback" >
+            <div *ngIf="f.TotalPaymtDownStr.errors.required">Total Collection or Purchase Cost  is Required</div>
+        </div>	
+            </div>
+		  
+	  
+	  <div class="col-md-6  form-group">
+               <label>GST Rate(%)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="Number" formControlName="GSTRate"  placeholder="GST Rate(%)" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTRate.errors }"/>  
+				<div *ngIf="submitted && f.GSTRate.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTRate.errors.required">GST Rate is Required</div>
+        </div>	
+            </div>
+	 
+			
+             <div class="col-md-6  form-group">
+               <label> Creation Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" formControlName="CreationDate" value="{{TodayDate}}" placeholder="Enter Total Down Payment" class="form-control"  [ngClass]="{ 'is-invalid': submitted && f.CreationDate.errors }" readonly />  
+				<div *ngIf="submitted && f.CreationDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.CreationDate.errors.required">Creation Date is Required</div>
+        </div>	
+            </div>
+			
+			
+			<div class="col-md-6  form-group">
+               <label>Collection or Purchase Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" formControlName="PlacementDate" placeholder="Enter Collection or Purchase Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PlacementDate.errors }" />  
+				<div *ngIf="submitted && f.PlacementDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.PlacementDate.errors.required">Collection or Purchase Date is Required</div>
+        </div>	
+            </div>
+			
+			
+			<div class="col-md-6">
+		 <label>Select Waste Material Form&nbsp;<sup style="color:red">*</sup></label>
+	
+  
+   <ng-multiselect-dropdown
+  [placeholder]="'Select Waste Material Form'"
+  [data]="processingtypedata"
+  formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings"
+ >
+</ng-multiselect-dropdown>
+  <div *ngIf=" f.ProcessingTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="f.ProcessingTypeId.errors.required"> Waste Material Form is Required</div>
+        </div>
+		 </div>
+    
+		
+		
+       <div class="col-md-6  form-group">
+             <label >Details/Comments</label>
+                <textarea formControlName="Comments"  class="form-control" placeholder="Details/Comments"></textarea>
+				
+            </div>
+            <div class="col-md-12">
+                <div class="space10"></div>
+                <div id="accordion" class="accordion">
+                    <div class="card mb-0">
+                        <div class="card-header collapsed" data-toggle="collapse" href="#collapseAddWorkOrder">
+                            <a class="card-title">
+                             <b>Work Orders</b>
+                            </a>
+                        </div>
+                        <div id="collapseAddWorkOrder" class="card-body collapse" data-parent="#accordion" >
+                            <form  [formGroup]="WorkOrdersForm"  novalidate>
+                          <div class="row">
+                            <div class="col-md-6  form-group">
+                                <label >Select Work Order&nbsp;<sup style="color:red">*</sup></label> 
+                                         <select class="form-control" formControlName="WorkOrderId" [ngClass]="{ 'is-invalid': submitted && W.WorkOrderId.errors }" (change)="GetWorkorderItem($event.target.value)">
+                                          <option [selected]=true value="0">Select Work Order Code</option>
+                                          <option *ngFor="let Data of WorkOrdersdata" value="{{Data.WorkOrderId}}" >{{Data.WorkOrderCode}} </option>
+                                         </select>  
+                                   
+                                   <div *ngIf="submitted && W.WorkOrderId.errors" class="invalid-feedback" >
+                                      <div *ngIf="W.WorkOrderId.errors.required">Work Order Code is Required</div>
+                                  </div>
+  
+                          <div *ngIf="!IsValidCT" class="custom-Invalid-feedback" >
+                                     Work Order  is Required
+                                  </div>
+                                  </div>
+                               <div class="col-md-6  form-group">
+                             
+                                  <label> Select Work Order Item&nbsp;<sup style="color:red">*</sup></label> 
+                                         <select class="form-control" formControlName="WorkOrderItemId" [ngClass]="{ 'is-invalid': submitted && W.WorkOrderItemId.errors }">
+                                          <option [selected]="true"  value="0">Select Work Order Item</option>
+                                          <option *ngFor="let Data of WOItemsdata" value="{{Data.WorkOrderItemId}}">{{Data.WorkOrderItemCode}} </option>
+                                         </select>  
+                                   
+                                   <div *ngIf="submitted && W.WorkOrderItemId.errors" class="invalid-feedback" >
+                                      <div *ngIf="W.WorkOrderItemId.errors.required">Work Order Item is Required</div>
+                                  </div>
+                                   
+                                  </div>
+                                  <div class="col-md-6  form-group">
+                                    <label>Assign Waste Material Quantity (in MT)&nbsp;<sup style="color:red">*</sup></label> 
+                                    <input type="text" formControlName="Tonnage" class="form-control" placeholder="Enter Assign Waste Material Quantity " [ngClass]="{ 'is-invalid': submitted && W.Tonnage.errors }" />
+                                    <div *ngIf=" W.Tonnage.errors" class="invalid-feedback" >
+                                             <div *ngIf="W.Tonnage.errors.required">Assign Waste Material Quantity  is Required</div>
+                                         </div>
+                                  </div>
+                                  <div class="col-md-12">
+                              
+                                      <button class="btn btn-primary" (click)="CPWorkOrderItemCrud()"> Add</button>  
+            
+                                   </div>
+                              <!--Start  State-city-suburb mapping -->
+                          </div>
+                       
+                          <div class="space10"></div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Work Order</th>
+                                         <th>Work Order Item</th>
+                                         <th>Assign Waste Material Quantity </th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                   <tr *ngFor="let Data of CPWorkOrderItemCrudData; let i=index" >
+                                       <!-- <th><a (click)="EditCPWorkOrderItemCrud(Data.WorkOrderId,Data.WorkOrderItemId,Data.Tonnage,Data.CPCode,Data.CPWorkOrderItem)"  class="btn-color" data-toggle="modal" data-target="#myEditWorkOrderModal" >Edit</a><br><a (click)="DeleteCPWorkOrderItemCrud(Data.WorkOrderId,Data.WorkOrderItemId,Data.Tonnage,Data.CPCode,Data.CPWorkOrderItem)" class="btn-color"> Delete</a></th> -->
+                                       <th><button (click)="DeleteCPWorkOrderItemCrud(Data.CPWorkOrderItem)" class="btn-color"> Delete</button></th> 
+                                       <th>{{i + 1}}</th>								  
+                                        <th>{{Data.workordercode}}</th>		
+                                        <th>{{Data.workordersitemcode}}</th>		
+                                        <th>{{Data.Tonnage}}</th>		
+                                   </tr>
+                                </tbody>
+                                </table>
+     
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+              <div class="space10"></div>
+              <div id="accordion" class="accordion">
+                  <div class="card mb-0">
+                      <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                          <a class="card-title">
+                           <b>Document Upload</b>
+                          </a>
+                      </div>
+                      <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                        <form  [formGroup]="DocUploadForm"  novalidate>
+
+                          <div class="row">
+                            <div class="col-md-6">
+                              <br>
+                               <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"  [ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                            </div>
+                            <div class="col-md-6">
+                               <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                             
+                                 <select class="form-control" formControlName="DocumentTypeId" [ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                                   <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                                   <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                                 </select>
+                       <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Document Type is Required</div>
+        </div>	
+                       
+                            </div>
+                            <div class="col-md-6">
+                           <label>Comments</label>
+                             <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+                     
+                             </div>
+                            <div class="col-md-12">
+                              <br>
+                               <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+     
+                            </div>
+                            
+                          </div>
+                          <div class="space10"></div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Document Name</th>
+                                         <th>Document Type</th>
+                                         <th>Comments</th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                   <tr *ngFor="let Data of DocumentData ; let i=index">
+                                       <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                        <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                                   </tr>
+                                </tbody>
+                                </table>
+     
+                              </div>
+                            </div>
+                          </div>
+                         </form>
+                      </div>
+                      
+                      
+                  </div>
+              </div>
+          
+          </div>
+          <div class="space10"></div>
+          <br>
+        
+             </div>
+          <div class="form-group btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary">Submit</button> 
+              <img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>
+		  <!-- <div *ngIf="successmsg" class="form-group">{{AlertMessage}}</div> -->
+            </div>
+			</form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+      </div>
+    <!--Add Modal collection Purchase-->
+
+
+<!--Edit Work Order Item Modal-->
+<div id="myEditWorkOrderModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+      
+    <!-- Modal content-->
+         
+  <div class="modal-content">
+           
+   <div class="modal-header" >
+               
+   <h4 class="text-center">Edit Work Order Item</h4>
+    
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+    
+          <!--   <h4 class="modal-title" >Add New City</h4> -->
+            
+  </div>
+            
+ <div class="modal-body">   
+	<form >
+dfdfdf
+	</form>
+
+</div>
+</div>
+</div>
+</div>
+
+
+<!--Edit Work Order Item Modal-->
+
+
+    <!--Edit Modal collection Purchase myModaledit-->
+ <div id="myModaledit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+           <div class="modal-content">
+              <div class="modal-header" >
+                  <h4>Edit Collection & Purchase Details</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+             <div class="modal-body">    
+      <form [formGroup]="collectionpurchasForm">
+          <div class="form-group">
+      <div class="col-md-12 row">
+       
+		
+		
+		<div class="col-md-6  form-group">
+           <label>Select State&nbsp;<sup style="color:red">*</sup></label>    
+               	 <select class="form-control" formControlName="StateId" [ngClass]="{ 'is-invalid': submitted && f.StateId.errors }" (change)="GetStateMappingState($event.target.value)" >
+               <option [selected]=true [disabled]="true">Select State</option>
+                <option *ngFor="let Data of statemasterdata" value="{{Data.Stateid}}">{{Data.StateName}} </option>
+               </select> 
+			   
+			   <div *ngIf="submitted && f.StateId.errors" class="invalid-feedback" >
+            <div *ngIf="f.StateId.errors.required">State is Required</div>
+        </div>
+    </div>
+		
+           <div class="col-md-6  form-group">
+           <label >Select City&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" (change)="getAgFromsuburboncityId($event.target.value)"  formControlName="CityId"  [ngClass]="{ 'is-invalid': submitted && f.CityId.errors }">
+               <option [selected]=true [disabled]="true">Select City</option>
+                <option *ngFor="let Data of citydata" value="{{Data.CityId}}" >{{Data.CityName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.CityId.errors" class="invalid-feedback" >
+            <div *ngIf="f.CityId.errors.required">City is Required</div>
+        </div>
+          </div>
+
+          
+           <div class="col-md-6  form-group">
+           <label>Select Suburbs&nbsp;</label>    
+               	<select class="form-control" formControlName="SuburbID" [ngClass]="{ 'is-invalid': submitted && f.SuburbID.errors }">
+                <option [selected]=true [disabled]="true">Select Suburb</option>
+                <option *ngFor="let Data of Fromsuburbdata" value="{{Data.SuburbId}}" >{{Data.SuburbName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.SuburbID.errors" class="invalid-feedback" >
+            <div *ngIf="f.SuburbID.errors.required">Suburb is Required</div>
+        </div>
+          </div>
+ 
+		
+		  
+		  	<!--End  State-city-suburb mapping -->
+			
+			 <div class="col-md-6  form-group">
+           <label >Select Waste Material Type&nbsp;<sup style="color:red">*</sup></label>    
+               	<select class="form-control" formControlName="WasteMaterialId" (change)="OnCitySelect($event.target.value)" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialId.errors }">
+                <option [selected]=true [disabled]="true">Select Waste Material Type</option>
+                <option *ngFor="let Data of wastematerialdata" value="{{Data.WasteMatId}}" >{{Data.WasteMatName}} </option>
+               </select> 
+			    <div *ngIf="submitted && f.WasteMaterialId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialId.errors.required">Waste Material Type is Required</div>
+        </div>	
+          </div>
+		  
+		   <div class="col-md-6  form-group ">
+           <label>Select Aggregator&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="AggregatorId" [ngClass]="{ 'is-invalid': submitted && f.AggregatorId.errors }"  (change)="ValidateWorkorders()">
+               <option [selected]=true [disabled]="true">Select Aggregator</option>
+                <option *ngFor="let Data of aggregatordata" value="{{Data.AggregatorId}}" >{{Data.AGName}} &nbsp;&nbsp;({{Data.AGCode}}) </option>
+               </select>
+			<div *ngIf="submitted && f.AggregatorId.errors" class="invalid-feedback" >
+            <div *ngIf="f.AggregatorId.errors.required">Aggregator is Required</div>
+        </div>			   
+          </div>
+		  
+		  
+		  <div class="col-md-6  form-group ">
+         <label>Collection Purchase Code &nbsp;<sup style="color:red">*</sup></label>
+		 <input type="text" formControlName="CollectionPurchaseCode"  placeholder="Enter Collection Purchase" class="form-control" readonly /> 
+          </div>
+		 
+           <div class="col-md-6  form-group ">
+           <label >Select Waste Material Unit&nbsp;<sup style="color:red">*</sup></label>
+		<select class="form-control" formControlName="WasteMaterialUnitId" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialUnitId.errors }">
+               <option [selected]=true [disabled]="true">Select Waste Material unit</option>
+                <option *ngFor="let Data of materialunitdata" value="{{Data.MaterialUnitId}}" >{{Data.MaterialUnit}} </option>
+               </select> 
+			   <div *ngIf="submitted && f.WasteMaterialUnitId.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialUnitId.errors.required">Waste Material Unit is Required</div>
+        </div>	
+          </div>
+		  
+		  
+		  <div class="col-md-6  form-group ">
+         <label>Waste Material Quantity&nbsp;<sup style="color:red">*</sup></label>
+               <input type="Number" formControlName="WasteMaterialQty"  placeholder="Enter Waste Material Quantity" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.WasteMaterialQty.errors }"  />
+			   <div *ngIf="submitted && f.WasteMaterialQty.errors" class="invalid-feedback" >
+            <div *ngIf="f.WasteMaterialQty.errors.required">Waste Material Quantity is Required</div>
+        </div>	
+      </div>
+		  
+		   <div class="col-md-6  form-group ">
+               <label>Collection or Purchase Rate (Rs/Kg)&nbsp;<sup style="color:red">*</sup></label>
+               <br>
+                <input type="Number" formControlName="PerKgRate" placeholder="Enter Collection or Purchase Rate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PerKgRate.errors }"  /> 
+					<div *ngIf="submitted && f.PerKgRate.errors" class="invalid-feedback" >
+            <div *ngIf="f.PerKgRate.errors.required">Collection or Purchase Rate is Required</div>
+        </div>	
+            </div>
+			
+			
+			
+			 <div class="col-md-6   form-group">
+               <label>Total Collection or Purchase Cost (Inclusive GST in Rs)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="Number" formControlName="TotalPaymtDownStr" placeholder="Enter Collection or Purchase Cost" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.TotalPaymtDownStr.errors }" />  
+				<div *ngIf="submitted && f.TotalPaymtDownStr.errors" class="invalid-feedback" >
+            <div *ngIf="f.TotalPaymtDownStr.errors.required">TotalCollection or Purchase Cost is Required</div>
+        </div>	
+            </div>
+		  
+		<div class="col-md-6   form-group">
+               <label>GST Rate(%)&nbsp;<sup style="color:red">*</sup></label>
+                <input type="Number" formControlName="GSTRate"  placeholder="GST Rate(%)" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.GSTRate.errors }"/>  
+				<div *ngIf="submitted && f.GSTRate.errors" class="invalid-feedback" >
+            <div *ngIf="f.GSTRate.errors.required">GST Rate is Required</div>
+        </div>	
+            </div>
+          
+          
+	  
+             <div class="col-md-6   form-group">
+               <label class="form-group"> Creation Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" formControlName="CreationDate"  value="{{DispalayCreationDate}}" placeholder="Enter Creation Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.CreationDate.errors }" readonly />  
+				<div *ngIf="submitted && f.CreationDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.CreationDate.errors.required">Creation Date is Required</div>
+        </div>	
+            </div>
+			
+			
+			<div class="col-md-6   form-group">
+               <label> Collection or Purchase Date&nbsp;<sup style="color:red">*</sup></label>
+                <input type="date" value="{{DispalayPlacementDate}}" formControlName="PlacementDate" placeholder="Enter Collection or Purchase Date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.PlacementDate.errors }" />  
+				<div *ngIf="submitted && f.PlacementDate.errors" class="invalid-feedback" >
+            <div *ngIf="f.PlacementDate.errors.required">Collection or Purchase Date is Required</div>
+        </div>	
+            </div>
+			
+			
+			
+			<div class="col-md-6   form-group">
+		 <label class="modelManufactureAddress">Select Waste Material Form &nbsp;<sup style="color:red">*</sup></label>
+	
+  
+   <ng-multiselect-dropdown
+  [placeholder]="'Select Waste Material Form'"
+  [data]="processingtypedata"
+  formControlName="ProcessingTypeId"
+  [settings]="ProcessingTypedownSettings"
+>
+</ng-multiselect-dropdown>
+  <div *ngIf=" f.ProcessingTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="f.ProcessingTypeId.errors.required">Waste Material Form  is Required</div>
+        </div>
+		 </div>
+   
+    <div class="col-md-6   form-group">
+      <label>Details/Comments</label>
+           <textarea formControlName="Comments"  class="form-control" placeholder="Details/Comments"></textarea>
+   
+       </div>
+       <div class="col-md-12">
+          <div class="space10"></div>
+          <div id="accordion" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseEditWorkOrder">
+                      <a class="card-title">
+                       <b>Work Orders</b>
+                      </a>
+                  </div>
+                  <div id="collapseEditWorkOrder" class="card-body collapse" data-parent="#accordion" >
+                      <form  [formGroup]="WorkOrdersForm"  novalidate>
+                          <div class="row">
+                            <div class="col-md-6 form-group">
+                              <label>Select Work Order&nbsp;<sup style="color:red">*</sup></label> 
+                                         <select class="form-control" formControlName="WorkOrderId" [ngClass]="{ 'is-invalid': submitted && W.WorkOrderId.errors }"(change)="GetWorkorderItem($event.target.value)">
+                                          <option [selected]=true [disabled]="true">Select Work Order Code</option>
+                                          <option *ngFor="let Data of WorkOrdersdata" value="{{Data.WorkOrderId}}" >{{Data.WorkOrderCode}} </option>
+                                         </select>  
+                                   
+                                   <div *ngIf="submitted && W.WorkOrderId.errors" class="invalid-feedback" >
+                                      <div *ngIf="W.WorkOrderId.errors.required">Work Order Code is Required</div>
+                                  </div>
+  
+                          <div *ngIf="!IsValidCT" class="custom-Invalid-feedback" >
+                                     Work Order  is Required
+                                  </div>
+                                  </div>
+                               <div class="col-md-6 form-group">
+                            
+                                <label>Select Work Order Item&nbsp;<sup style="color:red">*</sup></label> 
+                                         <select class="form-control" formControlName="WorkOrderItemId" [ngClass]="{ 'is-invalid': submitted && W.WorkOrderItemId.errors }">
+                                          <option [selected]="true" [disabled]="true" value="0">Select Work Order Item</option>
+                                          <option *ngFor="let Data of WOItemsdata" value="{{Data.WorkOrderItemId}}">{{Data.WorkOrderItemCode}} </option>
+                                         </select>  
+                                   
+                                   <div *ngIf="submitted && W.WorkOrderItemId.errors" class="invalid-feedback" >
+                                      <div *ngIf="W.WorkOrderItemId.errors.required">Work Order Item is Required</div>
+                                  </div>
+                                   
+                                  </div>
+                                  <div class="col-md-6 form-group">
+                                  <label>Assign Waste Material Quantity (in MT)&nbsp;<sup style="color:red">*</sup></label> 
+                                    <input type="text" formControlName="Tonnage"  class="form-control" placeholder="Enter Assign Waste Material Quantity " [ngClass]="{ 'is-invalid': submitted && W.Tonnage.errors }" />
+                                 
+                                  </div>
+                                  <div class="col-md-12">
+                              
+                                      <button class="btn btn-primary" (click)="CPWorkOrderItemCrud()" > Add</button>  
+            
+                                   </div>
+                              <!--Start  State-city-suburb mapping -->
+                          </div>
+                       
+                          <div class="space10"></div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="table-responsive">
+                                 <div class="space10"></div>
+                                <table class="table table-borderless table-hover tableborder align-middle citytable">
+                                  <thead class="headerbackground text-white">
+                                     <tr>
+                                         <th></th>
+                                         <th>Sr No.</th>
+                                         <th>Work Order</th>
+                                         <th>Work Order Item</th>
+                                         <th>Assign Waste Material Quantity </th>
+                                       </tr>
+                                     
+                                  </thead>
+                                <tbody>
+                                  <tr *ngFor="let Data of CPWorkOrderItemCrudData; let i=index" >
+                                       <!-- <th><a (click)="EditCPWorkOrderItemCrud(Data.WorkOrderId,Data.WorkOrderItemId,Data.Tonnage,Data.CPCode,Data.CPWorkOrderItem)"  class="btn-color" >Edit</a><br><a (click)="EditCPWorkOrderItemCrud(Data.WorkOrderId,Data.WorkOrderItemId,Data.Tonnage,Data.CPCode,Data.CPWorkOrderItem)" class="btn-color"> Delete</a></th> -->
+                                       <th><button (click)="DeleteCPWorkOrderItemCrud(Data.CPWorkOrderItem)" class="btn-color"> Delete</button></th> 
+                                       <th>{{i + 1}}</th>								  
+                                        <th>{{Data.workordercode}}</th>		
+                                        <th>{{Data.workordersitemcode}}</th>		
+                                        <th>{{Data.Tonnage}}</th>		
+                                   </tr>
+                                </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                   </div>
+              </div>
+          </div>
+      </div>
+    <div class="col-md-12">
+      <div class="space10"></div>
+        <div id="accordion1" class="accordion">
+            <div class="card mb-0">
+                <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+                    <a class="card-title">
+                     <b>Document Upload</b>
+                    </a>
+                </div>
+                <div id="collapseTwo" class="card-body collapse" data-parent="#accordion1" >
+                  <form  [formGroup]="DocUploadForm"  novalidate>
+
+                    <div class="row">
+                      <div class="col-md-6 form-group">
+                        <br>
+                         <input type="file" class="form-control file1 browse" id="fileupload1" formControlName="DocumentName" (change)="getFiles($event)"[ngClass]="{ 'is-invalid': submitted && d.DocumentName.errors }">
+                              <div *ngIf="submitted && d.DocumentName.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentName.errors.required">Select Document here..</div>
+        </div>	
+                      </div>
+                      <div class="col-md-6 form-group">
+                         <label class="" > Document Type&nbsp;<sup style="color:red">*</sup></label>
+                       
+                           <select class="form-control" formControlName="DocumentTypeId"[ngClass]="{ 'is-invalid': submitted && d.DocumentTypeId.errors }">
+                             <option [selected]=true [disabled]="true" value="">Select Document Type</option>
+                             <option *ngFor="let Data of DocData" value="{{Data.DocumentTypeId}}" >{{Data.DocumentTypeName}} </option>
+                           </select>
+                 
+                              <div *ngIf="submitted && d.DocumentTypeId.errors" class="invalid-feedback" >
+            <div *ngIf="d.DocumentTypeId.errors.required">Select Document Type..</div>
+        </div>	
+                 
+                      </div>
+                      <div class="col-md-6 form-group">
+                     <label>Comments</label>
+                       <textarea  formControlName="DocumentDetails" placeholder="Enter Comments" class="form-control" ></textarea>	
+               
+                       </div>
+                      <div class="col-md-12">
+                        <br>
+                         <button class="btn btn-primary" (click)="UploadDocument()"> Add</button>  
+
+                      </div>
+                      
+                    </div>
+                    <div class="space10"></div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="table-responsive">
+                           <div class="space10"></div>
+                          <table class="table table-borderless table-hover tableborder align-middle citytable">
+                            <thead class="headerbackground text-white">
+                               <tr>
+                                   <th></th>
+                                   <th>Sr No.</th>
+                                   <th>Document Name</th>
+                                   <th>Document Type</th>
+                                   <th>Comments</th>
+                                 </tr>
+                               
+                            </thead>
+                          <tbody>
+                             <tr *ngFor="let Data of DocumentData ; let i=index">
+                                 <th><a href="{{Data.Document}}" target="_blank" class="btn-color">View</a><br><button (click)="DeleteDocument(Data.DocumentId)" class="btn-color"> Delete</button></th>
+                                  <th>{{i + 1}}</th>								  
+                                  <th>{{Data.DocumentName}}</th>
+                                  <th>{{Data.DocumentTypeName}}</th>
+                                  <th>{{Data.DocumentDetails}}</th>
+                             </tr>
+                          </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+                   </form>
+                </div>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+
+
+   
+		<!-- End Document Upload Code -->
+		
+		
+     
+			
+			
+             </div>
+          <div class="form-group btn-submit">
+            <div class="space10"></div>
+              <button class="btn btn-primary" (click)="EditCP()">Update</button> 
+<img *ngIf="loading" class="loadingbutton" src="../assets/images/Loading.gif">			  
+          </div>
+		  <!-- <div *ngIf="successmsg" class="form-group">{{AlertMessage}}</div> -->
+            </div>
+			</form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+            </div>
+      </div>
+      </div>
+    <!--Edit Modal collection purchase-->
+
+
+    <!--Delete Modal-->
+
+    <div id="myModaldelete" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Collection Purchase?</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button (click)="Deletecollectionpurchas()"  type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!--Delete Modal-->
+<div id="myModalalert" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">    
+     <div class="modal-content">
+        <div class="modal-header" >
+          <button type="button" class="close" data-dismiss="modal">&times;</button>       
+        </div>
+      <div class="modal-body">    
+ <div class="alert alert-success"> {{AlertMessage}}</div>
+      
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+    </div>
